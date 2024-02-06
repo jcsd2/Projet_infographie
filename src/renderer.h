@@ -13,7 +13,15 @@ class Renderer
     int clear_color_r;
     int clear_color_g;
     int clear_color_b;
+
+    bool is_mouse_button_pressed;
     bool has_changed;
+
+    int mouse_press_x;
+    int mouse_press_y;
+
+    int mouse_current_x;
+    int mouse_current_y;
 
 
     void setup();
@@ -23,6 +31,7 @@ class Renderer
 
     void clear_to_gray(int g);
     void clear() const;
+    void draw_zone(float x1, float y1, float x2, float y2) const;
 
     ~Renderer();
 };

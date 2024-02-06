@@ -33,13 +33,6 @@ void Application::draw()
   renderer.draw();
   if (checkbox)
     gui.draw();
-
-  // Dessiner la sélection de zone
-  if (is_selecting)
-  {
-    ofSetColor(255, 0, 0, 100); // Couleur semi-transparente
-    ofDrawRectangle(selection_start.x, selection_start.y, selection_end.x - selection_start.x, selection_end.y - selection_start.y);
-  }
 }
 
 
@@ -66,7 +59,6 @@ void Application::screenshot_button_pressed(bool& value)
 {
     // Activer/désactiver le mode de capture d'écran
     captureMode = value;
-
     if (captureMode)
     {
         ofLog() << "Mode de capture d'écran activé.";
@@ -77,33 +69,37 @@ void Application::screenshot_button_pressed(bool& value)
     }
 }
 
+void Application::mouseMoved(int x, int y)
+{
+  renderer.mouse_current_x = x;
+  renderer.mouse_current_y = y;
+}
+
 void Application::mousePressed(int x, int y, int button)
 {
-  if (button == OF_MOUSE_BUTTON_LEFT)
-  {
-    // Commencer la sélection de zone
-    is_selecting = true;
-    selection_start.set(x, y);
-    selection_end.set(x, y);
-    
-  }
+  renderer.is_mouse_button_pressed = true;
+
+  renderer.mouse_current_x = x;
+  renderer.mouse_current_y = y;
+
+  renderer.mouse_press_x = x;
+  renderer.mouse_press_y = y;
+
+  ofLog() << "<app::mouse pressed  at: (" << x << ", " << y << ")>";
 }
 
 void Application::mouseDragged(int x, int y, int button)
 {
-  if (button == OF_MOUSE_BUTTON_LEFT && is_selecting)
-  {
-    // Mettre à jour la fin de la sélection de zone pendant le glissement de la souris
-    selection_end.set(x, y);
-  }
+  renderer.mouse_current_x = x;
+  renderer.mouse_current_y = y;
 }
 
 void Application::mouseReleased(int x, int y, int button)
 {
-    if (button == OF_MOUSE_BUTTON_LEFT && is_selecting)
-    {
+      renderer.is_mouse_button_pressed = false;
         // Finir la sélection de zone
-        selection_end.set(x, y);
+        selection_start.set(renderer.mouse_press_x, renderer.mouse_press_y);
+        selection_end.set(renderer.mouse_current_x, renderer.mouse_current_y);
         is_selecting = false;
 
         // Vérifier si le mode de capture d'écran est activé
@@ -159,7 +155,7 @@ void Application::mouseReleased(int x, int y, int button)
         {
             ofLog() << "<Fin de la sélection de zone>";
         }
-    }
+    
 }
 
 

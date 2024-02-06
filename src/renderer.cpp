@@ -9,6 +9,10 @@ void Renderer::setup()
   ofBackground(clear_color_r, clear_color_g, clear_color_b);
   // changement d'état
   has_changed = true;
+  mouse_press_x = mouse_press_y = mouse_current_x = mouse_current_y = 0;
+  is_mouse_button_pressed = false;
+
+
 }
 void Renderer::draw()
 {
@@ -26,6 +30,15 @@ void Renderer::draw()
     default:
       ofBackground(255, 0, 0);
       break;
+  }
+  // afficher la zone de sélection
+  if (is_mouse_button_pressed)
+  {
+    draw_zone(
+      mouse_press_x,
+      mouse_press_y,
+      mouse_current_x,
+      mouse_current_y);
   }
 }
 
@@ -53,6 +66,18 @@ void Renderer::update()
 
 }
 
+void Renderer::draw_zone(float x1, float y1, float x2, float y2) const
+{
+  float x2_clamp = min(max(0.0f, x2), (float) ofGetWidth());
+  float y2_clamp = min(max(0.0f, y2), (float) ofGetHeight());
+
+  
+  ofSetColor(255, 0, 0, 100);
+  ofNoFill();
+  ofDrawRectangle(x1, y1, x2_clamp - x1, y2_clamp - y1);
+  ofFill();
+}
 Renderer::~Renderer()
 {
+
 }

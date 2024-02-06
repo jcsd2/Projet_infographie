@@ -32,6 +32,7 @@ public:
 
 
   // Nouvelles fonctions pour la gestion de la sélection de zone (utile pour screenshot)
+  void mouseMoved(int x, int y);
   void mousePressed(int x, int y, int button) override;
   void mouseDragged(int x, int y, int button) override;
   void mouseReleased(int x, int y, int button) override;
