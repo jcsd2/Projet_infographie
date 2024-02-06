@@ -10,17 +10,19 @@ public:
   Renderer renderer;
 
   ofxPanel gui;
-
   ofxGuiGroup group_image;
+  ofxGuiGroup group_dessin_vectoriel;
 
-  ofParameter<bool> checkbox;
+  ofParameter<bool> checkbox; //Parametre pour voir le Gui
   ofEvent<bool> screenshotButtonEvent;  // Declare an ofEvent
   
-  //Screenshot selection points
+  //Cursor selection points/ Position du curseur pour la selection
   ofPoint selection_start;
   ofPoint selection_end;
 
   ofxToggle screenshot_button;
+
+
   void setup();
   void update();
   void draw();

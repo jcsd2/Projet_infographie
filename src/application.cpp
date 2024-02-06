@@ -11,18 +11,21 @@ void Application::setup()
   gui.setup("Interface");
   checkbox.setName("Gui visible");
   checkbox = true; // Initialisation de l'indicateur du Gui
+  gui.add(checkbox);
+
   is_selecting = false; // Initialisation de l'indicateur de sélection
   captureMode = false; // Initialisation l'indicateur du mode de capture d'écran
-  gui.add(checkbox);
+  
+  //Groupe du critere 1 Image
   group_image.setup("Image");
-
-  // Use ofxToggle instead of ofxButton
   screenshot_button.setup("Capture d'ecran", false);
   screenshot_button.addListener(this, &Application::screenshot_button_pressed);
-    
-
   group_image.add(&screenshot_button);
   gui.add(&group_image);
+
+  //groupe du critere 2 Dessin vectoriel
+  group_dessin_vectoriel.setup("Dessin Vectoriel");
+  gui.add(&group_dessin_vectoriel);
 }
 
 void Application::draw()
