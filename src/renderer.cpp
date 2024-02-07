@@ -25,9 +25,15 @@ void Renderer::setup()
   //Inisialistion general
 
   // couleur de la ligne de contour (color_stroke)
-
+  stroke_color_r = 255;
+  stroke_color_g = 255;
+  stroke_color_b = 255;
+  stroke_color_a = 255;
   // couleur de la zone de remplissage (color_fill())
-
+  fill_color_r = 0;
+  fill_color_g = 0;
+  fill_color_b = 255;
+  fill_color_a = 255;
   //largeur de la ligne de contour
   stroke_width_default = 2;
   radius = 4.0f;
@@ -97,7 +103,7 @@ void Renderer::draw()
           shapes[index].fill_color[0],
           shapes[index].fill_color[1],
           shapes[index].fill_color[2]);
-        draw_rectangle(
+        draw_square(
           shapes[index].position1[0],
           shapes[index].position1[1],
           shapes[index].position2[0],
@@ -306,10 +312,8 @@ void Renderer::draw_square(float x1, float y1, float x2, float y2) const
 {
   float squareX = min(x1, x2);
   float squareY = min(y1, y2);
-  float squareWidth = abs(x2 - x1);
-  float squareHeight = abs(y2 - y1);
-
-  ofDrawRectangle(squareX, squareY, squareWidth, squareHeight);
+  float squareSize = min(abs(x2 - x1), abs(y2 - y1));
+  ofDrawRectangle(squareX, squareY, squareSize, squareSize);
 }
 
 // fonction qui dessine un rectangle (Comme dans les exemples du cours)
@@ -321,14 +325,17 @@ void Renderer::draw_rectangle(float x1, float y1, float x2, float y2) const
 //Fonction qui dessine un cercle
 void Renderer::draw_circle(float x1, float y1, float x2, float y2) const
 {
-  // Calculer le centre et le rayon du cercle
-  float centerX = (x1 + x2) / 2;
-  float centerY = (y1 + y2) / 2;
-  float radiusX = (x2 - x1) / 2;
-  float radiusY = (y2 - y1) / 2;
+  // Calculer la distance euclidienne entre les deux points
+    float distance = ofDist(x1, y1, x2, y2);
 
+    // Calculer le centre du cercle
+    float centerX = (x1 + x2) / 2;
+    float centerY = (y1 + y2) / 2;
+
+    // Utiliser la moitié de la distance comme rayon (ou toute autre formule selon vos besoins)
+    float radius_circle = distance / 2;
     // Utiliser le centre et le rayon pour dessiner le cercle
-    ofDrawEllipse(centerX, centerY, radiusX * 2, radiusY * 2);
+    ofDrawCircle(centerX, centerY, radius_circle);
 }
 
 // fonction qui dessine une ellipse (Comme dans les exemples du cours)

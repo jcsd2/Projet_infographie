@@ -13,7 +13,6 @@ void Application::setup()
   checkbox = true; // Initialisation de l'indicateur du Gui
   gui.add(checkbox);
 
-  is_selecting = false; // Initialisation de l'indicateur de sélection
   captureMode = false; // Initialisation l'indicateur du mode de capture d'écran
   
   //Groupe du critere 1 Image
@@ -26,6 +25,11 @@ void Application::setup()
   //groupe du critere 2 Dessin vectoriel
   group_dessin_vectoriel.setup("Dessin Vectoriel");
   gui.add(&group_dessin_vectoriel);
+  group_dessin_vectoriel_formes.setup("Formes a dessiner");
+  group_dessin_vectoriel.add(&group_dessin_vectoriel_formes);
+  // Ajout des boutons pour chaque formes  
+  ajout_boutons_formes();
+
 }
 
 void Application::draw()
@@ -48,6 +52,9 @@ void Application::keyReleased(int key)
     case 117: //key u
       checkbox = !checkbox;
       ofLog() << "<toggle ui: " << checkbox << ">";
+      break;
+    case 114: // key r
+      renderer.reset();
       break;
   
     default:
@@ -99,12 +106,15 @@ void Application::mouseReleased(int x, int y, int button)
   selection_start.set(renderer.mouse_press_x, renderer.mouse_press_y);
   selection_end.set(renderer.mouse_current_x, renderer.mouse_current_y);
   renderer.is_mouse_button_pressed = false;
-  // Finir la sélection de zone
-  is_selecting = false;
+
   // Vérifier si le mode de capture d'écran est activé
   if (captureMode)
   {
     screenshot(x,y);
+  }
+  else if (renderer.draw_mode != VectorPrimitiveType::none)
+  {
+      renderer.add_vector_shape(renderer.draw_mode);
   }
   else
   {
@@ -161,9 +171,192 @@ void Application::screenshot(int x,int y)
 
 }
 
+void Application::ajout_boutons_formes()
+{
+  group_dessin_vectoriel_formes.add(none_shape_button.setup("None", ofParameter<bool>(false)));
+  group_dessin_vectoriel_formes.add(pixel_shape_button.setup("Pixel", ofParameter<bool>(false)));
+  group_dessin_vectoriel_formes.add(point_shape_button.setup("Point", ofParameter<bool>(false)));
+  group_dessin_vectoriel_formes.add(line_shape_button.setup("Ligne", ofParameter<bool>(false)));
+  group_dessin_vectoriel_formes.add(square_shape_button.setup("Carre", ofParameter<bool>(false)));
+  group_dessin_vectoriel_formes.add(rectangle_shape_button.setup("Rectangle", ofParameter<bool>(false)));
+  group_dessin_vectoriel_formes.add(circle_shape_button.setup("Cercle", ofParameter<bool>(false)));
+  group_dessin_vectoriel_formes.add(ellipse_shape_button.setup("Ellipse", ofParameter<bool>(false)));
+  group_dessin_vectoriel_formes.add(triangle_shape_button.setup("Triangle", ofParameter<bool>(false)));
+
+  // Ajout des listeners pour chaque bouton
+  none_shape_button.addListener(this, &Application::button_none_pressed);
+  pixel_shape_button.addListener(this, &Application::button_pixel_pressed);
+  point_shape_button.addListener(this, &Application::button_point_pressed);
+  line_shape_button.addListener(this, &Application::button_line_pressed);
+  square_shape_button.addListener(this, &Application::button_square_pressed);
+  rectangle_shape_button.addListener(this, &Application::button_rectangle_pressed);
+  circle_shape_button.addListener(this, &Application::button_circle_pressed);
+  ellipse_shape_button.addListener(this, &Application::button_ellipse_pressed);
+  triangle_shape_button.addListener(this, &Application::button_triangle_pressed);
+
+}
+void Application::retirer_boutons_formes(){
+  none_shape_button.removeListener(this, &Application::button_none_pressed);
+  pixel_shape_button.removeListener(this, &Application::button_pixel_pressed);
+  point_shape_button.removeListener(this, &Application::button_point_pressed);
+  line_shape_button.removeListener(this, &Application::button_line_pressed);
+  square_shape_button.removeListener(this, &Application::button_square_pressed);
+  rectangle_shape_button.removeListener(this, &Application::button_rectangle_pressed);
+  circle_shape_button.removeListener(this, &Application::button_circle_pressed);
+  ellipse_shape_button.removeListener(this, &Application::button_ellipse_pressed);
+  triangle_shape_button.removeListener(this, &Application::button_triangle_pressed);
+
+}
+
+
+void Application::button_none_pressed(bool &pressed)
+{
+  if (pressed) {
+    renderer.draw_mode = VectorPrimitiveType::none;
+    ofLog() << "<mode: none>";
+    pixel_shape_button = false;
+    point_shape_button = false;
+    line_shape_button = false;
+    square_shape_button = false;
+    rectangle_shape_button = false;
+    circle_shape_button = false;
+    ellipse_shape_button = false;
+    triangle_shape_button = false;
+  }
+}
+
+void Application::button_pixel_pressed(bool &pressed)
+{
+  if (pressed) {
+    renderer.draw_mode = VectorPrimitiveType::pixel;
+    ofLog() << "<mode: pixel>";
+    none_shape_button = false;
+    point_shape_button = false;
+    line_shape_button = false;
+    square_shape_button = false;
+    rectangle_shape_button = false;
+    circle_shape_button = false;
+    ellipse_shape_button = false;
+    triangle_shape_button = false;
+  }
+}
+
+void Application::button_point_pressed(bool &pressed)
+{
+  if (pressed) {
+    renderer.draw_mode = VectorPrimitiveType::point;
+    ofLog() << "<mode: point>";
+    none_shape_button = false;
+    pixel_shape_button = false;
+    line_shape_button = false;
+    square_shape_button = false;
+    rectangle_shape_button = false;
+    circle_shape_button = false;
+    ellipse_shape_button = false;
+    triangle_shape_button = false;
+  }
+}
+
+void Application::button_line_pressed(bool &pressed)
+{
+  if (pressed) {
+    renderer.draw_mode = VectorPrimitiveType::line;
+    ofLog() << "<mode: line>";
+    none_shape_button = false;
+    pixel_shape_button = false;
+    point_shape_button = false;
+    square_shape_button = false;
+    rectangle_shape_button = false;
+    circle_shape_button = false;
+    ellipse_shape_button = false;
+    triangle_shape_button = false;
+  }
+}
+
+void Application::button_square_pressed(bool &pressed)
+{
+  if (pressed) {
+    renderer.draw_mode = VectorPrimitiveType::square;
+    ofLog() << "<mode: square>";
+    none_shape_button = false;
+    pixel_shape_button = false;
+    point_shape_button = false;
+    line_shape_button = false;
+    rectangle_shape_button = false;
+    circle_shape_button = false;
+    ellipse_shape_button = false;
+    triangle_shape_button = false;
+  }
+}
+
+void Application::button_rectangle_pressed(bool &pressed)
+{
+  if (pressed) {
+    renderer.draw_mode = VectorPrimitiveType::rectangle;
+    ofLog() << "<mode: rectangle>";
+    none_shape_button = false;
+    pixel_shape_button = false;
+    point_shape_button = false;
+    line_shape_button = false;
+    square_shape_button = false;
+    circle_shape_button = false;
+    ellipse_shape_button = false;
+    triangle_shape_button = false;
+  }
+}
+
+void Application::button_circle_pressed(bool &pressed)
+{
+  if (pressed) {
+    renderer.draw_mode = VectorPrimitiveType::circle;
+    ofLog() << "<mode: circle>";
+    none_shape_button = false;
+    pixel_shape_button = false;
+    point_shape_button = false;
+    line_shape_button = false;
+    square_shape_button = false;
+    rectangle_shape_button = false;
+    ellipse_shape_button = false;
+    triangle_shape_button = false;
+  }
+}
+
+void Application::button_ellipse_pressed(bool &pressed)
+{
+  if (pressed) {
+    renderer.draw_mode = VectorPrimitiveType::ellipse;
+    ofLog() << "<mode: ellipse>";
+    none_shape_button = false;
+    pixel_shape_button = false;
+    point_shape_button = false;
+    line_shape_button = false;
+    square_shape_button = false;
+    rectangle_shape_button = false;
+    circle_shape_button = false;
+    triangle_shape_button = false;
+  }
+}
+
+void Application::button_triangle_pressed(bool &pressed)
+{
+  if (pressed) {
+    renderer.draw_mode = VectorPrimitiveType::triangle;
+    ofLog() << "<mode: triangle>";
+    none_shape_button = false;
+    pixel_shape_button = false;
+    point_shape_button = false;
+    line_shape_button = false;
+    square_shape_button = false;
+    rectangle_shape_button = false;
+    circle_shape_button = false;
+    ellipse_shape_button = false;
+  }
+}
+
 void Application::exit()
 {
   // Remove the listener for toggle button valueChanged event
     screenshot_button.removeListener(this, &Application::screenshot_button_pressed);
+    retirer_boutons_formes();
     ofLog() << "<app::exit>";
 }
