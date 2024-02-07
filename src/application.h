@@ -22,16 +22,14 @@ public:
 
   ofxToggle screenshot_button;
 
-
   void setup();
   void update();
   void draw();
   void exit();
   void keyReleased(int key);
   void screenshot_button_pressed(bool& value);
+  void screenshot(int x,int y);
 
-
-  // Nouvelles fonctions pour la gestion de la sélection de zone (utile pour screenshot)
   void mouseMoved(int x, int y);
   void mousePressed(int x, int y, int button) override;
   void mouseDragged(int x, int y, int button) override;

@@ -3,11 +3,54 @@
 
 // énumération de différents modes pour changer la couleur d'arrière-plan
 enum class ClearMode {none, gray};
+// énumération des différents types de primitives vectorielles
+enum class VectorPrimitiveType {none, pixel, point, line, square, rectangle, circle, ellipse, triangle};
+
+// structure de primitive vectorielle générique (Comme dans les exemples du cours)
+struct VectorPrimitive
+{
+  VectorPrimitiveType type;            // 1 * 4 = 4  octets
+  float               position1[2];    // 2 * 4 = 8  octets
+  float               position2[2];    // 2 * 4 = 8  octets
+  float               stroke_width;    // 1 * 4 = 4  octets
+  unsigned char       stroke_color[4]; // 4 * 1 = 4  octets
+  unsigned char       fill_color[4];   // 4 * 1 = 4  octets
+};                                     //       = 32 octets
 
 class Renderer
 {
-    public:
+public:
 
+    //Declaration pours les primitives vectorieles
+    VectorPrimitiveType draw_mode;
+    VectorPrimitive* shapes;
+    int index;
+    int buffer_count;
+    int buffer_stride;
+    int buffer_size;
+    int buffer_head;
+    float stroke_width_default;
+    float radius;
+    unsigned char stroke_color_r;
+    unsigned char stroke_color_g;
+    unsigned char stroke_color_b;
+    unsigned char stroke_color_a;
+    unsigned char fill_color_r;
+    unsigned char fill_color_g;
+    unsigned char fill_color_b;
+    unsigned char fill_color_a;
+    void add_vector_shape(VectorPrimitiveType type); //Fonction d'ajout de forme au vecteur(Il faut lajouter absolument)
+    void draw_pixel(float x, float y) const;
+    void draw_point(float x, float y, float radius) const;
+    void draw_line(float x1, float y1, float x2, float y2) const;
+    void draw_square(float x1, float y1, float x2, float y2) const;
+    void draw_rectangle(float x1, float y1, float x2, float y2) const;
+    void draw_circle(float x1, float y1, float x2, float y2) const;
+    void draw_ellipse(float x1, float y1, float x2, float y2) const;
+    void draw_triangle(float x1, float y1, float x2, float y2) const;
+
+
+    //Temporary declaration
     ClearMode clear_mode;
     int clear_color_gray;
     int clear_color_r;
@@ -23,14 +66,12 @@ class Renderer
     int mouse_current_x;
     int mouse_current_y;
 
-
+    
     void setup();
     void update();
     void draw();
     void reset();
 
-    void clear_to_gray(int g);
-    void clear() const;
     void draw_zone(float x1, float y1, float x2, float y2) const;
 
     ~Renderer();
