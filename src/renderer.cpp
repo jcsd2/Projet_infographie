@@ -4,9 +4,8 @@ void Renderer::setup()
 {
   ofSetFrameRate(60);
   clear_mode = ClearMode::none;
-  // couleur de la zone de remplissage
-  ofSetBackgroundColor(191);
-  ofBackground(clear_color_r, clear_color_g, clear_color_b);
+  // couleur fond arriere
+  ofSetBackgroundColor(20);
 
   //Initisialisation des variable (Comme dans les exemples du cours)
   // nombre maximal de primitives vectorielles dans le tableau
@@ -44,6 +43,10 @@ void Renderer::setup()
 
 void Renderer::draw()
 {
+    // couleur d'arrière-plan
+    //ofClear(background_color1);
+    ofClear(background_color2);
+
   for (index = 0; index < buffer_count; ++index)
   {
     switch (shapes[index].type)
@@ -225,6 +228,34 @@ void Renderer::draw()
           shapes[index].position2[0], shapes[index].position2[1]);
 
       break;
+
+      case VectorPrimitiveType::face:
+          //Remplissage
+          ofFill();
+          ofSetLineWidth(0);
+          ofSetCircleResolution(48);
+          ofSetColor(
+              shapes[index].fill_color[0],
+              shapes[index].fill_color[1],
+              shapes[index].fill_color[2]);
+          draw_face(
+              shapes[index].position1[0],
+              shapes[index].position1[1],
+              shapes[index].position2[0],
+              shapes[index].position2[1]);
+          break;
+
+      case VectorPrimitiveType::maison:
+          ofFill();
+          ofSetLineWidth(0);
+          ofSetColor(
+              shapes[index].fill_color[0],
+              shapes[index].fill_color[1],
+              shapes[index].fill_color[2]);
+          draw_maison(
+              shapes[index].position1[0], shapes[index].position1[1],
+              shapes[index].position2[0], shapes[index].position2[1]);
+          break;
 
       default:
         break;
@@ -434,11 +465,56 @@ void Renderer::draw_triangle(float x1, float y1, float x2, float y2) const
     ofDrawTriangle(x1_triangle, y1_triangle, x2_triangle, y2_triangle, x3_triangle, y3_triangle);
 }
 
+
+void Renderer::draw_face(float x1, float y1, float x2, float y2) const
+{
+    // Calculer la distance euclidienne entre les deux points
+    float distance = ofDist(x1, y1, x2, y2);
+
+    // Calculer le centre du cercle
+    float centerX = (x1 + x2) / 2;
+    float centerY = (y1 + y2) / 2;
+    float largeur = (x2 - x1);
+    float hauteur = (y2 - y1);
+
+    // Utiliser la moitié de la distance comme rayon (ou toute autre formule selon vos besoins)
+    float rayon = distance / 2;
+
+    ofDrawCircle(centerX, centerY, rayon);
+    ofSetColor(0, 0, 0);
+    ofDrawCircle(centerX - largeur/3, centerY - hauteur / 3, rayon/10);
+    ofDrawCircle(centerX + largeur/3, centerY - hauteur / 3, rayon/10);
+    ofDrawLine(x1 + largeur / 4, y2 - hauteur / 4, x2 - largeur / 4, y2 - hauteur / 4);
+}
+
+void Renderer::draw_maison(float x1, float y1, float x2, float y2) const
+{
+    float hauteur = (y2 - y1);
+    float largeur = (x2 - x1);
+
+    float y_t = hauteur / 3;
+    float x_t = largeur / 2;
+
+    ofDrawTriangle(x1, y1 + y_t, x1 + x_t, y1, x2, y1 + y_t);
+    ofSetColor(66);
+    ofDrawRectangle(x1, y2 - hauteur * 2/3, largeur, hauteur * 2 / 3);
+    ofSetColor(255, 0, 0);
+    ofDrawRectangle(x1 + 0.2 * largeur, y2 - hauteur * 1 / 4, largeur * 0.1, hauteur * 0.25);
+}
+
+
+
+
+
 //Fonction de cahngement de algo pour les lignes
 void Renderer::setLineRenderer(LineRenderer renderer)
 {
     lineRenderer = renderer;
 }
+
+
+
+
 
 void Renderer::update()
 {
