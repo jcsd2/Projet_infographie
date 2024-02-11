@@ -6,6 +6,9 @@ enum class ClearMode {none, gray};
 // énumération des différents types de primitives vectorielles
 enum class VectorPrimitiveType {none, pixel, point, line, square, rectangle, circle, ellipse, triangle};
 
+// énumération de différents algorithmes de rastérisation de ligne
+enum class LineRenderer {none, dda, bresenham};
+
 // structure de primitive vectorielle générique (Comme dans les exemples du cours)
 struct VectorPrimitive
 {
@@ -24,6 +27,7 @@ public:
     //Declaration pours les primitives vectorieles
     VectorPrimitiveType draw_mode;
     VectorPrimitive* shapes;
+    LineRenderer lineRenderer;
     int index;
     int buffer_count;
     int buffer_stride;
@@ -43,12 +47,15 @@ public:
     void draw_pixel(float x, float y) const;
     void draw_point(float x, float y, float radius) const;
     void draw_line(float x1, float y1, float x2, float y2) const;
+    void draw_line_dda(float x1, float y1, float x2, float y2) const;
+    void draw_line_bresenham(float x1, float y1, float x2, float y2) const;
     void draw_square(float x1, float y1, float x2, float y2) const;
     void draw_rectangle(float x1, float y1, float x2, float y2) const;
     void draw_circle(float x1, float y1, float x2, float y2) const;
     void draw_ellipse(float x1, float y1, float x2, float y2) const;
     void draw_triangle(float x1, float y1, float x2, float y2) const;
 
+    void setLineRenderer(LineRenderer renderer);
 
     //Temporary declaration
     ClearMode clear_mode;
@@ -73,6 +80,7 @@ public:
     void reset();
 
     void draw_zone(float x1, float y1, float x2, float y2) const;
+  
 
     ~Renderer();
 };

@@ -35,13 +35,11 @@ void Renderer::setup()
   fill_color_b = 255;
   fill_color_a = 255;
   //largeur de la ligne de contour
-  stroke_width_default = 2;
+  stroke_width_default = 500;
   radius = 4.0f;
 
   mouse_press_x = mouse_press_y = mouse_current_x = mouse_current_y = 0;
   is_mouse_button_pressed = false;
-
-
 }
 
 void Renderer::draw()
@@ -303,11 +301,82 @@ void Renderer::draw_point(float x, float y, float radius) const
 // fonction qui dessine une ligne
 void Renderer::draw_line(float x1, float y1, float x2, float y2) const
 {
-  //Ajouter choix algo
-
-  ofDrawLine(x1, y1, x2, y2);
+  switch (lineRenderer) {
+        case LineRenderer::none:
+            // Utilisez l'algorithme par défaut ou choisissez-en un
+            ofDrawLine(x1, y1, x2, y2);
+            ofLog() << "<Ligne algo of>";
+            break;
+        case LineRenderer::dda:
+            // Utilisez l'algorithme DDA pour rasteriser la ligne
+            draw_line_dda(x1, y1, x2, y2);
+            ofLog() << "<Ligne algo dda>";
+            break;
+        case LineRenderer::bresenham:
+            // Utilisez l'algorithme Bresenham pour rasteriser la ligne
+            draw_line_bresenham(x1, y1, x2, y2);
+            ofLog() << "<Ligne algo bresenham>";
+            break;
+        default:
+            break;
+    }
 }
 
+// Fonction de dessin de ligne avec l'algorithme DDA
+void Renderer::draw_line_dda(float x1, float y1, float x2, float y2) const
+{
+  float dx = x2 - x1;
+  float dy = y2 - y1;
+  float steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+  float x_increment = dx / steps;
+  float y_increment = dy / steps;
+  float x = x1;
+  float y = y1;
+
+  for (int i = 0; i <= steps; ++i)
+  {
+    draw_pixel(x, y);
+    x += x_increment;
+    y += y_increment;
+  }
+}
+
+// Fonction de dessin de ligne avec l'algorithme Bresenham
+void Renderer::draw_line_bresenham(float x1, float y1, float x2, float y2) const 
+{
+  int dx = abs(x2 - x1);
+  int dy = abs(y2 - y1);
+  int x_sign = x1 < x2 ? 1 : -1;
+  int y_sign = y1 < y2 ? 1 : -1;
+
+  int error = dx - dy;
+
+  int x = static_cast<int>(x1);
+  int y = static_cast<int>(y1);
+
+  draw_pixel(x, y);
+
+  while (x != static_cast<int>(x2) || y != static_cast<int>(y2))
+  {
+    int error2 = error * 2;
+
+    if (error2 > -dy)
+    {
+      error -= dy;
+      x += x_sign;
+    }
+
+    if (error2 < dx)
+    {
+      error += dx;
+      y += y_sign;
+    }
+
+    draw_pixel(x, y);
+  }
+}
+
+// Fonction de dessin de rectangle
 void Renderer::draw_square(float x1, float y1, float x2, float y2) const
 {
   float squareX = min(x1, x2);
@@ -365,6 +434,12 @@ void Renderer::draw_triangle(float x1, float y1, float x2, float y2) const
     ofDrawTriangle(x1_triangle, y1_triangle, x2_triangle, y2_triangle, x3_triangle, y3_triangle);
 }
 
+//Fonction de cahngement de algo pour les lignes
+void Renderer::setLineRenderer(LineRenderer renderer)
+{
+    lineRenderer = renderer;
+}
+
 void Renderer::update()
 {
   
@@ -388,6 +463,7 @@ void Renderer::draw_zone(float x1, float y1, float x2, float y2) const
   ofDrawEllipse(x2_clamp, y1, radius, radius);
   ofDrawEllipse(x2_clamp, y2_clamp, radius, radius);
 }
+
 Renderer::~Renderer()
 {
   std::free(shapes);

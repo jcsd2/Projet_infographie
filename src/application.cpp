@@ -21,14 +21,20 @@ void Application::setup()
   screenshot_button.addListener(this, &Application::screenshot_button_pressed);
   group_image.add(&screenshot_button);
   gui.add(&group_image);
+  gui.setDefaultHeight(40);
+  gui.setBorderColor(ofColor(255, 0, 0));
 
   //groupe du critere 2 Dessin vectoriel
   group_dessin_vectoriel.setup("Dessin Vectoriel");
   gui.add(&group_dessin_vectoriel);
   group_dessin_vectoriel_formes.setup("Formes a dessiner");
   group_dessin_vectoriel.add(&group_dessin_vectoriel_formes);
+  //Sous-groupe pour le type d'algo pour dessiner une ligne
+  group_dessin_algo_ligne.setup("Type d'algorithme \nde rasterisation");
+
   // Ajout des boutons pour chaque formes  
   ajout_boutons_formes();
+  gui.setPosition(1,1);
 
 }
 
@@ -38,7 +44,6 @@ void Application::draw()
   if (checkbox)
     gui.draw();
 }
-
 
 void Application::update()
 {
@@ -120,8 +125,8 @@ void Application::mouseReleased(int x, int y, int button)
   {
     ofLog() << "<Fin de la sélection de zone>";
   }
-    
 }
+
 void Application::screenshot(int x,int y)
 {
   // Générer un timestamp unique pour créer un nom de fichier différent à chaque capture
@@ -177,6 +182,12 @@ void Application::ajout_boutons_formes()
   group_dessin_vectoriel_formes.add(pixel_shape_button.setup("Pixel", ofParameter<bool>(false)));
   group_dessin_vectoriel_formes.add(point_shape_button.setup("Point", ofParameter<bool>(false)));
   group_dessin_vectoriel_formes.add(line_shape_button.setup("Ligne", ofParameter<bool>(false)));
+
+  group_dessin_vectoriel_formes.add(&group_dessin_algo_ligne);
+  group_dessin_algo_ligne.add(algo_of_button.setup("Rasterisation par\n openFrameworks", ofParameter<bool>(false)));
+  group_dessin_algo_ligne.add(algo_dda_button.setup("Rasterisation par\n DDA", ofParameter<bool>(false)));
+  group_dessin_algo_ligne.add(algo_bressenham_button.setup("Rasterisation par\n Bressenham", ofParameter<bool>(false)));
+
   group_dessin_vectoriel_formes.add(square_shape_button.setup("Carre", ofParameter<bool>(false)));
   group_dessin_vectoriel_formes.add(rectangle_shape_button.setup("Rectangle", ofParameter<bool>(false)));
   group_dessin_vectoriel_formes.add(circle_shape_button.setup("Cercle", ofParameter<bool>(false)));
@@ -188,6 +199,9 @@ void Application::ajout_boutons_formes()
   pixel_shape_button.addListener(this, &Application::button_pixel_pressed);
   point_shape_button.addListener(this, &Application::button_point_pressed);
   line_shape_button.addListener(this, &Application::button_line_pressed);
+  algo_of_button.addListener(this, &Application::button_algo_of_pressed);
+  algo_dda_button.addListener(this, &Application::button_algo_dda_pressed);
+  algo_bressenham_button.addListener(this, &Application::button_algo_bressenham_pressed);
   square_shape_button.addListener(this, &Application::button_square_pressed);
   rectangle_shape_button.addListener(this, &Application::button_rectangle_pressed);
   circle_shape_button.addListener(this, &Application::button_circle_pressed);
@@ -195,11 +209,14 @@ void Application::ajout_boutons_formes()
   triangle_shape_button.addListener(this, &Application::button_triangle_pressed);
 
 }
+
 void Application::retirer_boutons_formes(){
   none_shape_button.removeListener(this, &Application::button_none_pressed);
   pixel_shape_button.removeListener(this, &Application::button_pixel_pressed);
   point_shape_button.removeListener(this, &Application::button_point_pressed);
   line_shape_button.removeListener(this, &Application::button_line_pressed);
+  algo_dda_button.removeListener(this, &Application::button_algo_dda_pressed);
+  algo_bressenham_button.removeListener(this, &Application::button_algo_bressenham_pressed);
   square_shape_button.removeListener(this, &Application::button_square_pressed);
   rectangle_shape_button.removeListener(this, &Application::button_rectangle_pressed);
   circle_shape_button.removeListener(this, &Application::button_circle_pressed);
@@ -207,7 +224,6 @@ void Application::retirer_boutons_formes(){
   triangle_shape_button.removeListener(this, &Application::button_triangle_pressed);
 
 }
-
 
 void Application::button_none_pressed(bool &pressed)
 {
@@ -270,6 +286,66 @@ void Application::button_line_pressed(bool &pressed)
     circle_shape_button = false;
     ellipse_shape_button = false;
     triangle_shape_button = false;
+  }
+}
+
+void Application::button_algo_of_pressed(bool &pressed){
+  if (pressed) {
+    renderer.draw_mode = VectorPrimitiveType::line;
+    renderer.setLineRenderer(LineRenderer::none);
+    algo_of_button = true;
+    algo_dda_button = false;
+    algo_bressenham_button = false;
+    none_shape_button = false;
+    pixel_shape_button = false;
+    point_shape_button = false;
+    line_shape_button = true;
+    square_shape_button = false;
+    rectangle_shape_button = false;
+    circle_shape_button = false;
+    ellipse_shape_button = false;
+    ofLog() << "<mode: line of>";
+  }
+
+}
+
+void Application::button_algo_dda_pressed(bool &pressed)
+{
+  if (pressed) {
+    renderer.draw_mode = VectorPrimitiveType::line;
+    renderer.setLineRenderer(LineRenderer::dda);
+    algo_of_button = false;
+    algo_dda_button = true;
+    algo_bressenham_button = false;
+    none_shape_button = false;
+    pixel_shape_button = false;
+    point_shape_button = false;
+    line_shape_button = true;
+    square_shape_button = false;
+    rectangle_shape_button = false;
+    circle_shape_button = false;
+    ellipse_shape_button = false;
+    ofLog() << "<mode: line dda>";
+  }
+}
+
+void Application::button_algo_bressenham_pressed(bool &pressed)
+{
+  if (pressed) {
+    renderer.draw_mode = VectorPrimitiveType::line;
+    renderer.setLineRenderer(LineRenderer::bresenham);
+    algo_of_button = false;
+    algo_dda_button = false;
+    algo_bressenham_button = true;
+    none_shape_button = false;
+    pixel_shape_button = false;
+    point_shape_button = false;
+    line_shape_button = true;
+    square_shape_button = false;
+    rectangle_shape_button = false;
+    circle_shape_button = false;
+    ellipse_shape_button = false;
+    ofLog() << "<mode: line bressenham>";
   }
 }
 

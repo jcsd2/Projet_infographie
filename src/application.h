@@ -17,26 +17,33 @@ public:
 
   ofxGuiGroup group_dessin_vectoriel;
   ofxGuiGroup group_dessin_vectoriel_formes;
+  ofxGuiGroup group_dessin_algo_ligne;
+
+  
   void ajout_boutons_formes();
   void retirer_boutons_formes();
   void button_none_pressed(bool &pressed);
   void button_pixel_pressed(bool &pressed);
   void button_point_pressed(bool &pressed);
   void button_line_pressed(bool &pressed);
+  void button_algo_of_pressed(bool &pressed);
+  void button_algo_dda_pressed(bool &pressed);
+  void button_algo_bressenham_pressed(bool &pressed);
   void button_square_pressed(bool &pressed);
   void button_rectangle_pressed(bool &pressed);
   void button_circle_pressed(bool &pressed);
   void button_ellipse_pressed(bool &pressed);
   void button_triangle_pressed(bool &pressed);
 
-
-
-
-
   ofxToggle none_shape_button;
   ofxToggle pixel_shape_button;
   ofxToggle point_shape_button;
   ofxToggle line_shape_button;
+
+  ofxToggle algo_of_button;
+  ofxToggle algo_dda_button;
+  ofxToggle algo_bressenham_button;
+
   ofxToggle square_shape_button;
   ofxToggle rectangle_shape_button;
   ofxToggle circle_shape_button;
