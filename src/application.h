@@ -15,6 +15,9 @@ public:
   ofxGuiGroup group_image;
   ofxToggle screenshot_button;
 
+  //ofParameter<ofColor> color_picker_background; //changer couleur fond
+  ofParameter<ofColor> color_picker_background_HSB; //changer  HSB
+
   ofxGuiGroup group_dessin_vectoriel;
   ofxGuiGroup group_dessin_vectoriel_formes;
   void ajout_boutons_formes();
@@ -28,6 +31,8 @@ public:
   void button_circle_pressed(bool &pressed);
   void button_ellipse_pressed(bool &pressed);
   void button_triangle_pressed(bool &pressed);
+  void button_maison_pressed(bool& pressed);
+  void button_face_pressed(bool& pressed);
 
 
 
@@ -42,6 +47,8 @@ public:
   ofxToggle circle_shape_button;
   ofxToggle ellipse_shape_button;
   ofxToggle triangle_shape_button;
+  ofxToggle maison_shape_button;
+  ofxToggle face_shape_button;
 
 
   //Cursor selection points/ Position du curseur pour la selection

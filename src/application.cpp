@@ -14,13 +14,18 @@ void Application::setup()
   gui.add(checkbox);
 
   captureMode = false; // Initialisation l'indicateur du mode de capture d'écran
-  
+
   //Groupe du critere 1 Image
   group_image.setup("Image");
   screenshot_button.setup("Capture d'ecran", false);
   screenshot_button.addListener(this, &Application::screenshot_button_pressed);
   group_image.add(&screenshot_button);
   gui.add(&group_image);
+
+  //color_picker_background.set("couleur du canevas RGB", ofColor(60), ofColor(0, 0), ofColor(255, 255));
+  color_picker_background_HSB.set("couleur du canevas HSB",ofColor::fromHsb(128, 255, 255));
+  //group_image.add(color_picker_background);
+  group_image.add(color_picker_background_HSB);
 
   //groupe du critere 2 Dessin vectoriel
   group_dessin_vectoriel.setup("Dessin Vectoriel");
@@ -42,6 +47,9 @@ void Application::draw()
 
 void Application::update()
 {
+  //renderer.background_color1 = color_picker_background;
+  renderer.background_color2 = color_picker_background_HSB;
+
   renderer.update();
 }
 
@@ -182,6 +190,9 @@ void Application::ajout_boutons_formes()
   group_dessin_vectoriel_formes.add(circle_shape_button.setup("Cercle", ofParameter<bool>(false)));
   group_dessin_vectoriel_formes.add(ellipse_shape_button.setup("Ellipse", ofParameter<bool>(false)));
   group_dessin_vectoriel_formes.add(triangle_shape_button.setup("Triangle", ofParameter<bool>(false)));
+  group_dessin_vectoriel_formes.add(face_shape_button.setup("Face", ofParameter<bool>(false)));
+  group_dessin_vectoriel_formes.add(maison_shape_button.setup("Maison", ofParameter<bool>(false)));
+
 
   // Ajout des listeners pour chaque bouton
   none_shape_button.addListener(this, &Application::button_none_pressed);
@@ -193,6 +204,10 @@ void Application::ajout_boutons_formes()
   circle_shape_button.addListener(this, &Application::button_circle_pressed);
   ellipse_shape_button.addListener(this, &Application::button_ellipse_pressed);
   triangle_shape_button.addListener(this, &Application::button_triangle_pressed);
+  face_shape_button.addListener(this, &Application::button_face_pressed);
+  maison_shape_button.addListener(this, &Application::button_maison_pressed);
+
+
 
 }
 void Application::retirer_boutons_formes(){
@@ -205,6 +220,8 @@ void Application::retirer_boutons_formes(){
   circle_shape_button.removeListener(this, &Application::button_circle_pressed);
   ellipse_shape_button.removeListener(this, &Application::button_ellipse_pressed);
   triangle_shape_button.removeListener(this, &Application::button_triangle_pressed);
+  face_shape_button.removeListener(this, &Application::button_face_pressed);
+  maison_shape_button.removeListener(this, &Application::button_maison_pressed);
 
 }
 
@@ -222,6 +239,8 @@ void Application::button_none_pressed(bool &pressed)
     circle_shape_button = false;
     ellipse_shape_button = false;
     triangle_shape_button = false;
+    maison_shape_button = false;
+    face_shape_button = false;
   }
 }
 
@@ -238,6 +257,8 @@ void Application::button_pixel_pressed(bool &pressed)
     circle_shape_button = false;
     ellipse_shape_button = false;
     triangle_shape_button = false;
+    maison_shape_button = false;
+    face_shape_button = false;
   }
 }
 
@@ -254,6 +275,8 @@ void Application::button_point_pressed(bool &pressed)
     circle_shape_button = false;
     ellipse_shape_button = false;
     triangle_shape_button = false;
+    maison_shape_button = false;
+    face_shape_button = false;
   }
 }
 
@@ -270,6 +293,8 @@ void Application::button_line_pressed(bool &pressed)
     circle_shape_button = false;
     ellipse_shape_button = false;
     triangle_shape_button = false;
+    maison_shape_button = false;
+    face_shape_button = false;
   }
 }
 
@@ -286,6 +311,8 @@ void Application::button_square_pressed(bool &pressed)
     circle_shape_button = false;
     ellipse_shape_button = false;
     triangle_shape_button = false;
+    maison_shape_button = false;
+    face_shape_button = false;
   }
 }
 
@@ -302,6 +329,8 @@ void Application::button_rectangle_pressed(bool &pressed)
     circle_shape_button = false;
     ellipse_shape_button = false;
     triangle_shape_button = false;
+    maison_shape_button = false;
+    face_shape_button = false;
   }
 }
 
@@ -318,6 +347,8 @@ void Application::button_circle_pressed(bool &pressed)
     rectangle_shape_button = false;
     ellipse_shape_button = false;
     triangle_shape_button = false;
+    maison_shape_button = false;
+    face_shape_button = false;
   }
 }
 
@@ -334,6 +365,8 @@ void Application::button_ellipse_pressed(bool &pressed)
     rectangle_shape_button = false;
     circle_shape_button = false;
     triangle_shape_button = false;
+    maison_shape_button = false;
+    face_shape_button = false;
   }
 }
 
@@ -350,7 +383,46 @@ void Application::button_triangle_pressed(bool &pressed)
     rectangle_shape_button = false;
     circle_shape_button = false;
     ellipse_shape_button = false;
+    maison_shape_button = false;
+    face_shape_button = false;
   }
+}
+
+void Application::button_face_pressed(bool& pressed)
+{
+    if (pressed) {
+        renderer.draw_mode = VectorPrimitiveType::face;
+        ofLog() << "<mode: face>";
+        none_shape_button = false;
+        pixel_shape_button = false;
+        point_shape_button = false;
+        line_shape_button = false;
+        square_shape_button = false;
+        rectangle_shape_button = false;
+        circle_shape_button = false;
+        ellipse_shape_button = false;
+        triangle_shape_button = false;
+        maison_shape_button = false;
+    }
+
+}
+
+void Application::button_maison_pressed(bool& pressed)
+{
+    if (pressed) {
+    renderer.draw_mode = VectorPrimitiveType::maison;
+    ofLog() << "<mode: maison>";
+    none_shape_button = false;
+    pixel_shape_button = false;
+    point_shape_button = false;
+    line_shape_button = false;
+    square_shape_button = false;
+    rectangle_shape_button = false;
+    circle_shape_button = false;
+    ellipse_shape_button = false;
+    triangle_shape_button = false;
+    face_shape_button = false;
+    }
 }
 
 void Application::exit()

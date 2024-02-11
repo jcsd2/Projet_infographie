@@ -4,7 +4,7 @@
 // énumération de différents modes pour changer la couleur d'arrière-plan
 enum class ClearMode {none, gray};
 // énumération des différents types de primitives vectorielles
-enum class VectorPrimitiveType {none, pixel, point, line, square, rectangle, circle, ellipse, triangle};
+enum class VectorPrimitiveType {none, pixel, point, line, square, rectangle, circle, ellipse, triangle, face, maison};
 
 // structure de primitive vectorielle générique (Comme dans les exemples du cours)
 struct VectorPrimitive
@@ -20,6 +20,9 @@ struct VectorPrimitive
 class Renderer
 {
 public:
+
+    //ofColor background_color1;
+    ofColor background_color2;
 
     //Declaration pours les primitives vectorieles
     VectorPrimitiveType draw_mode;
@@ -48,6 +51,8 @@ public:
     void draw_circle(float x1, float y1, float x2, float y2) const;
     void draw_ellipse(float x1, float y1, float x2, float y2) const;
     void draw_triangle(float x1, float y1, float x2, float y2) const;
+    void draw_face(float x1, float y1, float x2, float y2) const;
+    void draw_maison(float x1, float y1, float x2, float y2) const;
 
 
     //Temporary declaration
