@@ -12,7 +12,7 @@ void Application::setup()
   checkbox.setName("Gui visible");
   checkbox = true; // Initialisation de l'indicateur du Gui
   gui.add(checkbox);
-
+  algo_of_button = true;
   captureMode = false; // Initialisation l'indicateur du mode de capture d'écran
 
   //Groupe du critere 1 Image
