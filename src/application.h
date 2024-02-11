@@ -14,6 +14,7 @@ public:
   
   ofxGuiGroup group_image;
   ofxToggle screenshot_button;
+  ofxToggle screenshot_button_funny;
 
   //ofParameter<ofColor> color_picker_background; //changer couleur fond
   ofParameter<ofColor> color_picker_background_HSB; //changer  HSB
@@ -68,7 +69,8 @@ public:
   void exit();
   
   void screenshot_button_pressed(bool &value);
-  void screenshot(int x,int y);
+  void screenshot_funny_button_pressed(bool &value);
+  void screenshot(int x,int y, bool z);
   
   void keyReleased(int key);
   void mouseMoved(int x, int y);
@@ -78,6 +80,7 @@ public:
 
   private:
     bool captureMode; //Indicateur de mode CaptureDecran
+    bool captureMode_funny;
 
 
 };

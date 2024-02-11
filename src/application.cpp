@@ -10,20 +10,24 @@ void Application::setup()
   renderer.setup();
   gui.setup("Interface");
   checkbox.setName("Gui visible");
+  gui.setDefaultHeight(42);
+  gui.setBorderColor(ofColor(255, 0, 0));
+
   checkbox = true; // Initialisation de l'indicateur du Gui
   gui.add(checkbox);
-  algo_of_button = true;
   captureMode = false; // Initialisation l'indicateur du mode de capture d'écran
+  captureMode_funny = false;
 
   //Groupe du critere 1 Image
   group_image.setup("Image");
   screenshot_button.setup("Capture d'ecran", false);
   screenshot_button.addListener(this, &Application::screenshot_button_pressed);
   group_image.add(&screenshot_button);
+  screenshot_button_funny.setup("Capture d'ecran\n surprise", false);
+  screenshot_button_funny.addListener(this, &Application::screenshot_funny_button_pressed);
+  group_image.add(&screenshot_button_funny);
   gui.add(&group_image);
-  gui.setDefaultHeight(40);
-  gui.setBorderColor(ofColor(255, 0, 0));
-
+  
   //color_picker_background.set("couleur du canevas RGB", ofColor(60), ofColor(0, 0), ofColor(255, 255));
   color_picker_background_HSB.set("couleur du canevas HSB",ofColor::fromHsb(128, 255, 255));
   //group_image.add(color_picker_background);
@@ -34,9 +38,11 @@ void Application::setup()
   gui.add(&group_dessin_vectoriel);
   group_dessin_vectoriel_formes.setup("Formes a dessiner");
   group_dessin_vectoriel.add(&group_dessin_vectoriel_formes);
+
   //Sous-groupe pour le type d'algo pour dessiner une ligne
   group_dessin_algo_ligne.setup("Type d'algorithme \nde rasterisation");
-
+  
+  
   // Ajout des boutons pour chaque formes  
   ajout_boutons_formes();
   gui.setPosition(1,1);
@@ -81,7 +87,25 @@ void Application::screenshot_button_pressed(bool& value)
     captureMode = value;
     if (captureMode)
     {
+        captureMode_funny = false;
+        screenshot_button_funny = false;
         ofLog() << "Mode de capture d'écran activé.";
+    }
+    else
+    {
+        ofLog() << "Mode de capture d'écran désactivé.";
+    }
+}
+
+void Application::screenshot_funny_button_pressed(bool& value)
+{
+    // Activer/désactiver le mode de capture d'écran
+    captureMode_funny = value;
+    if (captureMode_funny)
+    {
+        captureMode = false;
+        screenshot_button = false;
+        ofLog() << "Mode de capture d'écran surprise activé.";
     }
     else
     {
@@ -123,7 +147,11 @@ void Application::mouseReleased(int x, int y, int button)
   // Vérifier si le mode de capture d'écran est activé
   if (captureMode)
   {
-    screenshot(x,y);
+    screenshot(x,y, false);
+  }
+  else if (captureMode_funny)
+  {
+      screenshot(x,y, true);
   }
   else if (renderer.draw_mode != VectorPrimitiveType::none)
   {
@@ -135,7 +163,7 @@ void Application::mouseReleased(int x, int y, int button)
   }
 }
 
-void Application::screenshot(int x,int y)
+void Application::screenshot(int x,int y, bool z)
 {
   // Générer un timestamp unique pour créer un nom de fichier différent à chaque capture
   std::string timestamp = ofGetTimestampString("-%Y%m%d-%H%M%S");
@@ -169,8 +197,23 @@ void Application::screenshot(int x,int y)
     {
       // Algorithme d'échantillonnage ici
       // Exemple : simplement copier la couleur
-      ofColor pixelColor = tempImage.getColor(i, j);
-      sampledImage.setColor(i, j, pixelColor);
+      if(!z) //Screenshot normal
+      {
+        ofColor pixelColor = tempImage.getColor(i, j);
+        sampledImage.setColor(i, j, pixelColor);
+      }
+      else if(z)
+      {
+        ofColor pixelColor = tempImage.getColor(i, j);
+        //Appliquer le filtre multicolor
+        int red = pixelColor.r;
+        int green = (pixelColor.g + i) % 255; // Modifier la couleur en fonction de la position en X
+        int blue = (pixelColor.b + j) % 255;  // Modifier la couleur en fonction de la position en Y
+
+        // Mettre à jour la couleur du pixel dans l'image résultante
+        sampledImage.setColor(i, j, ofColor(red, green, blue, pixelColor.a));
+
+      }
     }
   }
 
@@ -192,9 +235,11 @@ void Application::ajout_boutons_formes()
   group_dessin_vectoriel_formes.add(line_shape_button.setup("Ligne", ofParameter<bool>(false)));
 
   group_dessin_vectoriel_formes.add(&group_dessin_algo_ligne);
-  group_dessin_algo_ligne.add(algo_of_button.setup("Rasterisation par\n openFrameworks", ofParameter<bool>(false)));
+  group_dessin_algo_ligne.setDefaultHeight(37);
+  group_dessin_algo_ligne.add(algo_of_button.setup("Rasterisation par\n openFrameworks", ofParameter<bool>(true)));
   group_dessin_algo_ligne.add(algo_dda_button.setup("Rasterisation par\n DDA", ofParameter<bool>(false)));
   group_dessin_algo_ligne.add(algo_bressenham_button.setup("Rasterisation par\n Bressenham", ofParameter<bool>(false)));
+  
 
   group_dessin_vectoriel_formes.add(square_shape_button.setup("Carre", ofParameter<bool>(false)));
   group_dessin_vectoriel_formes.add(rectangle_shape_button.setup("Rectangle", ofParameter<bool>(false)));
