@@ -22,6 +22,10 @@ public:
   ofxGuiGroup group_dessin_vectoriel_formes;
   ofxGuiGroup group_dessin_algo_ligne;
 
+  ofImage importedImage; // stocker l'image chargée
+  ofxButton importImageButton; //bouton pour importer l'image
+
+
   
   void ajout_boutons_formes();
   void retirer_boutons_formes();
@@ -39,6 +43,7 @@ public:
   void button_triangle_pressed(bool &pressed);
   void button_maison_pressed(bool& pressed);
   void button_face_pressed(bool& pressed);
+  void Application::importImage();
 
   ofxToggle none_shape_button;
   ofxToggle pixel_shape_button;

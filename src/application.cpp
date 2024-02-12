@@ -12,7 +12,7 @@ void Application::setup()
   checkbox.setName("Gui visible");
   checkbox = true; // Initialisation de l'indicateur du Gui
   gui.add(checkbox);
-  algo_of_button = true;
+  
   captureMode = false; // Initialisation l'indicateur du mode de capture d'écran
 
   //Groupe du critere 1 Image
@@ -41,6 +41,12 @@ void Application::setup()
   ajout_boutons_formes();
   gui.setPosition(1,1);
 
+  // Configuration du bouton d'importation d'image
+  importImageButton.setup("Importer Image");
+  importImageButton.addListener(this, &Application::importImage);
+  group_image.add(&importImageButton);
+
+
 }
 
 void Application::draw()
@@ -48,6 +54,11 @@ void Application::draw()
   renderer.draw();
   if (checkbox)
     gui.draw();
+
+  // Dessiner l'image importée si elle est chargée
+  if (importedImage.isAllocated()) {
+      importedImage.draw(0, 0); // Ajustez la position et la taille selon vos besoins
+  }
 }
 
 void Application::update()
@@ -501,10 +512,20 @@ void Application::button_maison_pressed(bool& pressed)
     }
 }
 
+
+
+void Application::importImage() {
+    ofFileDialogResult result = ofSystemLoadDialog("Importer une image", false);
+    if (result.bSuccess) {
+        importedImage.load(result.getPath());
+    }
+}
+
 void Application::exit()
 {
   // Remove the listener for toggle button valueChanged event
     screenshot_button.removeListener(this, &Application::screenshot_button_pressed);
-    retirer_boutons_formes();
-    ofLog() << "<app::exit>";
+   retirer_boutons_formes();
+   ofLog() << "<app::exit>";
+
 }
