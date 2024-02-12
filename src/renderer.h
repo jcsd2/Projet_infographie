@@ -78,6 +78,12 @@ public:
     int mouse_current_x;
     int mouse_current_y;
 
+    // Paramètres de dessin
+    float lineThickness; // Epaisseur de la ligne
+    ofColor lineColor; // Couleur de ligne
+    ofColor fillColor; // Couleur de remplissage
+  
+
     
     void setup();
     void update();
