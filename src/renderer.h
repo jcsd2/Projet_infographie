@@ -2,22 +2,22 @@
 #include "ofMain.h"
 
 // énumération de différents modes pour changer la couleur d'arrière-plan
-enum class ClearMode {none, gray};
+enum class ClearMode { none, gray };
 // énumération des différents types de primitives vectorielles
-enum class VectorPrimitiveType {none, pixel, point, line, square, rectangle, circle, ellipse, triangle, face, maison};
+enum class VectorPrimitiveType { none, pixel, point, line, square, rectangle, circle, ellipse, triangle, face, maison };
 
 // énumération de différents algorithmes de rastérisation de ligne
-enum class LineRenderer {none, dda, bresenham};
+enum class LineRenderer { none, dda, bresenham };
 
 // structure de primitive vectorielle générique (Comme dans les exemples du cours)
 struct VectorPrimitive
 {
-  VectorPrimitiveType type;            // 1 * 4 = 4  octets
-  float               position1[2];    // 2 * 4 = 8  octets
-  float               position2[2];    // 2 * 4 = 8  octets
-  float               stroke_width;    // 1 * 4 = 4  octets
-  unsigned char       stroke_color[4]; // 4 * 1 = 4  octets
-  unsigned char       fill_color[4];   // 4 * 1 = 4  octets
+    VectorPrimitiveType type;            // 1 * 4 = 4  octets
+    float               position1[2];    // 2 * 4 = 8  octets
+    float               position2[2];    // 2 * 4 = 8  octets
+    float               stroke_width;    // 1 * 4 = 4  octets
+    unsigned char       stroke_color[4]; // 4 * 1 = 4  octets
+    unsigned char       fill_color[4];   // 4 * 1 = 4  octets
 };                                     //       = 32 octets
 
 class Renderer
@@ -78,21 +78,14 @@ public:
     int mouse_current_x;
     int mouse_current_y;
 
-    // Paramètres de dessin
-    float lineThickness; // Epaisseur de la ligne
-    ofColor lineColor; // Couleur de ligne
-    ofColor fillColor; // Couleur de remplissage
-  
 
-    
     void setup();
     void update();
     void draw();
     void reset();
 
     void draw_zone(float x1, float y1, float x2, float y2) const;
-  
+
 
     ~Renderer();
 };
-
