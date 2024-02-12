@@ -33,6 +33,13 @@ void Application::setup()
   //group_image.add(color_picker_background);
   group_image.add(color_picker_background_HSB);
 
+  // Initialisation et ajout du bouton Exportation
+  exportation_button.setup("Exportation");
+  exportation_button.addListener(this, &Application::exportation_button_pressed);
+  group_image.add(&exportation_button); 
+
+  gui.add(&group_image);
+
   //groupe du critere 2 Dessin vectoriel
   group_dessin_vectoriel.setup("Dessin Vectoriel");
   gui.add(&group_dessin_vectoriel);
@@ -47,6 +54,13 @@ void Application::setup()
   ajout_boutons_formes();
   gui.setPosition(1,1);
 
+  // Outil de dessin
+  group_outils_dessin.setup("Outils Dessin");
+  group_outils_dessin.add(lineThickness.setup("Epaisseur", 1.0, 0.1, 10.0));
+  group_outils_dessin.add(lineColor.setup("Couleur ligne", ofColor(255), ofColor(0), ofColor(255)));
+  group_outils_dessin.add(fillColor.setup("Couleur remplissage", ofColor(255), ofColor(0), ofColor(255)));
+  group_dessin_vectoriel.add(&group_outils_dessin); 
+
 }
 
 void Application::draw()
@@ -56,10 +70,33 @@ void Application::draw()
     gui.draw();
 }
 
+
+
 void Application::update()
 {
   //renderer.background_color1 = color_picker_background;
   renderer.background_color2 = color_picker_background_HSB;
+
+  if (isExporting && exportCount < 5) {
+      float currentTime = ofGetElapsedTimef();
+      if (currentTime - lastExportTime >= 2) { // 2 secondes
+          ofImage image;
+          image.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
+          string fileName = "Exportation" + ofToString(exportCount) + ".png";
+          image.save(fileName);
+          exportCount++;
+          lastExportTime = currentTime; // Mise a jour du temps pour la prochaine exportation
+
+          if (exportCount >= 5) {
+              isExporting = false; // Arret de l'exportation après 5 images
+          }
+      }
+  }
+
+  renderer.lineThickness = lineThickness; // Epaisseur
+  renderer.lineColor = lineColor; // Contour
+  renderer.fillColor = fillColor; // Remplissage
+
 
   renderer.update();
 }
@@ -509,6 +546,12 @@ void Application::button_triangle_pressed(bool &pressed)
   }
 }
 
+void Application::exportation_button_pressed() {
+    isExporting = true;
+    exportCount = 0;
+    lastExportTime = ofGetElapsedTimef();
+}
+
 void Application::button_face_pressed(bool& pressed)
 {
     if (pressed) {
@@ -545,6 +588,8 @@ void Application::button_maison_pressed(bool& pressed)
     face_shape_button = false;
     }
 }
+
+
 
 void Application::exit()
 {

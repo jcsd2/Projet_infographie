@@ -47,6 +47,9 @@ void Renderer::draw()
     //ofClear(background_color1);
     ofClear(background_color2);
 
+ 
+    
+
   for (index = 0; index < buffer_count; ++index)
   {
     switch (shapes[index].type)
@@ -82,7 +85,8 @@ void Renderer::draw()
         break;
 
       case VectorPrimitiveType::line:
-
+          
+      
         ofNoFill();
         ofSetLineWidth(shapes[index].stroke_width);
         ofSetColor(
@@ -306,12 +310,14 @@ void Renderer::add_vector_shape(VectorPrimitiveType type)
   shapes[buffer_head].fill_color[2] = fill_color_b;
   shapes[buffer_head].fill_color[3] = fill_color_a;
 
-  shapes[buffer_head].stroke_width = stroke_width_default;
+ 
+  shapes[buffer_head].stroke_width = lineThickness; 
   
   ofLog() << "<new primitive at index: " << buffer_head << ">";
 
-  buffer_head = ++buffer_head >= buffer_count ? 0: buffer_head; // boucler sur le tableau si plein
+  buffer_head = (buffer_head + 1) % buffer_count; // Préparation pour la prochaine forme
 }
+
 
 // fonction qui dessine un pixel (Comme dans les exemples du cours)
 void Renderer::draw_pixel(float x, float y) const

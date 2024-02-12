@@ -19,9 +19,19 @@ public:
   //ofParameter<ofColor> color_picker_background; //changer couleur fond
   ofParameter<ofColor> color_picker_background_HSB; //changer  HSB
 
+  ofxButton exportation_button; // Parametre Exportation
+  void exportation_button_pressed();
+  bool isExporting;
+  float lastExportTime;
+  int exportCount;
+
   ofxGuiGroup group_dessin_vectoriel;
   ofxGuiGroup group_dessin_vectoriel_formes;
   ofxGuiGroup group_dessin_algo_ligne;
+
+  ofxGuiGroup group_outils_dessin; // Parametre Outil de dessin
+  ofxFloatSlider lineThickness;
+  ofxColorSlider lineColor, fillColor;
 
   
   void ajout_boutons_formes();
