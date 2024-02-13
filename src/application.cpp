@@ -8,59 +8,58 @@ void Application::setup()
     ofLog() << "<app::setup>";
 
     renderer.setup();
-    gui.setup("Interface");
+    gui.setup("Interface"); //(2.5)
     checkbox.setName("Gui visible");
+    
     checkbox = true; // Initialisation de l'indicateur du Gui
     gui.add(checkbox);
 
-    captureMode = false; // Initialisation l'indicateur du mode de capture d'écran
-    captureMode_funny = false;
+    
 
-    //Groupe du critere 1 Image
+    //Groupe du critere 1 Image (1.1)
     group_image.setup("Image");
+    //Bouton d'importation d'image
+    importImageButton.setup("Importer Image");
+    importImageButton.addListener(this, &Application::importImage);
+    group_image.add(&importImageButton);
+    //Bouton d'exportation d'image (1.2)
+    exportation_button.setup("Exportation");
+    exportation_button.addListener(this, &Application::exportation_button_pressed);
+    group_image.add(&exportation_button);
+    //Bouton d'echantillonnage d'image(1.3)
     screenshot_button.setup("Capture d'ecran", false);
     screenshot_button.addListener(this, &Application::screenshot_button_pressed);
     group_image.add(&screenshot_button);
     screenshot_button_funny.setup("Capture surprise", false);
     screenshot_button_funny.addListener(this, &Application::screenshot_funny_button_pressed);
     group_image.add(&screenshot_button_funny);
-    gui.add(&group_image);
-
+    captureMode = false; // Initialisation l'indicateur du mode de capture d'écran
+    captureMode_funny = false;
+    //Espace de couleur (1.4)
     //color_picker_background.set("couleur du canevas RGB", ofColor(60), ofColor(0, 0), ofColor(255, 255));
     color_picker_background_HSB.set("couleur du canevas HSB", ofColor::fromHsb(128, 255, 255));
     //group_image.add(color_picker_background);
     group_image.add(color_picker_background_HSB);
-
-    // Initialisation et ajout du bouton Exportation
-    exportation_button.setup("Exportation");
-    exportation_button.addListener(this, &Application::exportation_button_pressed);
-    group_image.add(&exportation_button);
-
+    //Histogramme ici (1.5)
     gui.add(&group_image);
 
-    //groupe du critere 2 Dessin vectoriel
+    //Groupe du critere 2 Dessin vectoriel 
     group_dessin_vectoriel.setup("Dessin Vectoriel");
     gui.add(&group_dessin_vectoriel);
-    group_dessin_vectoriel_formes.setup("Formes a dessiner");
-    group_dessin_vectoriel.add(&group_dessin_vectoriel_formes);
-    //Sous-groupe pour le type d'algo pour dessiner une ligne
-    group_dessin_algo_ligne.setup("Algorithme \nde rasterisation");
-
-    // Ajout des boutons pour chaque formes  
-    ajout_boutons_formes();
-    gui.setPosition(1, 1);
-
-    // Configuration du bouton d'importation d'image
-    importImageButton.setup("Importer Image");
-    importImageButton.addListener(this, &Application::importImage);
-    group_image.add(&importImageButton);
-
-    // Outil de dessin
+    //Outil de dessin (2.2)
     group_outils_dessin.setup("Outils Dessin");
     group_outils_dessin.add(lineThickness.setup("Epaisseur", 1.0, 0.1, 10.0));
     group_outils_dessin.add(lineColor.setup("Couleur ligne", ofColor(255), ofColor(0), ofColor(255)));
     group_outils_dessin.add(fillColor.setup("Couleur remplissage", ofColor(255), ofColor(0), ofColor(255)));
     group_dessin_vectoriel.add(&group_outils_dessin);
+    //Primitives vectorielles (2.3) 
+    group_dessin_vectoriel_formes.setup("Formes a dessiner");
+    group_dessin_vectoriel.add(&group_dessin_vectoriel_formes);
+    //Sous-groupe pour le type d'algo pour dessiner une ligne
+    group_dessin_algo_ligne.setup("Algorithme \nde rasterisation");
+    // Ajout des boutons pour chaque formes  
+    ajout_boutons_formes(); //(Contient 2.4)
+    gui.setPosition(1, 1);
 
 }
 
@@ -271,12 +270,11 @@ void Application::ajout_boutons_formes()
     group_dessin_vectoriel_formes.add(pixel_shape_button.setup("Pixel", ofParameter<bool>(false)));
     group_dessin_vectoriel_formes.add(point_shape_button.setup("Point", ofParameter<bool>(false)));
     group_dessin_vectoriel_formes.add(line_shape_button.setup("Ligne", ofParameter<bool>(false)));
-
+    group_dessin_vectoriel_formes.setDefaultHeight(36); //Changer le grosseur du gui pour le text des boutons
     group_dessin_vectoriel_formes.add(&group_dessin_algo_ligne);
     group_dessin_algo_ligne.add(algo_of_button.setup("Rasterisation par\n openFrameworks", ofParameter<bool>(false)));
     group_dessin_algo_ligne.add(algo_dda_button.setup("Rasterisation par\n DDA", ofParameter<bool>(false)));
     group_dessin_algo_ligne.add(algo_bressenham_button.setup("Rasterisation par\n Bressenham", ofParameter<bool>(false)));
-
     group_dessin_vectoriel_formes.add(square_shape_button.setup("Carre", ofParameter<bool>(false)));
     group_dessin_vectoriel_formes.add(rectangle_shape_button.setup("Rectangle", ofParameter<bool>(false)));
     group_dessin_vectoriel_formes.add(circle_shape_button.setup("Cercle", ofParameter<bool>(false)));
