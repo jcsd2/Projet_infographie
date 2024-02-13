@@ -21,7 +21,7 @@ void Renderer::setup()
     // mode de dessin par défaut
     draw_mode = VectorPrimitiveType::none;
 
-    //Inisialistion general
+    //Initisialisation general 1.0
 
     // couleur de la ligne de contour (color_stroke)
     stroke_color_r = 255;

@@ -14,6 +14,7 @@ public:
 
     ofxGuiGroup group_image;
     ofxToggle screenshot_button;
+    ofxToggle screenshot_button_funny;
 
     //ofParameter<ofColor> color_picker_background; //changer couleur fond
     ofParameter<ofColor> color_picker_background_HSB; //changer  HSB
@@ -25,7 +26,15 @@ public:
     ofImage importedImage; // stocker l'image chargée
     ofxButton importImageButton; //bouton pour importer l'image
 
+    ofxButton exportation_button; // Parametre Exportation
+    void exportation_button_pressed();
+    bool isExporting;
+    float lastExportTime;
+    int exportCount;
 
+    ofxGuiGroup group_outils_dessin; // Parametre Outil de dessin
+    ofxFloatSlider lineThickness;
+    ofxColorSlider lineColor, fillColor;
 
     void ajout_boutons_formes();
     void retirer_boutons_formes();
@@ -73,7 +82,8 @@ public:
     void exit();
 
     void screenshot_button_pressed(bool& value);
-    void screenshot(int x, int y);
+    void screenshot_funny_button_pressed(bool& value);
+    void screenshot(int x, int y, bool z);
 
     void keyReleased(int key);
     void mouseMoved(int x, int y);
@@ -83,6 +93,6 @@ public:
 
 private:
     bool captureMode; //Indicateur de mode CaptureDecran
-
+    bool captureMode_funny;
 
 };
