@@ -67,6 +67,7 @@ public:
     void setLineRenderer(LineRenderer renderer);
 
     // Fonctions et déclarations pour les transformations
+    VectorPrimitive get_last_primitive() const;
     void translatePrimitive(VectorPrimitive& primitive, float dx, float dy);
     void rotatePrimitive(VectorPrimitive& primitive, float angleDegrees);
     void scalePrimitive(VectorPrimitive& primitive, float scaleFactor);

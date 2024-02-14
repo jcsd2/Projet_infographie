@@ -623,15 +623,38 @@ void Application::button_maison_pressed(bool& pressed)
 }
 
 
-void Application::translateButtonPressed() {
+void Application::translateButtonPressed() 
+{
+    // Récupérer la dernière primitive ajoutée
+    VectorPrimitive lastPrimitive = renderer.get_last_primitive();
+    // Appliquer la logique de translation à lastPrimitive
 
+    // Ajouter la primitive modifiée à nouveau au tableau
+    renderer.add_vector_shape(lastPrimitive.type);
 }
 
-void Application::rotateButtonPressed() {
+void Application::rotateButtonPressed() 
+{
+    // Récupérer la dernière primitive ajoutée
+    VectorPrimitive lastPrimitive = renderer.get_last_primitive();
+    // Appliquer la logique de translation à lastPrimitive
+
+    // Ajouter la primitive modifiée à nouveau au tableau
+    renderer.add_vector_shape(lastPrimitive.type);
 
 }
 
 void Application::scaleButtonPressed() {
+    // Récupérer la dernière primitive ajoutée
+    VectorPrimitive lastPrimitive = renderer.get_last_primitive();
+
+    // Appliquer la logique de translation à lastPrimitive
+
+
+    //Appliquer le retrait dans le tableau (doit avoir remove_vector)
+
+    // Ajouter la primitive modifiée à nouveau au tableau
+    renderer.add_vector_shape(lastPrimitive.type);
 
 }
 

@@ -499,15 +499,27 @@ void Renderer::draw_maison(float x1, float y1, float x2, float y2) const
     ofDrawRectangle(x1 + 0.2 * largeur, y2 - hauteur * 1 / 4, largeur * 0.1, hauteur * 0.25);
 }
 
-
-
-
-
 //Fonction de cahngement de algo pour les lignes
 void Renderer::setLineRenderer(LineRenderer renderer)
 {
     lineRenderer = renderer;
 }
+
+VectorPrimitive Renderer::get_last_primitive() const {
+    // Récupérer la dernière primitive ajoutée
+    int lastIndex = buffer_head - 1;
+    if (lastIndex < 0) {
+        lastIndex = buffer_count - 1; // Si buffer_head est à 0, le dernier élément est à buffer_count - 1
+    }
+
+    return shapes[lastIndex];
+}
+
+
+void Renderer::translatePrimitive(VectorPrimitive& primitive, float dx, float dy){}
+void Renderer::rotatePrimitive(VectorPrimitive& primitive, float angleDegrees){}
+void Renderer::scalePrimitive(VectorPrimitive& primitive, float scaleFactor){}
+
 
 
 
