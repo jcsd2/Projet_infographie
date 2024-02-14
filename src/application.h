@@ -24,7 +24,7 @@ public:
     
 
     ofImage importedImage; // stocker l'image charge
-    ofxButton importImageButton; //bouton pour importer l'image
+    ofxButton importImageButton; //bouton pour importer l'images
     ofxButton exportation_button; // Parametre Exportation
     void exportation_button_pressed();
     bool isExporting;
