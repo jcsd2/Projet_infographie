@@ -104,7 +104,7 @@ public:
 
     // Paramètres de dessin
     float lineThickness; // Epaisseur de la ligne
-    ofColor lineColor; // Couleur de ligne
+    ofColor lineColor; // Couleur de lignes 
     ofColor fillColor; // Couleur de remplissage
 
     void setup();

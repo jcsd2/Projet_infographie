@@ -91,7 +91,7 @@ public:
 
 
 
-    //Cursor selection points/ Position du curseur pour la selection
+    //Cursor selection points/ Position du curseur pour la selections
     ofPoint selection_start;
     ofPoint selection_end;
 

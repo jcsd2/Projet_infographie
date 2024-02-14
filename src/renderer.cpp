@@ -296,17 +296,18 @@ void Renderer::add_vector_shape(VectorPrimitiveType type)
     shapes[buffer_head].position2[0] = mouse_current_x;
     shapes[buffer_head].position2[1] = mouse_current_y;
 
-    shapes[buffer_head].stroke_color[0] = stroke_color_r;
-    shapes[buffer_head].stroke_color[1] = stroke_color_g;
-    shapes[buffer_head].stroke_color[2] = stroke_color_b;
-    shapes[buffer_head].stroke_color[3] = stroke_color_a;
 
-    shapes[buffer_head].fill_color[0] = fill_color_r;
-    shapes[buffer_head].fill_color[1] = fill_color_g;
-    shapes[buffer_head].fill_color[2] = fill_color_b;
-    shapes[buffer_head].fill_color[3] = fill_color_a;
+    shapes[buffer_head].stroke_width = (lineThickness > 0) ? lineThickness : stroke_width_default; //outil de dessin
+    shapes[buffer_head].stroke_color[0] = (lineColor.a > 0) ? lineColor.r : stroke_color_r;
+    shapes[buffer_head].stroke_color[1] = (lineColor.a > 0) ? lineColor.g : stroke_color_g;
+    shapes[buffer_head].stroke_color[2] = (lineColor.a > 0) ? lineColor.b : stroke_color_g;
+    shapes[buffer_head].stroke_color[3] = (lineColor.a > 0) ? lineColor.a : stroke_color_a;
 
-    shapes[buffer_head].stroke_width = stroke_width_default;
+    shapes[buffer_head].fill_color[0] = (fillColor.a > 0) ? fillColor.r : fill_color_r;
+    shapes[buffer_head].fill_color[1] = (fillColor.a > 0) ? fillColor.g : fill_color_g;
+    shapes[buffer_head].fill_color[2] = (fillColor.a > 0) ? fillColor.b : fill_color_b;
+    shapes[buffer_head].fill_color[3] = (fillColor.a > 0) ? fillColor.a : fill_color_a;
+
 
     ofLog() << "<new primitive at index: " << buffer_head << ">";
 
@@ -316,7 +317,7 @@ void Renderer::add_vector_shape(VectorPrimitiveType type)
 // fonction qui dessine un pixel (Comme dans les exemples du cours)
 void Renderer::draw_pixel(float x, float y) const
 {
-    //Floorf : fonction qui arrondit un nombre flottant vers le bas pour obtenir le nombre entier immédiatement inférieur
+    //Floorf : fonction qui arrondit un nombre flottant vers le bas pour obtenir le nombres entier immédiatement inférieur
     int pixel_x = floorf(x);
     int pixel_y = floorf(y);
 

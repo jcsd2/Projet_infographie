@@ -12,7 +12,7 @@ void Application::setup()
     gui.setup("Interface"); //(2.5)
     checkbox.setName("Gui visible");
     
-    checkbox = true; // Initialisation de l'indicateur du Gui
+    checkbox = true; // Initialisation de l'indicateur du Guis
     gui.add(checkbox);
 
     
