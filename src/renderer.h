@@ -15,15 +15,19 @@ struct VectorPrimitive
     VectorPrimitiveType type;            // 1 * 4 = 4  octets
     float               position1[2];    // 2 * 4 = 8  octets
     float               position2[2];    // 2 * 4 = 8  octets
+    float               position3[3];    // 2 * 4 = 8  octets
     float               stroke_width;    // 1 * 4 = 4  octets
     unsigned char       stroke_color[4]; // 4 * 1 = 4  octets
     unsigned char       fill_color[4];   // 4 * 1 = 4  octets
-};                                     //       = 32 octets
+};                                     //       = 34 octets
 
 class Renderer
 {
 public:
 
+    //Dimension du framebuffer
+    float frame_buffer_width;
+    float frame_buffer_heigth;
     //ofColor background_color1;
     ofColor background_color2;
 
@@ -61,6 +65,25 @@ public:
     void draw_maison(float x1, float y1, float x2, float y2) const;
 
     void setLineRenderer(LineRenderer renderer);
+
+    // Fonctions et déclarations pour les transformations
+    void translatePrimitive(VectorPrimitive& primitive, float dx, float dy);
+    void rotatePrimitive(VectorPrimitive& primitive, float angleDegrees);
+    void scalePrimitive(VectorPrimitive& primitive, float scaleFactor);
+    ofVec3f vector_origin;
+    ofVec3f vector_position1;
+    ofVec3f vector_position2;
+    ofVec3f vector_position3;
+    ofColor vector_color;
+    float offset_x;
+    float offset_y;
+    float offset_z;
+    float delta_x;
+    float delta_y;
+    float delta_z;
+    float radious;
+    float proportion;
+
 
     //Temporary declaration
     ClearMode clear_mode;

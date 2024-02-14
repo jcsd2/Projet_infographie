@@ -8,6 +8,7 @@ void Application::setup()
     ofLog() << "<app::setup>";
 
     renderer.setup();
+    gui.setPosition(1, 1);
     gui.setup("Interface"); //(2.5)
     checkbox.setName("Gui visible");
     
@@ -59,7 +60,35 @@ void Application::setup()
     group_dessin_algo_ligne.setup("Algorithme \nde rasterisation");
     // Ajout des boutons pour chaque formes  
     ajout_boutons_formes(); //(Contient 2.4)
-    gui.setPosition(1, 1);
+
+    //Groupe du critere 3 Transformation
+    group_transformation.setup("Transformation");
+    gui.add(&group_transformation);
+    groupe_transforamtion_interactive.setup ("Transformations \ninterectives");
+    group_transformation.add(&groupe_transforamtion_interactive);
+
+    renderer.frame_buffer_width = ofGetWidth();
+    renderer.frame_buffer_heigth = ofGetHeight();
+    positionSliderX.setup("Position X", 0.0, -renderer.frame_buffer_width, renderer.frame_buffer_width);
+    positionSliderY.setup("Position Y", 0.0, -renderer.frame_buffer_heigth, renderer.frame_buffer_heigth);
+    rotationSlider.setup("Rotation", 0.0, 0.0, 360.0);
+    scaleSlider.setup("Echelle", 1.0, 0.1, 3.0);
+    translateButton.setup("Translation");
+    rotateButton.setup("Rotation");
+    scaleButton.setup("Echelle");
+    translateButton.addListener(this, &Application::translateButtonPressed);
+    rotateButton.addListener(this, &Application::rotateButtonPressed);
+    scaleButton.addListener(this, &Application::scaleButtonPressed);
+
+
+    groupe_transforamtion_interactive.add(&positionSliderX);
+    groupe_transforamtion_interactive.add(&positionSliderY);
+    groupe_transforamtion_interactive.add(&rotationSlider);
+    groupe_transforamtion_interactive.add(&scaleSlider);
+    groupe_transforamtion_interactive.add(&translateButton);
+    groupe_transforamtion_interactive.add(&rotateButton);
+    groupe_transforamtion_interactive.add(&scaleButton);
+
 
 }
 
@@ -119,6 +148,19 @@ void Application::keyReleased(int key)
     default:
         break;
     }
+}
+
+void Application::importImage() {
+    ofFileDialogResult result = ofSystemLoadDialog("Importer une image", false);
+    if (result.bSuccess) {
+        importedImage.load(result.getPath());
+    }
+}
+
+void Application::exportation_button_pressed() {
+    isExporting = true;
+    exportCount = 0;
+    lastExportTime = ofGetElapsedTimef();
 }
 
 void Application::screenshot_button_pressed(bool& value)
@@ -581,25 +623,27 @@ void Application::button_maison_pressed(bool& pressed)
 }
 
 
+void Application::translateButtonPressed() {
 
-void Application::importImage() {
-    ofFileDialogResult result = ofSystemLoadDialog("Importer une image", false);
-    if (result.bSuccess) {
-        importedImage.load(result.getPath());
-    }
 }
 
-void Application::exportation_button_pressed() {
-    isExporting = true;
-    exportCount = 0;
-    lastExportTime = ofGetElapsedTimef();
+void Application::rotateButtonPressed() {
+
 }
+
+void Application::scaleButtonPressed() {
+
+}
+
 
 void Application::exit()
 {
     // Remove the listener for toggle button valueChanged event
     screenshot_button.removeListener(this, &Application::screenshot_button_pressed);
     retirer_boutons_formes();
+    translateButton.removeListener(this, &Application::translateButtonPressed);
+    rotateButton.removeListener(this, &Application::rotateButtonPressed);
+    scaleButton.removeListener(this, &Application::scaleButtonPressed);
     ofLog() << "<app::exit>";
 
 }

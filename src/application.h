@@ -15,17 +15,16 @@ public:
     ofxGuiGroup group_image;
     ofxToggle screenshot_button;
     ofxToggle screenshot_button_funny;
-
     //ofParameter<ofColor> color_picker_background; //changer couleur fond
     ofParameter<ofColor> color_picker_background_HSB; //changer  HSB
 
     ofxGuiGroup group_dessin_vectoriel;
     ofxGuiGroup group_dessin_vectoriel_formes;
     ofxGuiGroup group_dessin_algo_ligne;
+    
 
-    ofImage importedImage; // stocker l'image charg�e
+    ofImage importedImage; // stocker l'image charge
     ofxButton importImageButton; //bouton pour importer l'image
-
     ofxButton exportation_button; // Parametre Exportation
     void exportation_button_pressed();
     bool isExporting;
@@ -35,6 +34,21 @@ public:
     ofxGuiGroup group_outils_dessin; // Parametre Outil de dessin
     ofxFloatSlider lineThickness;
     ofxColorSlider lineColor, fillColor;
+
+    ofxToggle none_shape_button;
+    ofxToggle pixel_shape_button;
+    ofxToggle point_shape_button;
+    ofxToggle line_shape_button;
+    ofxToggle algo_of_button;
+    ofxToggle algo_dda_button;
+    ofxToggle algo_bressenham_button;
+    ofxToggle square_shape_button;
+    ofxToggle rectangle_shape_button;
+    ofxToggle circle_shape_button;
+    ofxToggle ellipse_shape_button;
+    ofxToggle triangle_shape_button;
+    ofxToggle maison_shape_button;
+    ofxToggle face_shape_button;
 
     void ajout_boutons_formes();
     void retirer_boutons_formes();
@@ -54,22 +68,27 @@ public:
     void button_face_pressed(bool& pressed);
     void importImage();
 
-    ofxToggle none_shape_button;
-    ofxToggle pixel_shape_button;
-    ofxToggle point_shape_button;
-    ofxToggle line_shape_button;
+    //Section transformation 3.0
+    ofxGuiGroup group_transformation;
+    ofxGuiGroup groupe_transforamtion_interactive;
+    ofxLabel label_position, label_rotation, label_scale;
 
-    ofxToggle algo_of_button;
-    ofxToggle algo_dda_button;
-    ofxToggle algo_bressenham_button;
+    //Vvariables membres pour l'état de l'objet
+    ofxFloatSlider positionSliderX;
+    ofxFloatSlider positionSliderY;
+    ofxFloatSlider rotationSlider;
+    ofxFloatSlider scaleSlider;
 
-    ofxToggle square_shape_button;
-    ofxToggle rectangle_shape_button;
-    ofxToggle circle_shape_button;
-    ofxToggle ellipse_shape_button;
-    ofxToggle triangle_shape_button;
-    ofxToggle maison_shape_button;
-    ofxToggle face_shape_button;
+    // Boutons pour les options de modification
+    ofxButton translateButton;
+    ofxButton rotateButton;
+    ofxButton scaleButton;
+
+    // Méthodes associées aux boutons
+    void translateButtonPressed();
+    void rotateButtonPressed();
+    void scaleButtonPressed();
+
 
 
     //Cursor selection points/ Position du curseur pour la selection

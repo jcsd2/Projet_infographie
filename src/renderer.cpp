@@ -336,17 +336,14 @@ void Renderer::draw_line(float x1, float y1, float x2, float y2) const
     case LineRenderer::none:
         // Utilisez l'algorithme par défaut ou choisissez-en un
         ofDrawLine(x1, y1, x2, y2);
-        ofLog() << "<Ligne algo of>";
         break;
     case LineRenderer::dda:
         // Utilisez l'algorithme DDA pour rasteriser la ligne
         draw_line_dda(x1, y1, x2, y2);
-        ofLog() << "<Ligne algo dda>";
         break;
     case LineRenderer::bresenham:
         // Utilisez l'algorithme Bresenham pour rasteriser la ligne
         draw_line_bresenham(x1, y1, x2, y2);
-        ofLog() << "<Ligne algo bresenham>";
         break;
     default:
         break;
@@ -518,8 +515,8 @@ void Renderer::setLineRenderer(LineRenderer renderer)
 
 void Renderer::update()
 {
-
-
+    frame_buffer_width = ofGetWidth();
+    frame_buffer_heigth = ofGetHeight();
 }
 
 //Fonction pour dessiner la zone de selection (Commed ans les exemples du cours)
