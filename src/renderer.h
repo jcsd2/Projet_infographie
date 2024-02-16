@@ -67,8 +67,8 @@ public:
     void setLineRenderer(LineRenderer renderer);
 
     // Fonctions et déclarations pour les transformations
-    VectorPrimitive get_last_primitive() const;
-    void translatePrimitive(VectorPrimitive& primitive, float dx, float dy);
+    int get_last_primitive() const;
+    void translateLastShape(float offsetX, float offsetY);
     void rotatePrimitive(VectorPrimitive& primitive, float angleDegrees);
     void scalePrimitive(VectorPrimitive& primitive, float scaleFactor);
     ofVec3f vector_origin;
@@ -84,6 +84,7 @@ public:
     float delta_z;
     float radious;
     float proportion;
+    float speed;
 
 
     //Temporary declaration

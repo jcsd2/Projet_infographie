@@ -71,29 +71,33 @@ public:
     //Section transformation 3.0
     ofxGuiGroup group_transformation;
     ofxGuiGroup groupe_transforamtion_interactive;
-    ofxLabel label_position, label_rotation, label_scale;
-
-    //Vvariables membres pour l'état de l'objet
-    ofxFloatSlider positionSliderX;
-    ofxFloatSlider positionSliderY;
-    ofxFloatSlider rotationSlider;
-    ofxFloatSlider scaleSlider;
 
     // Boutons pour les options de modification
-    ofxButton translateButton;
-    ofxButton rotateButton;
-    ofxButton scaleButton;
+    ofxToggle translateButton;
+    ofxToggle rotateButton;
+    ofxToggle scaleButton;
 
     // Méthodes associées aux boutons
-    void translateButtonPressed();
-    void rotateButtonPressed();
-    void scaleButtonPressed();
+    void translateButtonPressed(bool& pressed);
+    void rotateButtonPressed(bool& pressed);
+    void scaleButtonPressed(bool& pressed);
 
-
+    bool isTranslationActive;
 
     //Cursor selection points/ Position du curseur pour la selections
     ofPoint selection_start;
     ofPoint selection_end;
+
+    //Temps
+    float time_current;
+    float time_last;
+    float time_elapsed;
+
+    //Touche felche clavier
+    bool is_key_press_up;
+    bool is_key_press_down;
+    bool is_key_press_left;
+    bool is_key_press_right;
 
     void setup();
     void update();
@@ -104,6 +108,7 @@ public:
     void screenshot_funny_button_pressed(bool& value);
     void screenshot(int x, int y, bool z);
 
+    void keyPressed(int key);
     void keyReleased(int key);
     void mouseMoved(int x, int y);
     void mousePressed(int x, int y, int button) override;

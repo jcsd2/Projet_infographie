@@ -42,11 +42,12 @@ void Application::setup()
     //group_image.add(color_picker_background);
     group_image.add(color_picker_background_HSB);
     //Histogramme ici (1.5)
+    group_image.minimize();
     gui.add(&group_image);
 
     //Groupe du critere 2 Dessin vectoriel 
     group_dessin_vectoriel.setup("Dessin Vectoriel");
-    gui.add(&group_dessin_vectoriel);
+    
     //Outil de dessin (2.2)
     group_outils_dessin.setup("Outils Dessin");
     group_outils_dessin.add(lineThickness.setup("Epaisseur", 1.0, 0.1, 10.0));
@@ -60,35 +61,31 @@ void Application::setup()
     group_dessin_algo_ligne.setup("Algorithme \nde rasterisation");
     // Ajout des boutons pour chaque formes  
     ajout_boutons_formes(); //(Contient 2.4)
+    group_dessin_vectoriel.minimize();
+    gui.add(&group_dessin_vectoriel);
 
     //Groupe du critere 3 Transformation
     group_transformation.setup("Transformation");
-    gui.add(&group_transformation);
+    
     groupe_transforamtion_interactive.setup ("Transformations \ninterectives");
     group_transformation.add(&groupe_transforamtion_interactive);
 
-    renderer.frame_buffer_width = ofGetWidth();
-    renderer.frame_buffer_heigth = ofGetHeight();
-    positionSliderX.setup("Position X", 0.0, -renderer.frame_buffer_width, renderer.frame_buffer_width);
-    positionSliderY.setup("Position Y", 0.0, -renderer.frame_buffer_heigth, renderer.frame_buffer_heigth);
-    rotationSlider.setup("Rotation", 0.0, 0.0, 360.0);
-    scaleSlider.setup("Echelle", 1.0, 0.1, 3.0);
-    translateButton.setup("Translation");
-    rotateButton.setup("Rotation");
-    scaleButton.setup("Echelle");
+    translateButton.setup("Tranlation\n(fleche clavier)", ofParameter<bool>(false));
     translateButton.addListener(this, &Application::translateButtonPressed);
+    isTranslationActive = false;
+
+    rotateButton.setup("Rotation",ofParameter<bool>(false));
     rotateButton.addListener(this, &Application::rotateButtonPressed);
+
+
+    scaleButton.setup("Echelle",ofParameter<bool>(false));
     scaleButton.addListener(this, &Application::scaleButtonPressed);
 
-
-    groupe_transforamtion_interactive.add(&positionSliderX);
-    groupe_transforamtion_interactive.add(&positionSliderY);
-    groupe_transforamtion_interactive.add(&rotationSlider);
-    groupe_transforamtion_interactive.add(&scaleSlider);
     groupe_transforamtion_interactive.add(&translateButton);
     groupe_transforamtion_interactive.add(&rotateButton);
     groupe_transforamtion_interactive.add(&scaleButton);
-
+    group_transformation.minimize();
+    gui.add(&group_transformation);
 
 }
 
@@ -108,6 +105,38 @@ void Application::update()
 {
     //renderer.background_color1 = color_picker_background;
     renderer.background_color2 = color_picker_background_HSB;
+
+    time_current = ofGetElapsedTimef();
+    time_elapsed = time_current - time_last;
+    time_last = time_current;
+
+    if(isTranslationActive){
+        if (is_key_press_left)
+        {
+        ofLog() << "<mode: offset_x>" << renderer.offset_x;
+        renderer.translateLastShape(-(renderer.delta_x * time_elapsed), 0);
+        }
+        if (is_key_press_right)
+        {
+        ofLog() << "<mode: offset_x>" << renderer.offset_x;
+        renderer.translateLastShape(renderer.delta_x * time_elapsed, 0);
+        }
+        if (is_key_press_up)
+        {
+        ofLog() << "<mode: offset_x>" << renderer.offset_x;
+        renderer.translateLastShape(0, -renderer.delta_y * time_elapsed);
+        }
+        if (is_key_press_down)
+        {
+        ofLog() << "<mode: offset_x>" << renderer.offset_x;
+        renderer.translateLastShape(0, renderer.delta_y * time_elapsed);
+        }
+
+
+
+
+
+    }
 
     if (isExporting && exportCount < 5) {
         float currentTime = ofGetElapsedTimef();
@@ -133,22 +162,6 @@ void Application::update()
     renderer.update();
 }
 
-void Application::keyReleased(int key)
-{
-    switch (key)
-    {
-    case 117: //key u
-        checkbox = !checkbox;
-        ofLog() << "<toggle ui: " << checkbox << ">";
-        break;
-    case 114: // key r
-        renderer.reset();
-        break;
-
-    default:
-        break;
-    }
-}
 
 void Application::importImage() {
     ofFileDialogResult result = ofSystemLoadDialog("Importer une image", false);
@@ -623,41 +636,96 @@ void Application::button_maison_pressed(bool& pressed)
 }
 
 
-void Application::translateButtonPressed() 
+void Application::translateButtonPressed(bool& pressed) 
 {
-    // Récupérer la dernière primitive ajoutée
-    VectorPrimitive lastPrimitive = renderer.get_last_primitive();
-    // Appliquer la logique de translation à lastPrimitive
-
-    // Ajouter la primitive modifiée à nouveau au tableau
-    renderer.add_vector_shape(lastPrimitive.type);
+    if (pressed) {
+        isTranslationActive = true;
+        rotateButton = false;
+        scaleButton = false;
+        ofLog() << "<mode: translation>";
+    }
 }
 
-void Application::rotateButtonPressed() 
+void Application::rotateButtonPressed(bool& pressed) 
 {
-    // Récupérer la dernière primitive ajoutée
-    VectorPrimitive lastPrimitive = renderer.get_last_primitive();
-    // Appliquer la logique de translation à lastPrimitive
-
-    // Ajouter la primitive modifiée à nouveau au tableau
-    renderer.add_vector_shape(lastPrimitive.type);
-
-}
-
-void Application::scaleButtonPressed() {
-    // Récupérer la dernière primitive ajoutée
-    VectorPrimitive lastPrimitive = renderer.get_last_primitive();
-
-    // Appliquer la logique de translation à lastPrimitive
-
-
-    //Appliquer le retrait dans le tableau (doit avoir remove_vector)
-
-    // Ajouter la primitive modifiée à nouveau au tableau
-    renderer.add_vector_shape(lastPrimitive.type);
+    if (pressed) {
+        isTranslationActive = false;
+        rotateButton = true;
+        scaleButton = false;
+        ofLog() << "<mode: rotation>";
+    }
 
 }
 
+void Application::scaleButtonPressed(bool& pressed) {
+
+    if (pressed) {
+        isTranslationActive = false;
+        rotateButton = false;
+        scaleButton = true;
+        ofLog() << "<mode: scale>";
+    }
+
+}
+
+
+void Application::keyPressed(int key)
+{
+  switch (key)
+  {
+    case OF_KEY_LEFT: // key ←
+      is_key_press_left = true;
+      break;
+
+    case OF_KEY_UP: // key ↑
+      is_key_press_up = true;
+      break;
+
+    case OF_KEY_RIGHT: // key →
+      is_key_press_right = true;
+      break;
+
+    case OF_KEY_DOWN: // key ↓
+      is_key_press_down = true;
+      break;
+
+    default:
+      break;
+  }
+}
+
+void Application::keyReleased(int key)
+{
+    switch (key)
+    {
+    case 117: //key u
+        checkbox = !checkbox;
+        ofLog() << "<toggle ui: " << checkbox << ">";
+        break;
+    case 114: // key r
+        renderer.reset();
+        break;
+    case OF_KEY_LEFT: // key ←
+            is_key_press_left = false;
+      
+      break;
+
+    case OF_KEY_UP: // key ↑
+            is_key_press_up = false;
+      break;
+
+    case OF_KEY_RIGHT: // key →
+        is_key_press_right = false;
+      break;
+
+    case OF_KEY_DOWN: // key ↓
+            is_key_press_down = false;
+      break;
+
+    default:
+        break;
+    }
+}
 
 void Application::exit()
 {

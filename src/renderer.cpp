@@ -37,6 +37,13 @@ void Renderer::setup()
     stroke_width_default = 500;
     radius = 4.0f;
 
+    //Speed de deplacement
+    speed = 100.0f;
+    delta_x = speed;
+    delta_y = speed;
+    delta_z = speed;
+
+
     mouse_press_x = mouse_press_y = mouse_current_x = mouse_current_y = 0;
     is_mouse_button_pressed = false;
 }
@@ -49,6 +56,7 @@ void Renderer::draw()
 
     for (index = 0; index < buffer_count; ++index)
     {
+        ofPushMatrix();
         switch (shapes[index].type)
         {
         case VectorPrimitiveType::none:
@@ -260,6 +268,7 @@ void Renderer::draw()
         default:
             break;
         }
+        ofPopMatrix();
     }
 
     // afficher la zone de sélection
@@ -506,18 +515,27 @@ void Renderer::setLineRenderer(LineRenderer renderer)
     lineRenderer = renderer;
 }
 
-VectorPrimitive Renderer::get_last_primitive() const {
+int Renderer::get_last_primitive() const {
     // Récupérer la dernière primitive ajoutée
     int lastIndex = buffer_head - 1;
     if (lastIndex < 0) {
         lastIndex = buffer_count - 1; // Si buffer_head est à 0, le dernier élément est à buffer_count - 1
     }
 
-    return shapes[lastIndex];
+    return lastIndex;
 }
 
 
-void Renderer::translatePrimitive(VectorPrimitive& primitive, float dx, float dy){}
+void Renderer::translateLastShape(float offsetX, float offsetY) {
+    int dernier_primitive = get_last_primitive();
+    ofLog() << "<mode: index of last primitive>" << dernier_primitive;
+    if (dernier_primitive >= 0 && dernier_primitive < buffer_count) {
+        shapes[dernier_primitive].position1[0] += offsetX;
+        shapes[dernier_primitive].position1[1] += offsetY;
+        shapes[dernier_primitive].position2[0] += offsetX;
+        shapes[dernier_primitive].position2[1] += offsetY;
+    }
+}
 void Renderer::rotatePrimitive(VectorPrimitive& primitive, float angleDegrees){}
 void Renderer::scalePrimitive(VectorPrimitive& primitive, float scaleFactor){}
 
