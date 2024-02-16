@@ -67,24 +67,33 @@ void Application::setup()
     //Groupe du critere 3 Transformation
     group_transformation.setup("Transformation");
     
+    //Ajouter 3.1
+
+    //Ajouter 3.2 ici vv
+
+    //transformations interactives (3.3)
     groupe_transforamtion_interactive.setup ("Transformations \ninterectives");
     group_transformation.add(&groupe_transforamtion_interactive);
-
     translateButton.setup("Tranlation\n(fleche clavier)", ofParameter<bool>(false));
     translateButton.addListener(this, &Application::translateButtonPressed);
     isTranslationActive = false;
-
-    rotateButton.setup("Rotation",ofParameter<bool>(false));
+    rotateButton.setup("Rotation\n(fleche <- ->)",ofParameter<bool>(false));
     rotateButton.addListener(this, &Application::rotateButtonPressed);
-
-
-    scaleButton.setup("Echelle",ofParameter<bool>(false));
+    isRotatingActive = false;
+    scaleButton.setup("Echelle\n(fleche ^ v)",ofParameter<bool>(false));
     scaleButton.addListener(this, &Application::scaleButtonPressed);
-
+    isScalingActive = false;
     groupe_transforamtion_interactive.add(&translateButton);
     groupe_transforamtion_interactive.add(&rotateButton);
     groupe_transforamtion_interactive.add(&scaleButton);
+
+    //Ajouter 3.4 ici vv
+
     group_transformation.minimize();
+
+
+    //Ajouter Geometrie ici vv
+
     gui.add(&group_transformation);
 
 }
@@ -110,33 +119,46 @@ void Application::update()
     time_elapsed = time_current - time_last;
     time_last = time_current;
 
-    if(isTranslationActive){
         if (is_key_press_left)
         {
-        ofLog() << "<mode: offset_x>" << renderer.offset_x;
-        renderer.translateLastShape(-(renderer.delta_x * time_elapsed), 0);
+            if(isTranslationActive){
+                renderer.translateLastShape(-(renderer.delta_x * time_elapsed), 0);
+            }
+            else if(isRotatingActive)
+            {
+                renderer.rotatePrimitive(renderer.speed/2.0 * time_elapsed);
+            }
         }
         if (is_key_press_right)
         {
-        ofLog() << "<mode: offset_x>" << renderer.offset_x;
-        renderer.translateLastShape(renderer.delta_x * time_elapsed, 0);
+            if(isTranslationActive){
+                renderer.translateLastShape(renderer.delta_x * time_elapsed, 0);
+            }
+            else if(isRotatingActive)
+            {
+                renderer.rotatePrimitive(-renderer.speed/2.0 * time_elapsed);
+            }
         }
         if (is_key_press_up)
         {
-        ofLog() << "<mode: offset_x>" << renderer.offset_x;
-        renderer.translateLastShape(0, -renderer.delta_y * time_elapsed);
+            if(isTranslationActive){
+                renderer.translateLastShape(0, -renderer.delta_y * time_elapsed);
+            }
+            if(isScalingActive){
+                float scaleFactor = 1.01;
+                renderer.scalePrimitive(scaleFactor);
+            }
         }
         if (is_key_press_down)
         {
-        ofLog() << "<mode: offset_x>" << renderer.offset_x;
-        renderer.translateLastShape(0, renderer.delta_y * time_elapsed);
+            if(isTranslationActive){
+                renderer.translateLastShape(0, renderer.delta_y * time_elapsed);
+            }
+            if(isScalingActive){
+                float scaleFactor = 0.99;
+                renderer.scalePrimitive(scaleFactor);
+            }
         }
-
-
-
-
-
-    }
 
     if (isExporting && exportCount < 5) {
         float currentTime = ofGetElapsedTimef();
@@ -189,6 +211,7 @@ void Application::screenshot_button_pressed(bool& value)
         ofLog() << "Mode de capture d'écran désactivé.";
     }
 }
+
 void Application::screenshot_funny_button_pressed(bool& value)
 {
     // Activer/désactiver le mode de capture d'écran
@@ -640,6 +663,9 @@ void Application::translateButtonPressed(bool& pressed)
 {
     if (pressed) {
         isTranslationActive = true;
+        isRotatingActive = false;
+        isScalingActive = false;
+        translateButton = true;
         rotateButton = false;
         scaleButton = false;
         ofLog() << "<mode: translation>";
@@ -650,6 +676,9 @@ void Application::rotateButtonPressed(bool& pressed)
 {
     if (pressed) {
         isTranslationActive = false;
+        isRotatingActive = true;
+        isScalingActive = false;
+        translateButton = false;
         rotateButton = true;
         scaleButton = false;
         ofLog() << "<mode: rotation>";
@@ -661,11 +690,13 @@ void Application::scaleButtonPressed(bool& pressed) {
 
     if (pressed) {
         isTranslationActive = false;
+        isRotatingActive = false;
+        isScalingActive = true;
+        translateButton = false;
         rotateButton = false;
         scaleButton = true;
         ofLog() << "<mode: scale>";
     }
-
 }
 
 

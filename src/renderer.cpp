@@ -42,6 +42,7 @@ void Renderer::setup()
     delta_x = speed;
     delta_y = speed;
     delta_z = speed;
+    angle = 0.0f;
 
 
     mouse_press_x = mouse_press_y = mouse_current_x = mouse_current_y = 0;
@@ -528,7 +529,6 @@ int Renderer::get_last_primitive() const {
 
 void Renderer::translateLastShape(float offsetX, float offsetY) {
     int dernier_primitive = get_last_primitive();
-    ofLog() << "<mode: index of last primitive>" << dernier_primitive;
     if (dernier_primitive >= 0 && dernier_primitive < buffer_count) {
         shapes[dernier_primitive].position1[0] += offsetX;
         shapes[dernier_primitive].position1[1] += offsetY;
@@ -536,13 +536,50 @@ void Renderer::translateLastShape(float offsetX, float offsetY) {
         shapes[dernier_primitive].position2[1] += offsetY;
     }
 }
-void Renderer::rotatePrimitive(VectorPrimitive& primitive, float angleDegrees){}
-void Renderer::scalePrimitive(VectorPrimitive& primitive, float scaleFactor){}
 
+void Renderer::rotatePrimitive(float angle){
+    int dernier_primitive = get_last_primitive();
+    if (dernier_primitive >= 0 && dernier_primitive < buffer_count) {
+        //Centre de la forme
+        float centerX = (shapes[dernier_primitive].position1[0] + shapes[dernier_primitive].position2[0]) / 2.0f;
+        float centerY = (shapes[dernier_primitive].position1[1] + shapes[dernier_primitive].position2[1]) / 2.0f;
+        // Translate to the center, rotate, and then translate back
+        ofPushMatrix();
+        ofTranslate(centerX, centerY);
+        ofRotateZDeg(angle); // Rotate around the Z-axis (2D rotation)
+        ofTranslate(-centerX, -centerY);
 
+        // Update the shape's positions after rotation
+        float rotatedX1, rotatedY1, rotatedX2, rotatedY2;
+        rotatePoint(shapes[dernier_primitive].position1[0], shapes[dernier_primitive].position1[1], centerX, centerY, angle, rotatedX1, rotatedY1);
+        rotatePoint(shapes[dernier_primitive].position2[0], shapes[dernier_primitive].position2[1], centerX, centerY, angle, rotatedX2, rotatedY2);
 
+        shapes[dernier_primitive].position1[0] = rotatedX1;
+        shapes[dernier_primitive].position1[1] = rotatedY1;
+        shapes[dernier_primitive].position2[0] = rotatedX2;
+        shapes[dernier_primitive].position2[1] = rotatedY2;
 
+        ofPopMatrix();
+    }
+}
 
+void Renderer::rotatePoint(float x, float y, float centerX, float centerY, float angle, float& rotatedX, float& rotatedY) {
+    float radians = ofDegToRad(angle);
+    float cosA = cos(radians);
+    float sinA = sin(radians);
+
+    // Rotate the point around the center
+    rotatedX = cosA * (x - centerX) - sinA * (y - centerY) + centerX;
+    rotatedY = sinA * (x - centerX) + cosA * (y - centerY) + centerY;
+}
+
+void Renderer::scalePrimitive(float scaleFactor){
+    int dernier_primitive = get_last_primitive();
+    if (dernier_primitive >= 0 && dernier_primitive < buffer_count) {
+        shapes[dernier_primitive].position2[0] *= scaleFactor;
+        shapes[dernier_primitive].position2[1] *= scaleFactor;
+    }
+}
 
 void Renderer::update()
 {

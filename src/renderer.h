@@ -69,13 +69,9 @@ public:
     // Fonctions et déclarations pour les transformations
     int get_last_primitive() const;
     void translateLastShape(float offsetX, float offsetY);
-    void rotatePrimitive(VectorPrimitive& primitive, float angleDegrees);
-    void scalePrimitive(VectorPrimitive& primitive, float scaleFactor);
-    ofVec3f vector_origin;
-    ofVec3f vector_position1;
-    ofVec3f vector_position2;
-    ofVec3f vector_position3;
-    ofColor vector_color;
+    void rotatePrimitive(float angle);
+    void rotatePoint(float x, float y, float centerX, float centerY, float angle, float& rotatedX, float& rotatedY);
+    void scalePrimitive(float scaleFactor);
     float offset_x;
     float offset_y;
     float offset_z;
@@ -85,6 +81,7 @@ public:
     float radious;
     float proportion;
     float speed;
+    float angle;
 
 
     //Temporary declaration

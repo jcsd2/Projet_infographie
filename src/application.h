@@ -83,6 +83,8 @@ public:
     void scaleButtonPressed(bool& pressed);
 
     bool isTranslationActive;
+    bool isRotatingActive;
+    bool isScalingActive;
 
     //Cursor selection points/ Position du curseur pour la selections
     ofPoint selection_start;
