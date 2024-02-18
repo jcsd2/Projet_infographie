@@ -29,12 +29,7 @@ public:
     ofParameter<bool> checkbox; //Parametre pour voir le Gui
 
 
-    ofxButton cursorDefaultButton;
-    ofxButton cursorDrawLineButton;
-    ofxButton cursorDrawCircleButton;
-    ofxButton cursorSelectButton;
-    ofxButton cursorTranslateButton;
-    ofxButton cursorRotateButton;
+    
 
 
     ofxGuiGroup group_image;
@@ -46,7 +41,14 @@ public:
     ofxGuiGroup group_dessin_vectoriel;
     ofxGuiGroup group_dessin_vectoriel_formes;
     ofxGuiGroup group_dessin_algo_ligne;
-    ofxGuiGroup group_curseurs; 
+
+    ofxButton cursorDefaultButton;
+    ofxButton cursorDrawLineButton;
+    ofxButton cursorDrawCircleButton;
+    ofxButton cursorSelectButton;
+    ofxButton cursorTranslateButton;
+    ofxButton cursorRotateButton;
+     
     
 
     ofImage importedImage; // stocker l'image charge
@@ -107,7 +109,7 @@ public:
     void translateButtonPressed(bool& pressed);
     void rotateButtonPressed(bool& pressed);
     void scaleButtonPressed(bool& pressed);
-    void Application::drawCursor();
+    void drawCursor();
 
     void cursorDefaultButtonPressed();
     void cursorDrawLineButtonPressed();

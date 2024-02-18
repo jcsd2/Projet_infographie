@@ -16,11 +16,6 @@ void Application::setup()
     gui.add(checkbox);
 
     
-  
-
-    
-    // Ajout du sous-groupe des curseurs au groupe principal de Dessin vectoriel
-    group_dessin_vectoriel.add(&group_curseurs);
 
     //Groupe du critere 1 Image (1.1)
     group_image.setup("Image");
@@ -52,10 +47,29 @@ void Application::setup()
 
     //Groupe du critere 2 Dessin vectoriel 
     group_dessin_vectoriel.setup("Dessin Vectoriel");
-    // Création d'un sous-groupe pour les curseurs
-    group_curseurs.setup("Curseurs");
-    // Ajout du groupe de curseurs au groupe "Dessin Vectoriel"
-    group_dessin_vectoriel.add(&group_curseurs);
+    // Ajout des boutons au sous - groupe des curseurs
+    cursorDefaultButton.setup("Curseur par defaut");
+    cursorDefaultButton.addListener(this, &Application::cursorDefaultButtonPressed);
+    group_dessin_vectoriel.add(&cursorDefaultButton);
+    cursorDrawLineButton.setup("Curseur de ligne");
+    cursorDrawLineButton.addListener(this, &Application::cursorDrawLineButtonPressed);
+    group_dessin_vectoriel.add(&cursorDrawLineButton);
+    cursorDrawCircleButton.setup(" Curseur de cercle ");
+    cursorDrawCircleButton.addListener(this, &Application::cursorDrawCircleButtonPressed);
+    group_dessin_vectoriel.add(&cursorDrawCircleButton);
+    cursorSelectButton.setup("Curseur de selection");
+    cursorSelectButton.addListener(this, &Application::cursorSelectButtonPressed);
+    group_dessin_vectoriel.add(&cursorSelectButton);
+    cursorTranslateButton.setup("Curseur de deplacement");
+    cursorTranslateButton.addListener(this, &Application::cursorTranslateButtonPressed);
+    group_dessin_vectoriel.add(&cursorTranslateButton);
+    cursorRotateButton.setup("Curseur de rotation");
+    cursorRotateButton.addListener(this, &Application::cursorRotateButtonPressed);
+    group_dessin_vectoriel.add(&cursorRotateButton);
+
+   
+
+
 
     //Outil de dessin (2.2)
 
@@ -74,54 +88,7 @@ void Application::setup()
     ajout_boutons_formes(); //(Contient 2.4)
     group_dessin_vectoriel.minimize();
     gui.add(&group_dessin_vectoriel);
-
-
-
-     // Ajout des boutons au sous - groupe des curseurs
-   
-   cursorDefaultButton.setup("Curseur par defaut");
-   group_curseurs.add(&cursorDefaultButton);
-
-
-    cursorDrawLineButton.setup("Curseur de ligne");
-    group_curseurs.add(&cursorDrawLineButton);
-
-    cursorDrawCircleButton.setup(" Curseur de cercle ");
-    group_curseurs.add(&cursorDrawCircleButton);
-
-    cursorSelectButton.setup("Curseur de selection");
-    group_curseurs.add(&cursorSelectButton);
-
-    cursorTranslateButton.setup("Curseur de deplacement");
-    group_curseurs.add(&cursorTranslateButton);
-
-    cursorRotateButton.setup("Curseur de rotation");
-    group_curseurs.add(&cursorRotateButton);
-
     
-    
-
-    gui.add(&cursorDefaultButton);
-    gui.add(&cursorDrawLineButton);
-    gui.add(&cursorDrawCircleButton);
-    gui.add(&cursorSelectButton);
-    gui.add(&cursorTranslateButton);
-    gui.add(&cursorRotateButton);
-
-  
-
-
-    // Configuration des listeners pour les boutons de curseur
-    cursorDefaultButton.addListener(this, &Application::cursorDefaultButtonPressed);
-    cursorDrawLineButton.addListener(this, &Application::cursorDrawLineButtonPressed);
-    cursorDrawCircleButton.addListener(this, &Application::cursorDrawCircleButtonPressed);
-    cursorSelectButton.addListener(this, &Application::cursorSelectButtonPressed);
-    cursorTranslateButton.addListener(this, &Application::cursorTranslateButtonPressed);
-    cursorRotateButton.addListener(this, &Application::cursorRotateButtonPressed);
-
-    
-
-
 
     //Groupe du critere 3 Transformation
     group_transformation.setup("Transformation");

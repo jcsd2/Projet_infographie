@@ -125,12 +125,12 @@ public:
 
     void draw_zone(float x1, float y1, float x2, float y2) const;
 
-    int Renderer::generate_unique_id();
+    int generate_unique_id();
 
   
-    void Renderer::remove_vector_shape(int id);
-    void Renderer::select_vector_shape(int id);
-    void Renderer::translateSelectedShapes(float offsetX, float offsetY);
+    void remove_vector_shape(int id);
+    void select_vector_shape(int id);
+    void translateSelectedShapes(float offsetX, float offsetY);
 
     ~Renderer();
 };
