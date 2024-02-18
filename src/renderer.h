@@ -10,7 +10,7 @@ enum class VectorPrimitiveType { none, pixel, point, line, square, rectangle, ci
 enum class LineRenderer { none, dda, bresenham };
 
 // structure de primitive vectorielle générique (Comme dans les exemples du cours)
-struct VectorPrimitive
+/*struct VectorPrimitive
 {
     VectorPrimitiveType type;            // 1 * 4 = 4  octets
     float               position1[2];    // 2 * 4 = 8  octets
@@ -19,12 +19,25 @@ struct VectorPrimitive
     float               stroke_width;    // 1 * 4 = 4  octets
     unsigned char       stroke_color[4]; // 4 * 1 = 4  octets
     unsigned char       fill_color[4];   // 4 * 1 = 4  octets
-};                                     //       = 34 octets
+};*/                                     //       = 34 octets
+
+struct VectorPrimitive {
+    int id; 
+    VectorPrimitiveType type;
+    float position1[2];
+    float position2[2];
+    float position3[3];
+    float stroke_width;
+    unsigned char stroke_color[4];
+    unsigned char fill_color[4];
+};
 
 class Renderer
 {
 public:
 
+
+    
     //Dimension du framebuffer
     float frame_buffer_width;
     float frame_buffer_heigth;
@@ -112,6 +125,12 @@ public:
 
     void draw_zone(float x1, float y1, float x2, float y2) const;
 
+    int Renderer::generate_unique_id();
+
+  
+    void Renderer::remove_vector_shape(int id);
+    void Renderer::select_vector_shape(int id);
+    void Renderer::translateSelectedShapes(float offsetX, float offsetY);
 
     ~Renderer();
 };

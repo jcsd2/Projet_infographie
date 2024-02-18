@@ -15,7 +15,7 @@ void Application::setup()
     checkbox = true; // Initialisation de l'indicateur du Guis
     gui.add(checkbox);
 
-    
+   
 
     //Groupe du critere 1 Image (1.1)
     group_image.setup("Image");
@@ -108,6 +108,8 @@ void Application::draw()
     if (importedImage.isAllocated()) {
         importedImage.draw(0, 0); // Ajustez la position et la taille selon vos besoins
     }
+
+
 }
 
 void Application::update()
@@ -180,8 +182,13 @@ void Application::update()
     renderer.lineColor = lineColor; // Contour
     renderer.fillColor = fillColor; // Remplissage
 
+    
+
 
     renderer.update();
+
+
+    
 }
 
 
@@ -457,6 +464,8 @@ void Application::button_line_pressed(bool& pressed)
 {
     if (pressed) {
         renderer.draw_mode = VectorPrimitiveType::line;
+        
+       
         ofLog() << "<mode: line>";
         none_shape_button = false;
         pixel_shape_button = false;
@@ -698,6 +707,9 @@ void Application::scaleButtonPressed(bool& pressed) {
         ofLog() << "<mode: scale>";
     }
 }
+
+
+
 
 
 void Application::keyPressed(int key)

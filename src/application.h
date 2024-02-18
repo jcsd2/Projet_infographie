@@ -3,12 +3,17 @@
 #include "ofxGui.h"
 #include "ofSystemUtils.h"
 #include "renderer.h"
+
+
+
+
 class Application : public ofBaseApp
 {
 public:
 
     Renderer renderer;
-
+  
+    
     ofxPanel gui;
     ofParameter<bool> checkbox; //Parametre pour voir le Gui
 
@@ -81,7 +86,10 @@ public:
     void translateButtonPressed(bool& pressed);
     void rotateButtonPressed(bool& pressed);
     void scaleButtonPressed(bool& pressed);
+    
 
+
+   
     bool isTranslationActive;
     bool isRotatingActive;
     bool isScalingActive;

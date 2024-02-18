@@ -609,3 +609,42 @@ Renderer::~Renderer()
 {
     std::free(shapes);
 }
+
+
+int Renderer::generate_unique_id() {
+    static int current_id = 0;
+    return current_id++;
+}
+
+
+
+void Renderer::remove_vector_shape(int id) {
+    for (int i = 0; i < buffer_count; ++i) {
+        if (shapes[i].id == id) {
+           
+            shapes[i].type = VectorPrimitiveType::none;
+            break;
+        }
+    }
+}
+
+
+std::vector<int> selected_ids;
+
+void Renderer::select_vector_shape(int id) {
+   
+    selected_ids.push_back(id);
+}
+
+void Renderer::translateSelectedShapes(float offsetX, float offsetY) {
+    for (int id : selected_ids) {
+        for (int i = 0; i < buffer_count; ++i) {
+            if (shapes[i].id == id) {
+                shapes[i].position1[0] += offsetX;
+                shapes[i].position1[1] += offsetY;
+                shapes[i].position2[0] += offsetX;
+                shapes[i].position2[1] += offsetY;
+            }
+        }
+    }
+}
