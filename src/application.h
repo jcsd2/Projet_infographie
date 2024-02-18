@@ -28,6 +28,15 @@ public:
     ofxPanel gui;
     ofParameter<bool> checkbox; //Parametre pour voir le Gui
 
+
+    ofxButton cursorDefaultButton;
+    ofxButton cursorDrawLineButton;
+    ofxButton cursorDrawCircleButton;
+    ofxButton cursorSelectButton;
+    ofxButton cursorTranslateButton;
+    ofxButton cursorRotateButton;
+
+
     ofxGuiGroup group_image;
     ofxToggle screenshot_button;
     ofxToggle screenshot_button_funny;
@@ -37,6 +46,7 @@ public:
     ofxGuiGroup group_dessin_vectoriel;
     ofxGuiGroup group_dessin_vectoriel_formes;
     ofxGuiGroup group_dessin_algo_ligne;
+    ofxGuiGroup group_curseurs; 
     
 
     ofImage importedImage; // stocker l'image charge
@@ -98,7 +108,14 @@ public:
     void rotateButtonPressed(bool& pressed);
     void scaleButtonPressed(bool& pressed);
     void Application::drawCursor();
-    
+
+    void cursorDefaultButtonPressed();
+    void cursorDrawLineButtonPressed();
+    void cursorDrawCircleButtonPressed();
+    void cursorSelectButtonPressed();
+    void cursorTranslateButtonPressed();
+    void cursorRotateButtonPressed();
+
 
     bool isTranslationActive;
     bool isRotatingActive;
@@ -122,6 +139,10 @@ public:
     void setup();
     void update();
     void draw();
+
+    
+
+
     void exit();
 
     void screenshot_button_pressed(bool& value);
