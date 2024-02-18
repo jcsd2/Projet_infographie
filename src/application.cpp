@@ -15,7 +15,12 @@ void Application::setup()
     checkbox = true; // Initialisation de l'indicateur du Guis
     gui.add(checkbox);
 
-   
+    
+  
+
+    
+    // Ajout du sous-groupe des curseurs au groupe principal de Dessin vectoriel
+    group_dessin_vectoriel.add(&group_curseurs);
 
     //Groupe du critere 1 Image (1.1)
     group_image.setup("Image");
@@ -47,8 +52,13 @@ void Application::setup()
 
     //Groupe du critere 2 Dessin vectoriel 
     group_dessin_vectoriel.setup("Dessin Vectoriel");
-    
+    // Création d'un sous-groupe pour les curseurs
+    group_curseurs.setup("Curseurs");
+    // Ajout du groupe de curseurs au groupe "Dessin Vectoriel"
+    group_dessin_vectoriel.add(&group_curseurs);
+
     //Outil de dessin (2.2)
+
     group_outils_dessin.setup("Outils Dessin");
     group_outils_dessin.add(lineThickness.setup("Epaisseur", 1.0, 0.1, 10.0));
     group_outils_dessin.add(lineColor.setup("Couleur ligne", ofColor(255), ofColor(0), ofColor(255)));
@@ -59,10 +69,59 @@ void Application::setup()
     group_dessin_vectoriel.add(&group_dessin_vectoriel_formes);
     //Sous-groupe pour le type d'algo pour dessiner une ligne
     group_dessin_algo_ligne.setup("Algorithme \nde rasterisation");
+
     // Ajout des boutons pour chaque formes  
     ajout_boutons_formes(); //(Contient 2.4)
     group_dessin_vectoriel.minimize();
     gui.add(&group_dessin_vectoriel);
+
+
+
+     // Ajout des boutons au sous - groupe des curseurs
+   
+   cursorDefaultButton.setup("Curseur par defaut");
+   group_curseurs.add(&cursorDefaultButton);
+
+
+    cursorDrawLineButton.setup("Curseur de ligne");
+    group_curseurs.add(&cursorDrawLineButton);
+
+    cursorDrawCircleButton.setup(" Curseur de cercle ");
+    group_curseurs.add(&cursorDrawCircleButton);
+
+    cursorSelectButton.setup("Curseur de selection");
+    group_curseurs.add(&cursorSelectButton);
+
+    cursorTranslateButton.setup("Curseur de deplacement");
+    group_curseurs.add(&cursorTranslateButton);
+
+    cursorRotateButton.setup("Curseur de rotation");
+    group_curseurs.add(&cursorRotateButton);
+
+    
+    
+
+    gui.add(&cursorDefaultButton);
+    gui.add(&cursorDrawLineButton);
+    gui.add(&cursorDrawCircleButton);
+    gui.add(&cursorSelectButton);
+    gui.add(&cursorTranslateButton);
+    gui.add(&cursorRotateButton);
+
+  
+
+
+    // Configuration des listeners pour les boutons de curseur
+    cursorDefaultButton.addListener(this, &Application::cursorDefaultButtonPressed);
+    cursorDrawLineButton.addListener(this, &Application::cursorDrawLineButtonPressed);
+    cursorDrawCircleButton.addListener(this, &Application::cursorDrawCircleButtonPressed);
+    cursorSelectButton.addListener(this, &Application::cursorSelectButtonPressed);
+    cursorTranslateButton.addListener(this, &Application::cursorTranslateButtonPressed);
+    cursorRotateButton.addListener(this, &Application::cursorRotateButtonPressed);
+
+    
+
+
 
     //Groupe du critere 3 Transformation
     group_transformation.setup("Transformation");
@@ -98,20 +157,25 @@ void Application::setup()
 
 }
 
+
 void Application::draw()
 {
     renderer.draw();
     if (checkbox)
         gui.draw();
 
+    drawCursor();
+
     // Dessiner l'image importée si elle est chargée
     if (importedImage.isAllocated()) {
         importedImage.draw(0, 0); // Ajustez la position et la taille selon vos besoins
     }
 
-    drawCursor();
 
 }
+
+
+
 
 void Application::update()
 {
@@ -182,9 +246,6 @@ void Application::update()
     renderer.lineThickness = lineThickness; // Epaisseur
     renderer.lineColor = lineColor; // Contour
     renderer.fillColor = fillColor; // Remplissage
-
-    
-
 
     renderer.update();
 
@@ -749,8 +810,6 @@ void Application::drawCursor() {
 }
 
 
-
-
 void Application::keyPressed(int key)
 {
   switch (key)
@@ -809,6 +868,47 @@ void Application::keyReleased(int key)
     }
 }
 
+
+
+void Application::cursorDefaultButtonPressed() {
+    
+        currentCursorState = CURSOR_DEFAULT;
+    
+}
+
+void Application::cursorDrawLineButtonPressed() {
+    
+        currentCursorState = CURSOR_DRAW_LINE;
+    
+}
+
+
+void Application::cursorDrawCircleButtonPressed() {
+   
+        currentCursorState = CURSOR_DRAW_CIRCLE;
+    
+}
+
+void Application::cursorSelectButtonPressed() {
+    
+        currentCursorState = CURSOR_SELECT;
+    
+}
+
+void Application::cursorTranslateButtonPressed() {
+   
+        currentCursorState = CURSOR_TRANSLATE;
+    
+}
+
+void Application::cursorRotateButtonPressed() {
+    
+        currentCursorState = CURSOR_ROTATE;
+    
+}
+
+
+
 void Application::exit()
 {
     // Remove the listener for toggle button valueChanged event
@@ -817,6 +917,18 @@ void Application::exit()
     translateButton.removeListener(this, &Application::translateButtonPressed);
     rotateButton.removeListener(this, &Application::rotateButtonPressed);
     scaleButton.removeListener(this, &Application::scaleButtonPressed);
+
+    cursorDefaultButton.removeListener(this, &Application::cursorDefaultButtonPressed);
+    cursorDrawLineButton.removeListener(this, &Application::cursorDrawLineButtonPressed);
+    cursorDrawCircleButton.removeListener(this, &Application::cursorDrawCircleButtonPressed);
+    cursorSelectButton.removeListener(this, &Application::cursorSelectButtonPressed);
+    cursorTranslateButton.removeListener(this, &Application::cursorTranslateButtonPressed);
+    cursorRotateButton.removeListener(this, &Application::cursorRotateButtonPressed);
+    
+
+
+
+
     ofLog() << "<app::exit>";
 
 }
