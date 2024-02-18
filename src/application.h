@@ -6,10 +6,21 @@
 
 
 
-
 class Application : public ofBaseApp
 {
 public:
+
+
+    enum CursorState {
+        CURSOR_DEFAULT,
+        CURSOR_DRAW_LINE,
+        CURSOR_DRAW_CIRCLE,
+        CURSOR_SELECT,
+        CURSOR_TRANSLATE,
+        CURSOR_ROTATE
+    };
+
+    CursorState currentCursorState = CURSOR_DEFAULT;
 
     Renderer renderer;
   
@@ -86,10 +97,9 @@ public:
     void translateButtonPressed(bool& pressed);
     void rotateButtonPressed(bool& pressed);
     void scaleButtonPressed(bool& pressed);
+    void Application::drawCursor();
     
 
-
-   
     bool isTranslationActive;
     bool isRotatingActive;
     bool isScalingActive;

@@ -109,6 +109,7 @@ void Application::draw()
         importedImage.draw(0, 0); // Ajustez la position et la taille selon vos besoins
     }
 
+    drawCursor();
 
 }
 
@@ -708,6 +709,44 @@ void Application::scaleButtonPressed(bool& pressed) {
     }
 }
 
+
+void Application::drawCursor() {
+    // Obtenir la position actuelle de la souris
+    int mouseX = ofGetMouseX();
+    int mouseY = ofGetMouseY();
+
+    switch (currentCursorState) {
+    case CURSOR_DEFAULT:
+        // Dessin du curseur par défaut ou ne rien faire pour utiliser le curseur système
+        break;
+    case CURSOR_DRAW_LINE:
+        // Dessiner une représentation visuelle pour le dessin de ligne
+        ofDrawLine(mouseX - 10, mouseY, mouseX + 10, mouseY);
+        ofDrawLine(mouseX, mouseY - 10, mouseX, mouseY + 10);
+        break;
+    case CURSOR_DRAW_CIRCLE:
+        // Dessiner une représentation visuelle pour le dessin de cercle
+        ofDrawCircle(mouseX, mouseY, 5);
+        break;
+    case CURSOR_SELECT:
+        // Dessiner une représentation visuelle pour le mode sélection
+        ofNoFill();
+        ofDrawRectangle(mouseX - 5, mouseY - 5, 10, 10);
+        break;
+    case CURSOR_TRANSLATE:
+        // Dessiner une représentation visuelle pour le mode translation
+        ofDrawArrow(ofPoint(mouseX, mouseY), ofPoint(mouseX + 10, mouseY), 4);
+        break;
+    case CURSOR_ROTATE:
+        // Dessiner une représentation visuelle pour le mode rotation
+        ofDrawCircle(mouseX, mouseY, 5);
+        ofDrawLine(mouseX, mouseY, mouseX + 10, mouseY);
+        ofDrawBitmapString("R", mouseX + 12, mouseY + 3);
+        break;
+    default:
+        break;
+    }
+}
 
 
 
