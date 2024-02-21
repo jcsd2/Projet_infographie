@@ -100,6 +100,14 @@ public:
     ofxGuiGroup group_transformation;
     ofxGuiGroup groupe_transforamtion_interactive;
 
+    // Selection multiple 3.2 ... déclaration
+    ofxGuiGroup groupe_selection_multiple;
+    ofxToggle selectionButton;
+    void selection_multiple(bool& pressed);
+    bool isSelectionModeActive;
+    bool isInside(int x, int y, const VectorPrimitive& shape);
+    bool shapeSelected;
+
     // Boutons pour les options de modification
     ofxToggle translateButton;
     ofxToggle rotateButton;

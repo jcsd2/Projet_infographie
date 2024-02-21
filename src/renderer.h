@@ -79,6 +79,19 @@ public:
 
     void setLineRenderer(LineRenderer renderer);
 
+    // Fonction et déclaration pour Sélection Multiples
+
+    std::vector<int> selectedIds; // IDs des formes sélectionnées
+    void selectShape(int id); // Sélectionner une forme par son ID
+    void deselectShape(int id); // Désélectionner une forme par son ID
+    void clearSelection(); // Désélectionner toutes les formes
+    void updateSelectedShapesAttribute(float newStrokeWidth, const ofColor& newStrokeColor, const ofColor& newFillColor); // Mettre à jour les attributs des formes sélectionnées
+
+    // Ajouts pour les transformations
+    void rotateSelectedShapes(float angle); // Tourner les formes sélectionnées
+    void scaleSelectedShapes(float scaleFactor); // Mettre à l'échelle les formes sélectionnées
+
+
     // Fonctions et déclarations pour les transformations
     int get_last_primitive() const;
     void translateLastShape(float offsetX, float offsetY);

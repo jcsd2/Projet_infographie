@@ -11,11 +11,11 @@ void Application::setup()
     gui.setPosition(1, 1);
     gui.setup("Interface"); //(2.5)
     checkbox.setName("Gui visible");
-    
+
     checkbox = true; // Initialisation de l'indicateur du Guis
     gui.add(checkbox);
 
-    
+
 
     //Groupe du critere 1 Image (1.1)
     group_image.setup("Image");
@@ -48,13 +48,14 @@ void Application::setup()
     //Groupe du critere 2 Dessin vectoriel 
     group_dessin_vectoriel.setup("Dessin Vectoriel");
     // Ajout des boutons au sous - groupe des curseurs
+
     cursorDefaultButton.setup("Curseur par defaut");
     cursorDefaultButton.addListener(this, &Application::cursorDefaultButtonPressed);
     group_dessin_vectoriel.add(&cursorDefaultButton);
     cursorDrawLineButton.setup("Curseur de ligne");
     cursorDrawLineButton.addListener(this, &Application::cursorDrawLineButtonPressed);
     group_dessin_vectoriel.add(&cursorDrawLineButton);
-    cursorDrawCircleButton.setup(" Curseur de cercle ");
+    cursorDrawCircleButton.setup("Curseur de cercle ");
     cursorDrawCircleButton.addListener(this, &Application::cursorDrawCircleButtonPressed);
     group_dessin_vectoriel.add(&cursorDrawCircleButton);
     cursorSelectButton.setup("Curseur de selection");
@@ -67,7 +68,7 @@ void Application::setup()
     cursorRotateButton.addListener(this, &Application::cursorRotateButtonPressed);
     group_dessin_vectoriel.add(&cursorRotateButton);
 
-   
+
 
 
 
@@ -88,14 +89,21 @@ void Application::setup()
     ajout_boutons_formes(); //(Contient 2.4)
     group_dessin_vectoriel.minimize();
     gui.add(&group_dessin_vectoriel);
-    
+
 
     //Groupe du critere 3 Transformation
     group_transformation.setup("Transformation");
-    
+
     //Ajouter 3.1
 
-    //Ajouter 3.2 ici vv
+    // sélection multiple (3.2)
+
+    groupe_selection_multiple.setup("Selection multiples");
+    group_transformation.add(&groupe_selection_multiple);
+    selectionButton.addListener(this, &Application::selection_multiple); 
+    groupe_selection_multiple.add(&selectionButton); 
+    selectionButton.setup("Selection Multiple", false);
+
 
     //transformations interactives (3.3)
     groupe_transforamtion_interactive.setup ("Transformations \ninterectives");
@@ -281,7 +289,21 @@ void Application::mousePressed(int x, int y, int button)
     renderer.mouse_press_y = y;
 
     ofLog() << "<app::mouse pressed  at: (" << x << ", " << y << ")>";
+
+   
+ 
+    if (isSelectionModeActive) {
+        shapeSelected = false; 
+        for (int i = 0; i < renderer.buffer_count; i++) {
+            if (isInside(x, y, renderer.shapes[i])) {
+                renderer.selectShape(i);
+                shapeSelected = true;
+                break; 
+            }
+        }
+    }
 }
+
 
 void Application::mouseDragged(int x, int y, int button)
 {
@@ -693,6 +715,35 @@ void Application::button_maison_pressed(bool& pressed)
         ellipse_shape_button = false;
         triangle_shape_button = false;
         face_shape_button = false;
+    }
+}
+
+// Sélection multiple 3.2 a revoir
+
+void Application::selection_multiple(bool& pressed) {
+    isSelectionModeActive = pressed;
+    ofLog() << "<mode: selection multiple> " << (pressed ? "active" : "desactive");
+}
+
+bool Application::isInside(int x, int y, const VectorPrimitive& shape) {
+    switch (shape.type) {
+    case VectorPrimitiveType::circle: {
+        float dx = x - shape.position1[0];
+        float dy = y - shape.position1[1];
+        float radius = sqrt((shape.position2[0] - shape.position1[0]) * (shape.position2[0] - shape.position1[0]) +
+            (shape.position2[1] - shape.position1[1]) * (shape.position2[1] - shape.position1[1]));
+        return (dx * dx + dy * dy) <= (radius * radius);
+    }
+    case VectorPrimitiveType::rectangle: {
+        float left = std::min(shape.position1[0], shape.position2[0]);
+        float right = std::max(shape.position1[0], shape.position2[0]);
+        float top = std::min(shape.position1[1], shape.position2[1]);
+        float bottom = std::max(shape.position1[1], shape.position2[1]);
+        return x >= left && x <= right && y >= top && y <= bottom;
+    }
+                                       // A rajouté triangle carrer ellipse etc
+    default:
+        return false;
     }
 }
 

@@ -525,6 +525,47 @@ int Renderer::get_last_primitive() const {
 
     return lastIndex;
 }
+// Fonction Selection Multiple a complété (shape / deselectionne/ clearer et updater)
+
+
+void Renderer::selectShape(int id) {
+    // Ajouter l'ID à la liste des formes sélectionnées si ce n'est pas déjà le cas
+    if (std::find(selectedIds.begin(), selectedIds.end(), id) == selectedIds.end()) {
+        selectedIds.push_back(id);
+    }
+}
+
+void Renderer::deselectShape(int id) {
+    // Retirer l'ID de la liste des formes sélectionnées
+    selectedIds.erase(std::remove(selectedIds.begin(), selectedIds.end(), id), selectedIds.end());
+}
+
+void Renderer::clearSelection() {
+    // Effacer la liste des formes sélectionnées
+    selectedIds.clear();
+}
+
+void Renderer::updateSelectedShapesAttribute(float newStrokeWidth, const ofColor& newStrokeColor, const ofColor& newFillColor) {
+    // Mettre à jour les attributs pour chaque forme sélectionnée
+    for (int id : selectedIds) {
+        if (id >= 0 && id < buffer_count) {
+            shapes[id].stroke_width = newStrokeWidth;
+            shapes[id].stroke_color[0] = newStrokeColor.r;
+            shapes[id].stroke_color[1] = newStrokeColor.g;
+            shapes[id].stroke_color[2] = newStrokeColor.b;
+            shapes[id].stroke_color[3] = newStrokeColor.a;
+            shapes[id].fill_color[0] = newFillColor.r;
+            shapes[id].fill_color[1] = newFillColor.g;
+            shapes[id].fill_color[2] = newFillColor.b;
+            shapes[id].fill_color[3] = newFillColor.a;
+        }
+    }
+}
+
+
+
+
+// La fin de mon code
 
 
 void Renderer::translateLastShape(float offsetX, float offsetY) {
