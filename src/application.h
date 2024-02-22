@@ -113,6 +113,10 @@ public:
     ofxToggle rotateButton;
     ofxToggle scaleButton;
 
+    //Section 4 Geometrie
+    ofxGuiGroup groupe_geometrie;
+
+
     // Méthodes associées aux boutons
     void translateButtonPressed(bool& pressed);
     void rotateButtonPressed(bool& pressed);

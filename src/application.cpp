@@ -124,12 +124,22 @@ void Application::setup()
     //Ajouter 3.4 ici vv
 
     group_transformation.minimize();
-
-
-    //Ajouter Geometrie ici vv
-
     gui.add(&group_transformation);
 
+    //Ajouter Geometrie ici vv
+    groupe_geometrie.setup("Geometrie");
+
+    //4.1
+
+    //4.2
+
+    //4.3 
+
+    //4.4
+
+    gui.add(&groupe_geometrie);
+
+    //5
 }
 
 
