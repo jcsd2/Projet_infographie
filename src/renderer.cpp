@@ -689,3 +689,13 @@ void Renderer::translateSelectedShapes(float offsetX, float offsetY) {
         }
     }
 }
+
+
+//
+void Renderer::drawModels(const std::vector<ofxAssimpModelLoader*>& models) {
+    for(auto model : models) {
+        if(model) {
+            model->draw(OF_MESH_FILL);
+        }
+    }
+}

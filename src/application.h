@@ -3,7 +3,7 @@
 #include "ofxGui.h"
 #include "ofSystemUtils.h"
 #include "renderer.h"
-
+#include "ofxAssimpModelLoader.h"
 
 
 class Application : public ofBaseApp
@@ -115,6 +115,20 @@ public:
 
     //Section 4 Geometrie
     ofxGuiGroup groupe_geometrie;
+    ofxButton import_model_button;
+    ofxButton predef1_model_button;
+    ofxButton predef2_model_button;
+    ofxButton predef3_model_button;
+    ofxButton remove_last_model_button;
+    ofxAssimpModelLoader model1, model2, model3;
+    std::vector<ofxAssimpModelLoader*> modelsToDraw;
+    
+    void import_model_button_pressed();
+    void predef1_model_button_pressed();
+    void predef2_model_button_pressed();
+    void predef3_model_button_pressed();
+    void remove_last_model_button_pressed();
+
 
 
     // Méthodes associées aux boutons
