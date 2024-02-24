@@ -128,6 +128,28 @@ void Application::setup()
 
     //Ajouter Geometrie ici vv
     groupe_geometrie.setup("Geometrie");
+    import_model_button.setup("Importer modele");
+    predef1_model_button.setup("Modele 1");
+    predef2_model_button.setup("Modele 2");
+    predef3_model_button.setup("Modele 3");
+    remove_last_model_button.setup("Retirer dernier\n modele");
+    import_model_button.addListener(this, &Application::import_model_button_pressed);
+    predef1_model_button.addListener(this, &Application::predef1_model_button_pressed);
+    predef2_model_button.addListener(this, &Application::predef2_model_button_pressed);
+    predef3_model_button.addListener(this, &Application::predef3_model_button_pressed);
+    remove_last_model_button.addListener(this,&Application::remove_last_model_button_pressed);
+    groupe_geometrie.add(&import_model_button);
+    groupe_geometrie.add(&predef1_model_button);
+    groupe_geometrie.add(&predef2_model_button);
+    groupe_geometrie.add(&predef3_model_button);
+    groupe_geometrie.add(&remove_last_model_button);
+    
+    // Chargez les modèles
+    //model1.loadModel("chemin_vers_modele1.obj", true);
+    //model2.loadModel("chemin_vers_modele2.obj", true);
+    //model3.loadModel("chemin_vers_modele3.obj", true);    
+
+
 
     //4.1
 
@@ -136,7 +158,7 @@ void Application::setup()
     //4.3 
 
     //4.4
-
+    groupe_geometrie.minimize();
     gui.add(&groupe_geometrie);
 
     //5
@@ -156,6 +178,8 @@ void Application::draw()
         importedImage.draw(0, 0); // Ajustez la position et la taille selon vos besoins
     }
 
+    //dessiner les modeles 3d predefinis
+    //renderer.drawModels(modelsToDraw);
 
 }
 
@@ -838,6 +862,26 @@ void Application::drawCursor() {
 }
 
 
+void Application::import_model_button_pressed(){}
+void Application::predef1_model_button_pressed(){
+    modelsToDraw.push_back(&model1);
+}
+void Application::predef2_model_button_pressed(){
+    modelsToDraw.push_back(&model2);
+}
+void Application::predef3_model_button_pressed(){
+    modelsToDraw.push_back(&model3);
+}
+
+//Fonction pour retirer le dernier modele affiche
+void Application::remove_last_model_button_pressed(){
+    if (!modelsToDraw.empty()) 
+    {
+        modelsToDraw.pop_back();
+    }
+
+}
+
 void Application::keyPressed(int key)
 {
   switch (key)
@@ -961,9 +1005,11 @@ void Application::exit()
     cursorTranslateButton.removeListener(this, &Application::cursorTranslateButtonPressed);
     cursorRotateButton.removeListener(this, &Application::cursorRotateButtonPressed);
     
-
-
-
+    import_model_button.removeListener(this, &Application::import_model_button_pressed);
+    predef1_model_button.removeListener(this, &Application::predef1_model_button_pressed);
+    predef2_model_button.removeListener(this, &Application::predef2_model_button_pressed);
+    predef3_model_button.removeListener(this, &Application::predef3_model_button_pressed);
+    remove_last_model_button.removeListener(this, &Application::remove_last_model_button_pressed);
 
     ofLog() << "<app::exit>";
 

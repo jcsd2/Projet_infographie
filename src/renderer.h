@@ -1,5 +1,6 @@
 #pragma once
 #include "ofMain.h"
+#include "ofxAssimpModelLoader.h"
 #include "ofxUndoSimple.h"
 
 // énumération de différents modes pour changer la couleur d'arrière-plan
@@ -111,6 +112,8 @@ public:
     float angle;
 
 
+
+
     //Temporary declaration
     ClearMode clear_mode;
     int clear_color_gray;
@@ -131,6 +134,11 @@ public:
     float lineThickness; // Epaisseur de la ligne
     ofColor lineColor; // Couleur de lignes 
     ofColor fillColor; // Couleur de remplissage
+
+    //Section 4
+    //Fonction de dessin des formes 3d
+    void drawModels(const std::vector<ofxAssimpModelLoader*>& models);
+
 
     void setup();
     void update();
