@@ -288,6 +288,7 @@ void Renderer::draw()
             mouse_current_y);
     }
 
+    
     ofPushMatrix();
     ofEnableDepthTest();
     ofTranslate(500,700,0);
@@ -657,7 +658,7 @@ void Renderer::draw_zone(float x1, float y1, float x2, float y2) const
 
     ofPushMatrix();
     ofSetLineWidth(radius);
-    ofSetColor(255, 0, 0, 100);
+    //ofSetColor(255, 0, 0, 100);
     ofNoFill();
     ofDrawRectangle(x1, y1, x2_clamp - x1, y2_clamp - y1);
     ofFill();
@@ -726,7 +727,7 @@ void Renderer::loadModel(int aindex){
 	//Verifie si aindex est entre 0 et taille vecteur
 	modelIndex = ofClamp(aindex, 0, (int)modelPaths.size()-1 );
 	loadModel( modelPaths[modelIndex] );
-	
+    ofLog() << " Model loaded: ";
 }
 
 void Renderer::loadModel(string filename){

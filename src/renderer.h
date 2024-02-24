@@ -1,7 +1,6 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxAssimpModelLoader.h"
-#include "ofxUndoSimple.h"
 
 // énumération des différents types de primitives vectorielles
 enum class VectorPrimitiveType { none, pixel, point, line, square, rectangle, circle, ellipse, triangle, face, maison };
@@ -162,11 +161,5 @@ public:
     ~Renderer();
 
     private:
-        // Data structure to store position data for undo
-        struct UndoData {
-            float x1, y1, x2, y2;
-        };
-
-        // Undo mechanism for position data
-        ofxUndoSimple<UndoData> undoData_;
+        
 };

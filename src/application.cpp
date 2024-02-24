@@ -143,7 +143,7 @@ void Application::setup()
     groupe_geometrie.add(&predef2_model_button);
     groupe_geometrie.add(&predef3_model_button);
     groupe_geometrie.add(&remove_last_model_button);
-
+    bShowModel = false;
 
     // Chargez les modèles
        
@@ -176,10 +176,6 @@ void Application::draw()
     if (importedImage.isAllocated()) {
         importedImage.draw(0, 0); // Ajustez la position et la taille selon vos besoins
     }
-
-    //dessiner les modeles 3d predefinis
-    //renderer.drawModels(modelsToDraw);
-
 }
 
 
@@ -864,21 +860,17 @@ void Application::drawCursor() {
 
 void Application::import_model_button_pressed(){}
 void Application::predef1_model_button_pressed(){
-    //modelsToDraw.push_back(&model1);
+    renderer.loadModel(0);
 }
 void Application::predef2_model_button_pressed(){
-    //modelsToDraw.push_back(&model2);
+    renderer.loadModel(1);
 }
 void Application::predef3_model_button_pressed(){
-    //modelsToDraw.push_back(&model3);
+    renderer.loadModel(2);
 }
 
 //Fonction pour retirer le dernier modele affiche
 void Application::remove_last_model_button_pressed(){
-    //if (!modelsToDraw.empty()) 
-   // {
-    //    modelsToDraw.pop_back();
-    //}
 
 }
 
@@ -903,11 +895,11 @@ void Application::keyPressed(int key)
       break;
 
     case 'z':
-        position_.undo();
+        //position_.undo();
         break;
 
     case 'x':
-        position_.redo();
+        //position_.redo();
         break;
 
     default:

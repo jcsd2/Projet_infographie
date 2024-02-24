@@ -4,7 +4,7 @@
 #include "ofSystemUtils.h"
 #include "renderer.h"
 #include "ofxAssimpModelLoader.h"
-#include "ofxUndoSimple.h"
+
 
 
 class Application : public ofBaseApp
@@ -121,10 +121,7 @@ public:
     ofxButton predef2_model_button;
     ofxButton predef3_model_button;
     ofxButton remove_last_model_button;
-    std::vector<ofxAssimpModelLoader*> modelsToDraw;
-
-
-    
+    bool bShowModel;
     void import_model_button_pressed();
     void predef1_model_button_pressed();
     void predef2_model_button_pressed();
@@ -189,5 +186,5 @@ public:
 private:
     bool captureMode; //Indicateur de mode CaptureDecran
     bool captureMode_funny;
-    ofxUndoSimple<VectorPrimitive> position_;
+    //ofxUndoSimple<VectorPrimitive> position_;
 };
