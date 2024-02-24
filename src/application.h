@@ -121,8 +121,9 @@ public:
     ofxButton predef2_model_button;
     ofxButton predef3_model_button;
     ofxButton remove_last_model_button;
-    ofxAssimpModelLoader model1, model2, model3;
     std::vector<ofxAssimpModelLoader*> modelsToDraw;
+
+
     
     void import_model_button_pressed();
     void predef1_model_button_pressed();

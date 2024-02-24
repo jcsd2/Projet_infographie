@@ -143,11 +143,10 @@ void Application::setup()
     groupe_geometrie.add(&predef2_model_button);
     groupe_geometrie.add(&predef3_model_button);
     groupe_geometrie.add(&remove_last_model_button);
-    
+
+
     // Chargez les modèles
-    //model1.loadModel("chemin_vers_modele1.obj", true);
-    //model2.loadModel("chemin_vers_modele2.obj", true);
-    //model3.loadModel("chemin_vers_modele3.obj", true);    
+       
 
 
 
@@ -862,23 +861,24 @@ void Application::drawCursor() {
 }
 
 
+
 void Application::import_model_button_pressed(){}
 void Application::predef1_model_button_pressed(){
-    modelsToDraw.push_back(&model1);
+    //modelsToDraw.push_back(&model1);
 }
 void Application::predef2_model_button_pressed(){
-    modelsToDraw.push_back(&model2);
+    //modelsToDraw.push_back(&model2);
 }
 void Application::predef3_model_button_pressed(){
-    modelsToDraw.push_back(&model3);
+    //modelsToDraw.push_back(&model3);
 }
 
 //Fonction pour retirer le dernier modele affiche
 void Application::remove_last_model_button_pressed(){
-    if (!modelsToDraw.empty()) 
-    {
-        modelsToDraw.pop_back();
-    }
+    //if (!modelsToDraw.empty()) 
+   // {
+    //    modelsToDraw.pop_back();
+    //}
 
 }
 

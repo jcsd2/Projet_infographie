@@ -3,8 +3,6 @@
 #include "ofxAssimpModelLoader.h"
 #include "ofxUndoSimple.h"
 
-// énumération de différents modes pour changer la couleur d'arrière-plan
-enum class ClearMode { none, gray };
 // énumération des différents types de primitives vectorielles
 enum class VectorPrimitiveType { none, pixel, point, line, square, rectangle, circle, ellipse, triangle, face, maison };
 
@@ -115,7 +113,6 @@ public:
 
 
     //Temporary declaration
-    ClearMode clear_mode;
     int clear_color_gray;
     int clear_color_r;
     int clear_color_g;
@@ -137,7 +134,15 @@ public:
 
     //Section 4
     //Fonction de dessin des formes 3d
-    void drawModels(const std::vector<ofxAssimpModelLoader*>& models);
+    ofxAssimpModelLoader model;
+    int modelIndex;
+    int animationIndex;
+    float animationPosition;
+    float mTimeModelLoaded;
+    ofMesh mesh;
+    bool bAnimate;
+    void loadModel(int aindex);
+    void loadModel(string filename);
 
 
     void setup();

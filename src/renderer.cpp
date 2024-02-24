@@ -3,7 +3,6 @@
 void Renderer::setup()
 {
     ofSetFrameRate(60);
-    clear_mode = ClearMode::none;
     // couleur fond arriere
     ofSetBackgroundColor(20);
 
@@ -47,13 +46,20 @@ void Renderer::setup()
 
     mouse_press_x = mouse_press_y = mouse_current_x = mouse_current_y = 0;
     is_mouse_button_pressed = false;
+
+
+    //Initialisation des variable pour les modeles 3d
+    modelIndex = 1;
+    animationIndex = 0;
+    mTimeModelLoaded = 0.f;
+    animationPosition = 0;
+    bAnimate = true;
+    loadModel(1);
+
 }
 
 void Renderer::draw()
 {
-    // couleur d'arrière-plan
-    //ofClear(background_color1);
-    ofClear(background_color2);
 
     for (index = 0; index < buffer_count; ++index)
     {
@@ -281,6 +287,15 @@ void Renderer::draw()
             mouse_current_x,
             mouse_current_y);
     }
+
+    ofPushMatrix();
+    ofEnableDepthTest();
+    ofTranslate(500,700,0);
+    ofRotate(180,0,1,0);
+    model.draw(OF_MESH_FILL);
+    ofDisableDepthTest();
+    ofPopMatrix();
+    
 
 }
 
@@ -626,6 +641,12 @@ void Renderer::update()
 {
     frame_buffer_width = ofGetWidth();
     frame_buffer_heigth = ofGetHeight();
+    model.update();
+    if( model.hasAnimations() )
+    {
+        mesh = model.getCurrentAnimatedMesh(0);
+    }
+    mTimeModelLoaded = ofGetElapsedTimef();
 }
 
 //Fonction pour dessiner la zone de selection (Commed ans les exemples du cours)
@@ -634,6 +655,7 @@ void Renderer::draw_zone(float x1, float y1, float x2, float y2) const
     float x2_clamp = min(max(0.0f, x2), (float)ofGetWidth());
     float y2_clamp = min(max(0.0f, y2), (float)ofGetHeight());
 
+    ofPushMatrix();
     ofSetLineWidth(radius);
     ofSetColor(255, 0, 0, 100);
     ofNoFill();
@@ -644,6 +666,7 @@ void Renderer::draw_zone(float x1, float y1, float x2, float y2) const
     ofDrawEllipse(x1, y2_clamp, radius, radius);
     ofDrawEllipse(x2_clamp, y1, radius, radius);
     ofDrawEllipse(x2_clamp, y2_clamp, radius, radius);
+    ofPopMatrix();
 }
 
 Renderer::~Renderer()
@@ -692,10 +715,30 @@ void Renderer::translateSelectedShapes(float offsetX, float offsetY) {
 
 
 //
-void Renderer::drawModels(const std::vector<ofxAssimpModelLoader*>& models) {
-    for(auto model : models) {
-        if(model) {
-            model->draw(OF_MESH_FILL);
+void Renderer::loadModel(int aindex){
+	
+	vector<string> modelPaths = {
+		"Bender/Bender.gltf",
+		"Obama/Obama.fbx",
+		"Shinji/Shinji.obj",
+	};
+	
+	//Verifie si aindex est entre 0 et taille vecteur
+	modelIndex = ofClamp(aindex, 0, (int)modelPaths.size()-1 );
+	loadModel( modelPaths[modelIndex] );
+	
+}
+
+void Renderer::loadModel(string filename){
+    
+    if( model.load(filename, ofxAssimpModelLoader::OPTIMIZE_DEFAULT) ){
+        if( model.hasAnimations() ){
+            animationIndex = 0;
+            model.setLoopStateForAllAnimations(OF_LOOP_NORMAL);
+            model.getAnimation(animationIndex).play();
         }
+    }else{
+        ofLogError() << " can't load model: " << filename << endl;
     }
+	mTimeModelLoaded = ofGetElapsedTimef();
 }
