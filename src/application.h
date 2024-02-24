@@ -3,7 +3,7 @@
 #include "ofxGui.h"
 #include "ofSystemUtils.h"
 #include "renderer.h"
-
+#include "ofxUndoSimple.h"
 
 
 class Application : public ofBaseApp
@@ -173,5 +173,5 @@ public:
 private:
     bool captureMode; //Indicateur de mode CaptureDecran
     bool captureMode_funny;
-
+    ofxUndoSimple<VectorPrimitive> position_;
 };

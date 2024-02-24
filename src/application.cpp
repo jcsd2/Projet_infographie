@@ -858,6 +858,14 @@ void Application::keyPressed(int key)
       is_key_press_down = true;
       break;
 
+    case 'z':
+        position_.undo();
+        break;
+
+    case 'x':
+        position_.redo();
+        break;
+
     default:
       break;
   }

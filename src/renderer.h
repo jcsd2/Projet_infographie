@@ -1,5 +1,6 @@
 #pragma once
 #include "ofMain.h"
+#include "ofxUndoSimple.h"
 
 // énumération de différents modes pour changer la couleur d'arrière-plan
 enum class ClearMode { none, gray };
@@ -146,4 +147,13 @@ public:
     void translateSelectedShapes(float offsetX, float offsetY);
 
     ~Renderer();
+
+    private:
+        // Data structure to store position data for undo
+        struct UndoData {
+            float x1, y1, x2, y2;
+        };
+
+        // Undo mechanism for position data
+        ofxUndoSimple<UndoData> undoData_;
 };
