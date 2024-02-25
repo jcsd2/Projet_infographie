@@ -142,7 +142,7 @@ public:
     bool bAnimate;
     void loadModel(int aindex);
     void loadModel(string filename);
-
+    bool bShowModel;
 
     void setup();
     void update();

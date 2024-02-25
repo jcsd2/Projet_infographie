@@ -288,14 +288,16 @@ void Renderer::draw()
             mouse_current_y);
     }
 
+    if (bShowModel){
+        ofPushMatrix();
+        ofEnableDepthTest();
+        ofTranslate(500,700,0);
+        ofRotate(180,0,1,0);
+        model.draw(OF_MESH_FILL);
+        ofDisableDepthTest();
+        ofPopMatrix();
+    }
     
-    ofPushMatrix();
-    ofEnableDepthTest();
-    ofTranslate(500,700,0);
-    ofRotate(180,0,1,0);
-    model.draw(OF_MESH_FILL);
-    ofDisableDepthTest();
-    ofPopMatrix();
     
 
 }

@@ -143,7 +143,7 @@ void Application::setup()
     groupe_geometrie.add(&predef2_model_button);
     groupe_geometrie.add(&predef3_model_button);
     groupe_geometrie.add(&remove_last_model_button);
-    bShowModel = false;
+    renderer.bShowModel = false;
 
     // Chargez les modèles
        
@@ -858,20 +858,39 @@ void Application::drawCursor() {
 
 
 
-void Application::import_model_button_pressed(){}
+void Application::import_model_button_pressed(){
+    ofFileDialogResult result = ofSystemLoadDialog("Select a folder", true);
+    ofLogNotice() << "Dialog result: " << result.bSuccess;
+    if (result.bSuccess)
+    {
+        // Retrieve the selected folder path
+        string folderPath = result.filePath;
+
+        // Use the selected folder path as needed
+        ofLogNotice() << "Selected folder: " << folderPath;
+    }
+    else
+    {
+        // User canceled the dialog
+        ofLogNotice() << "Dialog canceled by the user";
+    }
+}
 void Application::predef1_model_button_pressed(){
+    renderer.bShowModel = true;
     renderer.loadModel(0);
 }
 void Application::predef2_model_button_pressed(){
+    renderer.bShowModel = true;
     renderer.loadModel(1);
 }
 void Application::predef3_model_button_pressed(){
+    renderer.bShowModel = true;
     renderer.loadModel(2);
 }
 
 //Fonction pour retirer le dernier modele affiche
 void Application::remove_last_model_button_pressed(){
-
+    renderer.bShowModel = false;
 }
 
 void Application::keyPressed(int key)
