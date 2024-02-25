@@ -96,6 +96,28 @@ void Application::setup()
 
     //Ajouter 3.1
 
+    
+    group_scene_control.setup("Graphe de Scene");
+    group_transformation.add(&group_scene_control);
+
+    // Ajouter un élément 
+   
+    addElementButton.setup("Ajouter Element");
+    addElementButton.addListener(this, &Application::addElementPressed);
+    group_scene_control.add(&addElementButton);
+
+    // Supprimer un élément 
+    
+    removeElementButton.setup("Supprimer Element");
+    removeElementButton.addListener(this, &Application::removeElementPressed);
+    group_scene_control.add(&removeElementButton);
+
+    // Sélectionner un élément 
+   
+    selectElementButton.setup("Selectionner Element");
+    selectElementButton.addListener(this, &Application::selectElementPressed);
+    group_scene_control.add(&selectElementButton);
+    
     // sélection multiple (3.2)
 
     groupe_selection_multiple.setup("Selection multiples");
@@ -999,6 +1021,59 @@ void Application::cursorRotateButtonPressed() {
 }
 
 
+/*void Application::addElementPressed() {
+
+    VectorPrimitive newElement;
+   
+    elements.push_back(newElement);
+}
+
+void Application::removeElementPressed() {
+    
+    if (!elements.empty()) {
+        elements.pop_back();
+    }
+}
+
+
+void Application::selectElementPressed() {
+    if (selectedElementIndex < elements.size() - 1) {
+        
+        selectedElementIndex++;
+    }
+    else {
+       
+        selectedElementIndex = -1;
+    }
+}*/
+
+
+void Application::addElementPressed() {
+    VectorPrimitive newElement;
+    elements.push_back(newElement);
+    
+}
+
+void Application::removeElementPressed() {
+    if (!elements.empty()) {
+        elements.pop_back();
+        
+    }
+}
+
+void Application::selectElementPressed() {
+    if (selectedElementIndex < elements.size() - 1) {
+        selectedElementIndex++;
+    }
+    else {
+        selectedElementIndex = -1;
+    }
+   
+}
+
+
+
+
 
 void Application::exit()
 {
@@ -1021,6 +1096,10 @@ void Application::exit()
     predef2_model_button.removeListener(this, &Application::predef2_model_button_pressed);
     predef3_model_button.removeListener(this, &Application::predef3_model_button_pressed);
     remove_last_model_button.removeListener(this, &Application::remove_last_model_button_pressed);
+
+    addElementButton.removeListener(this, &Application::addElementPressed);
+    removeElementButton.removeListener(this, &Application::removeElementPressed);
+    selectElementButton.removeListener(this, &Application::selectElementPressed);
 
     ofLog() << "<app::exit>";
 
