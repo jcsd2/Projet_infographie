@@ -158,6 +158,26 @@ public:
     void select_vector_shape(int id);
     void translateSelectedShapes(float offsetX, float offsetY);
 
+
+    ofNode node;
+
+    float center_x;
+    float center_y;
+
+    ofPoint minBounds;
+    ofPoint maxBounds;
+    bool bBoundingBoxCalculated = false;
+
+    void calculateBoundingBox();
+    void drawBoundingBox();
+
+    
+
+
+   
+
+    
+
     ~Renderer();
 
     private:

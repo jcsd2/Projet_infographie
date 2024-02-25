@@ -173,6 +173,7 @@ void Application::setup()
 
 
     //4.1
+    groupe_geometrie.add(drawBoundingBoxButton.setup("Dessiner arrete", false));
 
     //4.2
 
@@ -1020,44 +1021,16 @@ void Application::cursorRotateButtonPressed() {
     
 }
 
-
-/*void Application::addElementPressed() {
-
-    VectorPrimitive newElement;
-   
-    elements.push_back(newElement);
-}
-
-void Application::removeElementPressed() {
-    
-    if (!elements.empty()) {
-        elements.pop_back();
-    }
-}
-
-
-void Application::selectElementPressed() {
-    if (selectedElementIndex < elements.size() - 1) {
-        
-        selectedElementIndex++;
-    }
-    else {
-       
-        selectedElementIndex = -1;
-    }
-}*/
-
-
 void Application::addElementPressed() {
     VectorPrimitive newElement;
     elements.push_back(newElement);
-    
+
 }
 
 void Application::removeElementPressed() {
     if (!elements.empty()) {
         elements.pop_back();
-        
+
     }
 }
 
@@ -1068,9 +1041,8 @@ void Application::selectElementPressed() {
     else {
         selectedElementIndex = -1;
     }
-   
-}
 
+}
 
 
 

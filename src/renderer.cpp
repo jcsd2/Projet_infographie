@@ -276,6 +276,12 @@ void Renderer::draw()
             break;
         }
         ofPopMatrix();
+
+
+        if (bShowModel) {
+            model.drawFaces(); 
+            drawBoundingBox(); 
+        }
     }
 
     // afficher la zone de sélection
@@ -650,6 +656,8 @@ void Renderer::update()
         mesh = model.getCurrentAnimatedMesh(0);
     }
     mTimeModelLoaded = ofGetElapsedTimef();
+
+    calculateBoundingBox();
 }
 
 //Fonction pour dessiner la zone de selection (Commed ans les exemples du cours)
@@ -745,3 +753,40 @@ void Renderer::loadModel(string filename){
     }
 	mTimeModelLoaded = ofGetElapsedTimef();
 }
+
+
+void Renderer::calculateBoundingBox() {
+    if (!model.getMeshCount()) return; 
+
+    minBounds.set(FLT_MAX, FLT_MAX, FLT_MAX);
+    maxBounds.set(FLT_MIN, FLT_MIN, FLT_MIN);
+
+    for (unsigned int i = 0; i < model.getMeshCount(); i++) {
+        ofMesh mesh = model.getMesh(i);
+        for (auto& vertex : mesh.getVertices()) {
+            minBounds.x = std::min(minBounds.x, vertex.x);
+            minBounds.y = std::min(minBounds.y, vertex.y);
+            minBounds.z = std::min(minBounds.z, vertex.z);
+
+            maxBounds.x = std::max(maxBounds.x, vertex.x);
+            maxBounds.y = std::max(maxBounds.y, vertex.y);
+            maxBounds.z = std::max(maxBounds.z, vertex.z);
+        }
+    }
+
+    bBoundingBoxCalculated = true;
+}
+
+
+void Renderer::drawBoundingBox() {
+    if (!bBoundingBoxCalculated) return;
+
+    ofNoFill();
+    ofSetColor(ofColor::red);
+    ofDrawBox((minBounds.x + maxBounds.x) / 2, (minBounds.y + maxBounds.y) / 2, (minBounds.z + maxBounds.z) / 2, maxBounds.x - minBounds.x, maxBounds.y - minBounds.y, maxBounds.z - minBounds.z);
+    ofFill();
+}
+
+
+
+

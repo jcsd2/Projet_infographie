@@ -29,16 +29,20 @@ public:
     ofxPanel gui;
     ofParameter<bool> checkbox; //Parametre pour voir le Gui
 
-    std::vector<VectorPrimitive> elements;
-    int selectedElementIndex = -1;
+    
     ofxGuiGroup group_scene_control;
     ofxButton addElementButton;
     ofxButton removeElementButton;
     ofxButton selectElementButton;
 
+   
+    ofxToggle drawBoundingBoxButton;
+    std::vector<VectorPrimitive> elements;
+    int selectedElementIndex = -1;
     void Application::addElementPressed();
     void Application::removeElementPressed();
     void Application::selectElementPressed();
+   
     
     ofxGuiGroup group_image;
     ofxToggle screenshot_button;
