@@ -39,9 +39,9 @@ public:
     ofxToggle drawBoundingBoxButton;
     std::vector<VectorPrimitive> elements;
     int selectedElementIndex = -1;
-    void Application::addElementPressed();
-    void Application::removeElementPressed();
-    void Application::selectElementPressed();
+    void addElementPressed();
+    void removeElementPressed();
+    void selectElementPressed();
    
     
     ofxGuiGroup group_image;
