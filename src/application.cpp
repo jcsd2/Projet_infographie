@@ -215,7 +215,14 @@ void Application::update()
         if (is_key_press_left)
         {
             if(isTranslationActive){
-                renderer.translateLastShape(-(renderer.delta_x * time_elapsed), 0);
+                if(renderer.draw_mode != VectorPrimitiveType::none)
+                {
+                    renderer.translateLastShape(-(renderer.delta_x * time_elapsed), 0);
+                }
+                if(renderer.draw_mode_models != VectorModelType::none)
+                {
+                    renderer.translateLastModel(-(renderer.delta_x * time_elapsed), 0, 0);
+                }
             }
             else if(isRotatingActive)
             {
@@ -225,7 +232,15 @@ void Application::update()
         if (is_key_press_right)
         {
             if(isTranslationActive){
-                renderer.translateLastShape(renderer.delta_x * time_elapsed, 0);
+                if(renderer.draw_mode != VectorPrimitiveType::none) 
+                {
+                    renderer.translateLastShape(renderer.delta_x * time_elapsed, 0);
+                }
+                
+                if(renderer.draw_mode_models != VectorModelType::none)
+                {
+                    renderer.translateLastModel(renderer.delta_x * time_elapsed, 0, 0);
+                }
             }
             else if(isRotatingActive)
             {
@@ -235,7 +250,13 @@ void Application::update()
         if (is_key_press_up)
         {
             if(isTranslationActive){
-                renderer.translateLastShape(0, -renderer.delta_y * time_elapsed);
+                if(renderer.draw_mode != VectorPrimitiveType::none) {
+                    renderer.translateLastShape(0, -renderer.delta_y * time_elapsed);
+                }
+                if(renderer.draw_mode_models != VectorModelType::none)
+                {
+                    renderer.translateLastModel(0, -renderer.delta_y * time_elapsed, 0);
+                }
             }
             if(isScalingActive){
                 float scaleFactor = 1.01;
@@ -245,7 +266,13 @@ void Application::update()
         if (is_key_press_down)
         {
             if(isTranslationActive){
-                renderer.translateLastShape(0, renderer.delta_y * time_elapsed);
+                if(renderer.draw_mode != VectorPrimitiveType::none) {
+                    renderer.translateLastShape(0, renderer.delta_y * time_elapsed);
+                }
+                if(renderer.draw_mode_models != VectorModelType::none)
+                {
+                    renderer.translateLastModel(0, renderer.delta_y * time_elapsed, 0);
+                }
             }
             if(isScalingActive){
                 float scaleFactor = 0.99;
@@ -648,6 +675,7 @@ void Application::button_algo_bressenham_pressed(bool& pressed)
 void Application::button_square_pressed(bool& pressed)
 {
     if (pressed) {
+        renderer.draw_mode_models = VectorModelType::none;
         renderer.draw_mode = VectorPrimitiveType::square;
         ofLog() << "<mode: square>";
         none_shape_button = false;
@@ -666,6 +694,7 @@ void Application::button_square_pressed(bool& pressed)
 void Application::button_rectangle_pressed(bool& pressed)
 {
     if (pressed) {
+        renderer.draw_mode_models = VectorModelType::none;
         renderer.draw_mode = VectorPrimitiveType::rectangle;
         ofLog() << "<mode: rectangle>";
         none_shape_button = false;
@@ -684,6 +713,7 @@ void Application::button_rectangle_pressed(bool& pressed)
 void Application::button_circle_pressed(bool& pressed)
 {
     if (pressed) {
+        renderer.draw_mode_models = VectorModelType::none;
         renderer.draw_mode = VectorPrimitiveType::circle;
         ofLog() << "<mode: circle>";
         none_shape_button = false;
@@ -702,6 +732,7 @@ void Application::button_circle_pressed(bool& pressed)
 void Application::button_ellipse_pressed(bool& pressed)
 {
     if (pressed) {
+        renderer.draw_mode_models = VectorModelType::none;
         renderer.draw_mode = VectorPrimitiveType::ellipse;
         ofLog() << "<mode: ellipse>";
         none_shape_button = false;
@@ -720,6 +751,7 @@ void Application::button_ellipse_pressed(bool& pressed)
 void Application::button_triangle_pressed(bool& pressed)
 {
     if (pressed) {
+        renderer.draw_mode_models = VectorModelType::none;
         renderer.draw_mode = VectorPrimitiveType::triangle;
         ofLog() << "<mode: triangle>";
         none_shape_button = false;
@@ -738,6 +770,7 @@ void Application::button_triangle_pressed(bool& pressed)
 void Application::button_face_pressed(bool& pressed)
 {
     if (pressed) {
+        renderer.draw_mode_models = VectorModelType::none;
         renderer.draw_mode = VectorPrimitiveType::face;
         ofLog() << "<mode: face>";
         none_shape_button = false;
@@ -757,6 +790,7 @@ void Application::button_face_pressed(bool& pressed)
 void Application::button_maison_pressed(bool& pressed)
 {
     if (pressed) {
+        renderer.draw_mode_models = VectorModelType::none;
         renderer.draw_mode = VectorPrimitiveType::maison;
         ofLog() << "<mode: maison>";
         none_shape_button = false;
@@ -804,14 +838,14 @@ bool Application::isInside(int x, int y, const VectorPrimitive& shape) {
 
 void Application::translateButtonPressed(bool& pressed) 
 {
-    if (pressed) {
-        isTranslationActive = true;
+    if (pressed) 
+    {
+        isTranslationActive = pressed;
         isRotatingActive = false;
         isScalingActive = false;
-        translateButton = true;
         rotateButton = false;
         scaleButton = false;
-        ofLog() << "<mode: translation>";
+        ofLog() << "<mode: translation>" << isTranslationActive;
     }
 }
 
@@ -819,10 +853,9 @@ void Application::rotateButtonPressed(bool& pressed)
 {
     if (pressed) {
         isTranslationActive = false;
-        isRotatingActive = true;
+        isRotatingActive = pressed;
         isScalingActive = false;
         translateButton = false;
-        rotateButton = true;
         scaleButton = false;
         ofLog() << "<mode: rotation>";
     }
@@ -834,10 +867,9 @@ void Application::scaleButtonPressed(bool& pressed) {
     if (pressed) {
         isTranslationActive = false;
         isRotatingActive = false;
-        isScalingActive = true;
+        isScalingActive = pressed;
         translateButton = false;
         rotateButton = false;
-        scaleButton = true;
         ofLog() << "<mode: scale>";
     }
 }

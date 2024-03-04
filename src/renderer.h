@@ -170,7 +170,8 @@ public:
     ofxAssimpModelLoader model1;
     ofxAssimpModelLoader model2;
     ofxAssimpModelLoader model3;
-
+    int get_last_model() const;
+    void translateLastModel(float offsetX, float offsetY, float offsetZ);
 
     void setup();
     void update();

@@ -564,12 +564,19 @@ int Renderer::get_last_primitive() const {
     if (lastIndex < 0) {
         lastIndex = buffer_count - 1; // Si buffer_head est à 0, le dernier élément est à buffer_count - 1
     }
-
     return lastIndex;
 }
+
+int Renderer::get_last_model() const {
+    // Récupérer la dernière primitive ajoutée
+    int lastIndex = buffer_model_head - 1;
+    if (lastIndex < 0) {
+        lastIndex = buffer_model_count - 1; // Si buffer_head est à 0, le dernier élément est à buffer_count - 1
+    }
+    return lastIndex;
+}
+
 // Fonction Selection Multiple a complété (shape / deselectionne/ clearer et updater)
-
-
 void Renderer::selectShape(int id) {
     // Ajouter l'ID à la liste des formes sélectionnées si ce n'est pas déjà le cas
     if (std::find(selectedIds.begin(), selectedIds.end(), id) == selectedIds.end()) {
@@ -617,6 +624,14 @@ void Renderer::translateLastShape(float offsetX, float offsetY) {
         shapes[dernier_primitive].position1[1] += offsetY;
         shapes[dernier_primitive].position2[0] += offsetX;
         shapes[dernier_primitive].position2[1] += offsetY;
+    }
+}
+
+void Renderer::translateLastModel(float offsetX, float offsetY, float offsetZ) {
+    int dernier_primitive = get_last_model();
+    if (dernier_primitive >= 0 && dernier_primitive < buffer_model_count) {
+        models[dernier_primitive].position1[0] += offsetX;
+        models[dernier_primitive].position1[1] += offsetY;
     }
 }
 
@@ -816,10 +831,9 @@ void Renderer::calculateBoundingBox() {
 
 
 void Renderer::drawBoundingBox() {
-    if (!bBoundingBoxCalculated) return;
-
+    //if (!bBoundingBoxCalculated) return;
     ofNoFill();
-    ofDrawBox((minBounds.x + maxBounds.x) / 2, (minBounds.y + maxBounds.y) / 2, (minBounds.z + maxBounds.z) / 2, maxBounds.x - minBounds.x, maxBounds.y - minBounds.y, maxBounds.z - minBounds.z);
+    //ofDrawBox((minBounds.x + maxBounds.x) / 2, (minBounds.y + maxBounds.y) / 2, (minBounds.z + maxBounds.z) / 2, maxBounds.x - minBounds.x, maxBounds.y - minBounds.y, maxBounds.z - minBounds.z);
     ofFill();
 }
 
