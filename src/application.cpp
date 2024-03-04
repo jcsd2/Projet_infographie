@@ -176,6 +176,20 @@ void Application::setup()
 
     //4.2
 
+    // Configuration du groupe pour "Primitives Géométriques"
+    groupe_primitive_geometrie.setup("Primitives \nGeometriques");
+    groupe_geometrie.add(&groupe_primitive_geometrie);
+
+    // Configuration et ajout du toggle "Triangle"
+    cubeButton.setup("Cube", false);
+    groupe_primitive_geometrie.add(&cubeButton);
+    cubeButton.addListener(this, &Application::cubeButtonPressed);
+    // Configuration et ajout du toggle "Triangle"
+    sphereButton.setup("Sphere", false);
+    groupe_primitive_geometrie.add(&sphereButton);
+    sphereButton.addListener(this, &Application::sphereButtonPressed);
+ 
+
     //4.3 
 
     //4.4
@@ -841,6 +855,13 @@ void Application::scaleButtonPressed(bool& pressed) {
         ofLog() << "<mode: scale>";
     }
 }
+
+//4.2 Primitive geometriques
+void Application::cubeButtonPressed(bool& pressed) {
+}
+void Application::sphereButtonPressed(bool& pressed) {
+}
+
 
 
 void Application::drawCursor() {
