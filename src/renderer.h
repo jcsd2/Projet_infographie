@@ -37,8 +37,6 @@ enum class VectorModelType {none, predef1, predef2, predef3, import};
 struct VectorModel {
     VectorModelType type;
     float position1[3];
-    float position2[3];
-    float position3[3];
     float normal1[2];
     float normal2[2];
     float normal3[2];
@@ -157,9 +155,8 @@ public:
     float mTimeModelLoaded;
     ofMesh mesh;
     bool bAnimate;
-    void loadModel(int aindex);
+    void loadModels();
     void loadModel(string filename);
-    bool bShowModel;
     
     //VBO models
     int buffer_model_count;
@@ -170,6 +167,10 @@ public:
     VectorModelType draw_mode_models;
     void init_buffer_model();
     void add_vector_models(VectorModelType type);
+    ofxAssimpModelLoader model1;
+    ofxAssimpModelLoader model2;
+    ofxAssimpModelLoader model3;
+
 
     void setup();
     void update();

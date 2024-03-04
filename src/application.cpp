@@ -165,7 +165,6 @@ void Application::setup()
     groupe_geometrie.add(&predef2_model_button);
     groupe_geometrie.add(&predef3_model_button);
     groupe_geometrie.add(&remove_last_model_button);
-    renderer.bShowModel = false;
 
     // Chargez les modèles
        
@@ -378,11 +377,11 @@ void Application::mouseReleased(int x, int y, int button)
     {
         screenshot(x, y, true);
     }
-    else if (renderer.draw_mode_models != VectorModelType::none)
+    else if (renderer.draw_mode != VectorPrimitiveType::none)
     {
         renderer.add_vector_shape(renderer.draw_mode);
     }
-    else if (renderer.draw_mode != VectorPrimitiveType::none){
+    else if (renderer.draw_mode_models != VectorModelType::none){
         renderer.add_vector_models(renderer.draw_mode_models);
     }
     else
@@ -902,26 +901,21 @@ void Application::import_model_button_pressed(){
     }
 }
 void Application::predef1_model_button_pressed(){
-    //renderer.bShowModel = true;
         renderer.draw_mode = VectorPrimitiveType::none;
-        renderer.loadModel(0);
         renderer.draw_mode_models = VectorModelType::predef1;
 }
 void Application::predef2_model_button_pressed(){
         renderer.draw_mode = VectorPrimitiveType::none;
-        renderer.loadModel(1);
         renderer.draw_mode_models = VectorModelType::predef2;
 }
 void Application::predef3_model_button_pressed(){
 
         renderer.draw_mode = VectorPrimitiveType::none;
-        renderer.loadModel(2);
         renderer.draw_mode_models = VectorModelType::predef3;
 }
 
 //Fonction pour retirer le dernier modele affiche
 void Application::remove_last_model_button_pressed(){
-    renderer.bShowModel = false;
 }
 
 void Application::keyPressed(int key)

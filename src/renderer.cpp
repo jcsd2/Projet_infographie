@@ -54,9 +54,10 @@ void Renderer::setup()
     mTimeModelLoaded = 0.f;
     animationPosition = 0;
     bAnimate = true;
-    loadModel(1);
-    init_buffer_model();
 
+    loadModels();
+    init_buffer_model();
+    
 }
 
 void Renderer::draw()
@@ -277,12 +278,6 @@ void Renderer::draw()
             break;
         }
         ofPopMatrix();
-
-
-        if (bShowModel) {
-            model.drawFaces(); 
-            drawBoundingBox(); 
-        }
     }
     //Buffer de model
     for (index = 0; index < buffer_model_count; ++index)
@@ -294,22 +289,24 @@ void Renderer::draw()
             break;
 
         case VectorModelType::predef1:
-            ofTranslate(shapes[index].position2[0],
-                        shapes[index].position2[1]);
-            model.draw(OF_MESH_FILL);
+            
+            ofTranslate(models[index].position1[0],
+                        models[index].position1[1],
+                        0);
+            model1.draw(OF_MESH_FILL);
             break;
 
         case VectorModelType::predef2:
 
-            ofTranslate(shapes[index].position2[0],
-                        shapes[index].position2[1]);
-            model.draw(OF_MESH_FILL);
+            ofTranslate(models[index].position1[0],
+                        models[index].position1[1]);
+            model2.draw(OF_MESH_FILL);
             break;
 
         case VectorModelType::predef3:
-            ofTranslate(shapes[index].position2[0],
-                        shapes[index].position2[1]);
-            model.draw(OF_MESH_FILL);
+            ofTranslate(models[index].position1[0],
+                        models[index].position1[1]);
+            model3.draw(OF_MESH_FILL);
             break;
 
         case VectorModelType::import:
@@ -327,19 +324,6 @@ void Renderer::draw()
             mouse_current_x,
             mouse_current_y);
     }
-
-    //if (bShowModel){
-        //ofPushMatrix();
-        //ofEnableDepthTest();
-        //ofTranslate(500,700,0);
-        //ofRotate(180,0,1,0);
-        //model.draw(OF_MESH_FILL);
-        //ofDisableDepthTest();
-        //ofPopMatrix();
-    //}
-    
-    
-
 }
 
 // fonction qui vide le tableau de primitives vectorielles (Comme dans les exemples du cours)
@@ -774,18 +758,11 @@ void Renderer::init_buffer_model(){
 }
 
 //
-void Renderer::loadModel(int aindex){
-	
-	vector<string> modelPaths = {
-		"Bender/Bender.gltf",
-		"Obama/Obama.fbx",
-		"Shinji/Shinji.obj",
-	};
-	
-	//Verifie si aindex est entre 0 et taille vecteur
-	modelIndex = ofClamp(aindex, 0, (int)modelPaths.size()-1 );
-	loadModel( modelPaths[modelIndex] );
-    ofLog() << " Model loaded: ";
+void Renderer::loadModels(){
+	model1.loadModel("Bender/Bender.gltf");
+	model2.loadModel("Obama/Obama.fbx");
+	model3.loadModel("Shinji/Shinji.obj");
+    ofLog() << " All models loaded ";
 }
 
 void Renderer::loadModel(string filename){
@@ -807,14 +784,9 @@ void Renderer::add_vector_models(VectorModelType type)
     models[buffer_model_head].type = type;
 
     models[buffer_model_head].position1[0] = mouse_current_x;
-    models[buffer_model_head].position1[1] = mouse_current_y;
-
-    models[buffer_model_head].position2[0] = mouse_current_x;
-    models[buffer_model_head].position2[1] = mouse_current_y;
-
+    models[buffer_model_head].position1[1] = mouse_current_y;;
 
     ofLog() << "<new model at index: " << buffer_model_head << ">";
-
     buffer_model_head = ++buffer_model_head >= buffer_model_count ? 0 : buffer_model_head; // boucler sur le tableau si plein
 }
 
