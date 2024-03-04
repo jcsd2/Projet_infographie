@@ -55,6 +55,7 @@ void Renderer::setup()
     animationPosition = 0;
     bAnimate = true;
     loadModel(1);
+    init_buffer_model();
 
 }
 
@@ -283,6 +284,39 @@ void Renderer::draw()
             drawBoundingBox(); 
         }
     }
+    //Buffer de model
+    for (index = 0; index < buffer_model_count; ++index)
+    {
+        ofPushMatrix();
+        switch (models[index].type)
+        {
+        case VectorModelType::none:
+            break;
+
+        case VectorModelType::predef1:
+            ofTranslate(shapes[index].position2[0],
+                        shapes[index].position2[1]);
+            model.draw(OF_MESH_FILL);
+            break;
+
+        case VectorModelType::predef2:
+
+            ofTranslate(shapes[index].position2[0],
+                        shapes[index].position2[1]);
+            model.draw(OF_MESH_FILL);
+            break;
+
+        case VectorModelType::predef3:
+            ofTranslate(shapes[index].position2[0],
+                        shapes[index].position2[1]);
+            model.draw(OF_MESH_FILL);
+            break;
+
+        case VectorModelType::import:
+            break;
+        }
+        ofPopMatrix();
+    }
 
     // afficher la zone de sélection
     if (is_mouse_button_pressed)
@@ -294,15 +328,15 @@ void Renderer::draw()
             mouse_current_y);
     }
 
-    if (bShowModel){
-        ofPushMatrix();
-        ofEnableDepthTest();
-        ofTranslate(500,700,0);
-        ofRotate(180,0,1,0);
-        model.draw(OF_MESH_FILL);
-        ofDisableDepthTest();
-        ofPopMatrix();
-    }
+    //if (bShowModel){
+        //ofPushMatrix();
+        //ofEnableDepthTest();
+        //ofTranslate(500,700,0);
+        //ofRotate(180,0,1,0);
+        //model.draw(OF_MESH_FILL);
+        //ofDisableDepthTest();
+        //ofPopMatrix();
+    //}
     
     
 
@@ -724,6 +758,20 @@ void Renderer::translateSelectedShapes(float offsetX, float offsetY) {
     }
 }
 
+void Renderer::init_buffer_model(){
+    // nombre maximal de models dans le tableau
+    buffer_model_count = 100;
+    // position du prochain model
+    buffer_model_head = 0;
+    // calculer la taille de la structure générique
+    buffer_model_stride = sizeof(VectorModel);
+    // calculer le nombre d'octets à allouer en mémoire pour contenir le tableau
+    buffer_models_size = buffer_model_count * buffer_model_stride;
+    // allocation d'un espace mémoire suffisamment grand pour contenir les données
+    models = (VectorModel*)std::malloc(buffer_models_size);
+    // mode de dessin par défaut
+    draw_mode_models = VectorModelType::none;
+}
 
 //
 void Renderer::loadModel(int aindex){
@@ -753,6 +801,23 @@ void Renderer::loadModel(string filename){
     }
 	mTimeModelLoaded = ofGetElapsedTimef();
 }
+
+void Renderer::add_vector_models(VectorModelType type)
+{
+    models[buffer_model_head].type = type;
+
+    models[buffer_model_head].position1[0] = mouse_current_x;
+    models[buffer_model_head].position1[1] = mouse_current_y;
+
+    models[buffer_model_head].position2[0] = mouse_current_x;
+    models[buffer_model_head].position2[1] = mouse_current_y;
+
+
+    ofLog() << "<new model at index: " << buffer_model_head << ">";
+
+    buffer_model_head = ++buffer_model_head >= buffer_model_count ? 0 : buffer_model_head; // boucler sur le tableau si plein
+}
+
 
 
 void Renderer::calculateBoundingBox() {

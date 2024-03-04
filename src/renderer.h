@@ -20,16 +20,33 @@ enum class LineRenderer { none, dda, bresenham };
     unsigned char       fill_color[4];   // 4 * 1 = 4  octets
 };*/                                     //       = 34 octets
 
+
+
 struct VectorPrimitive {
     int id; 
     VectorPrimitiveType type;
-    float position1[2];
-    float position2[2];
+    float position1[3];
+    float position2[3];
     float position3[3];
     float stroke_width;
     unsigned char stroke_color[4];
     unsigned char fill_color[4];
 };
+
+enum class VectorModelType {none, predef1, predef2, predef3, import};
+struct VectorModel {
+    VectorModelType type;
+    float position1[3];
+    float position2[3];
+    float position3[3];
+    float normal1[2];
+    float normal2[2];
+    float normal3[2];
+    float texcoord1[2];
+    float texcoord2[2];
+    float texcoord3[2];
+};
+
 
 class Renderer
 {
@@ -143,6 +160,16 @@ public:
     void loadModel(int aindex);
     void loadModel(string filename);
     bool bShowModel;
+    
+    //VBO models
+    int buffer_model_count;
+    int buffer_model_head;
+    int buffer_model_stride;
+    int buffer_models_size;
+    VectorModel *models;
+    VectorModelType draw_mode_models;
+    void init_buffer_model();
+    void add_vector_models(VectorModelType type);
 
     void setup();
     void update();
