@@ -175,8 +175,6 @@ void Application::setup()
     // Chargez les modèles
        
 
-
-
     //4.1
     groupe_geometrie.add(drawBoundingBoxButton.setup("Dessiner arrete", false));
 
@@ -201,6 +199,42 @@ void Application::setup()
     //4.4
     groupe_geometrie.minimize();
     gui.add(&groupe_geometrie);
+
+
+    // Camera SECTION 5
+    groupe_camera.setup("Camera");
+
+    // 5.1 Caméra interactive
+
+
+
+    // 5.2 Mode de projection
+    mode_projection.setup("Mode de projection");
+    groupe_camera.add(&mode_projection);
+
+    
+    perspectiveButton.setup("Perspective", false);
+    mode_projection.add(&perspectiveButton);
+    perspectiveButton.addListener(this, &Application::perspectiveButtonPressed);
+
+    
+    orthogonaleButton.setup("Orthogonale", false);
+    mode_projection.add(&orthogonaleButton);
+    orthogonaleButton.addListener(this, &Application::orthogonaleButtonPressed);
+
+    
+    mode_projection.minimize();
+
+    //5.3 Point de vue multiple
+
+    //5.4 Occlusion
+
+
+    groupe_camera.minimize();
+
+    
+    gui.add(&groupe_camera);
+
 
     //5
     //5.1
@@ -935,6 +969,14 @@ void Application::sphereButtonPressed(bool& pressed) {
             face_shape_button = false;
         }
     }
+}
+
+void Application::perspectiveButtonPressed() {
+    
+}
+
+void Application::orthogonaleButtonPressed() {
+    
 }
 
 

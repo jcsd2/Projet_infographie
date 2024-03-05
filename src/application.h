@@ -155,7 +155,17 @@ public:
     void sphereButtonPressed(bool& pressed);
    
 
+    // Section 5 Caméra
+    ofxGuiGroup groupe_camera;
 
+
+    // Modes de projection 5.2
+    ofxGuiGroup mode_projection;
+    ofxButton perspectiveButton;
+    ofxButton orthogonaleButton;
+
+    void perspectiveButtonPressed();
+    void orthogonaleButtonPressed();
 
     // Méthodes associées aux boutons
     void noneTransformationButtonPressed();
@@ -190,12 +200,6 @@ public:
     bool is_key_press_down;
     bool is_key_press_left;
     bool is_key_press_right;
-    bool is_key_press_numpad1;
-    bool is_key_press_numpad2;
-    bool is_key_press_numpad3;
-    bool is_key_press_numpad4;
-    bool is_key_press_numpad5;
-    bool is_key_press_numpad6;
 
     void setup();
     void update();
