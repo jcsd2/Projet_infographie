@@ -8,20 +8,10 @@ enum class VectorPrimitiveType { none, pixel, point, line, square, rectangle, ci
 // énumération de différents algorithmes de rastérisation de ligne
 enum class LineRenderer { none, dda, bresenham };
 
-// structure de primitive vectorielle générique (Comme dans les exemples du cours)
-/*struct VectorPrimitive
-{
-    VectorPrimitiveType type;            // 1 * 4 = 4  octets
-    float               position1[2];    // 2 * 4 = 8  octets
-    float               position2[2];    // 2 * 4 = 8  octets
-    float               position3[3];    // 2 * 4 = 8  octets
-    float               stroke_width;    // 1 * 4 = 4  octets
-    unsigned char       stroke_color[4]; // 4 * 1 = 4  octets
-    unsigned char       fill_color[4];   // 4 * 1 = 4  octets
-};*/                                     //       = 34 octets
+//énumération de différents modeles 3d
+enum class VectorModelType {none, predef1, predef2, predef3, import};
 
-
-
+//Structure pour primitive
 struct VectorPrimitive {
     int id; 
     VectorPrimitiveType type;
@@ -33,16 +23,14 @@ struct VectorPrimitive {
     unsigned char fill_color[4];
 };
 
-enum class VectorModelType {none, predef1, predef2, predef3, import};
+//Structure pour modele 3d importe
 struct VectorModel {
     VectorModelType type;
     float position1[3];
-    float normal1[2];
-    float normal2[2];
-    float normal3[2];
+    float normal1[3];
     float texcoord1[2];
-    float texcoord2[2];
-    float texcoord3[2];
+    unsigned char stroke_color[4];
+    unsigned char fill_color[4];
 };
 
 

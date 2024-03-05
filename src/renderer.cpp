@@ -66,6 +66,7 @@ void Renderer::draw()
     for (index = 0; index < buffer_count; ++index)
     {
         ofPushMatrix();
+        ofPushStyle();
         switch (shapes[index].type)
         {
         case VectorPrimitiveType::none:
@@ -275,8 +276,6 @@ void Renderer::draw()
             break;
 
         case VectorPrimitiveType::cube: {
-
-
             ofFill();
             ofSetLineWidth(0);
             ofSetColor(shapes[index].fill_color[0], shapes[index].fill_color[1], shapes[index].fill_color[2]);
@@ -296,7 +295,7 @@ void Renderer::draw()
         case VectorPrimitiveType::sphere: {
             ofFill();
             ofSetLineWidth(0);
-
+            ofSetColor(shapes[index].fill_color[0], shapes[index].fill_color[1], shapes[index].fill_color[2]);
             float sphereRayon = 50;
 
             drawSphere(
@@ -304,8 +303,6 @@ void Renderer::draw()
                 shapes[index].position1[1],
                 0,
                 sphereRayon);
-
-
             break;
         }
 
@@ -313,34 +310,37 @@ void Renderer::draw()
             break;
         }
         ofPopMatrix();
+        ofPopStyle();
     }
     //Buffer de model
     for (index = 0; index < buffer_model_count; ++index)
     {
         ofPushMatrix();
+        ofPushStyle();
         switch (models[index].type)
         {
         case VectorModelType::none:
             break;
 
         case VectorModelType::predef1:
-            
             ofTranslate(models[index].position1[0],
                         models[index].position1[1],
-                        0);
+                        models[index].position1[2]);
             model1.draw(OF_MESH_FILL);
             break;
 
         case VectorModelType::predef2:
 
             ofTranslate(models[index].position1[0],
-                        models[index].position1[1]);
+                        models[index].position1[1],
+                        models[index].position1[2]);
             model2.draw(OF_MESH_FILL);
             break;
 
         case VectorModelType::predef3:
             ofTranslate(models[index].position1[0],
-                        models[index].position1[1]);
+                        models[index].position1[1],
+                        models[index].position1[2]);
             model3.draw(OF_MESH_FILL);
             break;
 
@@ -348,6 +348,7 @@ void Renderer::draw()
             break;
         }
         ofPopMatrix();
+        ofPopStyle();
     }
 
     // afficher la zone de sélection
@@ -854,6 +855,16 @@ void Renderer::add_vector_models(VectorModelType type)
 
     models[buffer_model_head].position1[0] = mouse_current_x;
     models[buffer_model_head].position1[1] = mouse_current_y;;
+
+    models[buffer_model_head].stroke_color[0] = 0;
+    models[buffer_model_head].stroke_color[1] = 0;
+    models[buffer_model_head].stroke_color[2] = 0;
+    models[buffer_model_head].stroke_color[3] = 255;
+
+    models[buffer_model_head].fill_color[0] = 0;
+    models[buffer_model_head].fill_color[1] = 0;
+    models[buffer_model_head].fill_color[2] = 0;
+    models[buffer_model_head].fill_color[3] = 255;
 
     ofLog() << "<new model at index: " << buffer_model_head << ">";
     buffer_model_head = ++buffer_model_head >= buffer_model_count ? 0 : buffer_model_head; // boucler sur le tableau si plein

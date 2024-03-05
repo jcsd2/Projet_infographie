@@ -130,15 +130,18 @@ void Application::setup()
     //transformations interactives (3.3)
     groupe_transforamtion_interactive.setup ("Transformations \ninterectives");
     group_transformation.add(&groupe_transforamtion_interactive);
-    translateButton.setup("Tranlation\n(fleche clavier)", ofParameter<bool>(false));
+    noneTransformationButton.setup("Aucune");
+    noneTransformationButton.addListener(this, &Application::noneTransformationButtonPressed);
+    translateButton.setup("Tranlation\n(fleche clavier)");
     translateButton.addListener(this, &Application::translateButtonPressed);
     isTranslationActive = false;
-    rotateButton.setup("Rotation\n(fleche <- ->)",ofParameter<bool>(false));
+    rotateButton.setup("Rotation\n(fleche <- ->)");
     rotateButton.addListener(this, &Application::rotateButtonPressed);
     isRotatingActive = false;
-    scaleButton.setup("Echelle\n(fleche ^ v)",ofParameter<bool>(false));
+    scaleButton.setup("Echelle\n(fleche ^ v)");
     scaleButton.addListener(this, &Application::scaleButtonPressed);
     isScalingActive = false;
+    groupe_transforamtion_interactive.add(&noneTransformationButton);
     groupe_transforamtion_interactive.add(&translateButton);
     groupe_transforamtion_interactive.add(&rotateButton);
     groupe_transforamtion_interactive.add(&scaleButton);
@@ -150,16 +153,19 @@ void Application::setup()
 
     //Ajouter Geometrie ici vv
     groupe_geometrie.setup("Geometrie");
+    none_model_button.setup("Mode : Aucun");
     import_model_button.setup("Importer modele");
     predef1_model_button.setup("Modele 1");
     predef2_model_button.setup("Modele 2");
     predef3_model_button.setup("Modele 3");
     remove_last_model_button.setup("Retirer dernier\n modele");
+    none_model_button.addListener(this, &Application::non_model_button_pressed);
     import_model_button.addListener(this, &Application::import_model_button_pressed);
     predef1_model_button.addListener(this, &Application::predef1_model_button_pressed);
     predef2_model_button.addListener(this, &Application::predef2_model_button_pressed);
     predef3_model_button.addListener(this, &Application::predef3_model_button_pressed);
     remove_last_model_button.addListener(this,&Application::remove_last_model_button_pressed);
+    groupe_geometrie.add(&none_model_button);
     groupe_geometrie.add(&import_model_button);
     groupe_geometrie.add(&predef1_model_button);
     groupe_geometrie.add(&predef2_model_button);
@@ -558,6 +564,8 @@ void Application::button_none_pressed(bool& pressed)
 {
     if (pressed) {
         renderer.draw_mode = VectorPrimitiveType::none;
+        renderer.draw_mode_models = VectorModelType::none;
+        isTranslationActive = false;
         ofLog() << "<mode: none>";
         pixel_shape_button = false;
         point_shape_button = false;
@@ -851,42 +859,36 @@ bool Application::isInside(int x, int y, const VectorPrimitive& shape) {
     }
 }
 
+void Application::noneTransformationButtonPressed(){
+    isTranslationActive = false;
+    isRotatingActive = false;
+    isScalingActive = false;
+    ofLog() << "<mode: transformation : none>" << isTranslationActive;
+}
 
-void Application::translateButtonPressed(bool& pressed) 
+void Application::translateButtonPressed() 
 {
-    if (pressed) 
-    {
+
         isTranslationActive = !isTranslationActive;
         isRotatingActive = false;
         isScalingActive = false;
-        rotateButton = false;
-        scaleButton = false;
         ofLog() << "<mode: translation>" << isTranslationActive;
-    }
 }
 
-void Application::rotateButtonPressed(bool& pressed) 
+void Application::rotateButtonPressed() 
 {
-    if (pressed) {
         isTranslationActive = false;
         isRotatingActive = !isRotatingActive;
         isScalingActive = false;
-        translateButton = false;
-        scaleButton = false;
         ofLog() << "<mode: rotation>" << isRotatingActive ;
-    }
 }
 
-void Application::scaleButtonPressed(bool& pressed) {
-
-    if (pressed) {
+void Application::scaleButtonPressed() 
+{
         isTranslationActive = false;
         isRotatingActive = false;
         isScalingActive = !isScalingActive;
-        translateButton = false;
-        rotateButton = false;
         ofLog() << "<mode: scale>" << isScalingActive;
-    }
 }
 
 //4.2 Primitive geometriques
@@ -968,7 +970,10 @@ void Application::drawCursor() {
     }
 }
 
-
+void Application::non_model_button_pressed(){
+    renderer.draw_mode = VectorPrimitiveType::none;
+    renderer.draw_mode_models = VectorModelType::none;
+}
 
 void Application::import_model_button_pressed(){
     ofFileDialogResult result = ofSystemLoadDialog("Select a folder", true);
@@ -1149,9 +1154,11 @@ void Application::exit()
     cursorDrawLineButton.removeListener(this, &Application::cursorDrawLineButtonPressed);
     cursorDrawCircleButton.removeListener(this, &Application::cursorDrawCircleButtonPressed);
     cursorSelectButton.removeListener(this, &Application::cursorSelectButtonPressed);
+    noneTransformationButton.removeListener(this, &Application::noneTransformationButtonPressed);
     cursorTranslateButton.removeListener(this, &Application::cursorTranslateButtonPressed);
     cursorRotateButton.removeListener(this, &Application::cursorRotateButtonPressed);
     
+    none_model_button.removeListener(this, &Application::non_model_button_pressed);
     import_model_button.removeListener(this, &Application::import_model_button_pressed);
     predef1_model_button.removeListener(this, &Application::predef1_model_button_pressed);
     predef2_model_button.removeListener(this, &Application::predef2_model_button_pressed);

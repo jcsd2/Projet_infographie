@@ -121,18 +121,21 @@ public:
     bool shapeSelected;
 
     // Boutons pour les options de modification
-    ofxToggle translateButton;
-    ofxToggle rotateButton;
-    ofxToggle scaleButton;
+    ofxButton noneTransformationButton;
+    ofxButton translateButton;
+    ofxButton rotateButton;
+    ofxButton scaleButton;
 
     //Section 4 Geometrie
     ofxGuiGroup groupe_geometrie;
+    ofxButton none_model_button;
     ofxButton import_model_button;
     ofxButton predef1_model_button;
     ofxButton predef2_model_button;
     ofxButton predef3_model_button;
     ofxButton remove_last_model_button;
     bool bShowModel;
+    void non_model_button_pressed();
     void import_model_button_pressed();
     void predef1_model_button_pressed();
     void predef2_model_button_pressed();
@@ -155,9 +158,10 @@ public:
 
 
     // Méthodes associées aux boutons
-    void translateButtonPressed(bool& pressed);
-    void rotateButtonPressed(bool& pressed);
-    void scaleButtonPressed(bool& pressed);
+    void noneTransformationButtonPressed();
+    void translateButtonPressed();
+    void rotateButtonPressed();
+    void scaleButtonPressed();
     void drawCursor();
 
     void cursorDefaultButtonPressed();
