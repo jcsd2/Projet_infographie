@@ -37,10 +37,10 @@ void Renderer::setup()
     radius = 4.0f;
 
     //Speed de deplacement
-    speed = 100.0f;
-    delta_x = speed;
-    delta_y = speed;
-    delta_z = speed;
+    speed_delta = 100.0f;
+    delta_x = speed_delta;
+    delta_y = speed_delta;
+    delta_z = speed_delta;
     angle = 0.0f;
 
 
@@ -57,11 +57,32 @@ void Renderer::setup()
 
     loadModels();
     init_buffer_model();
-    
+    setup_camera();
 }
 
 void Renderer::draw()
 {
+
+    //Activer la camera
+    camera->begin();
+    //Mettre gizmo si mode active
+    if (is_visible_axes)
+        ofDrawRotationAxes(64);
+    if (is_visible_camera)
+    {
+        if (camera_active != Camera::devant)
+            camera_devant.draw();
+        if (camera_active != Camera::derriere)
+            camera_derriere.draw();
+        if (camera_active != Camera::gauche)
+            camera_gauche.draw();
+        if (camera_active != Camera::droite)
+            camera_droite.draw();
+        if (camera_active != Camera::dessus)
+            camera_dessus.draw();
+        if (camera_active != Camera::dessous)
+            camera_dessous.draw();
+  }
 
     for (index = 0; index < buffer_count; ++index)
     {
@@ -323,6 +344,7 @@ void Renderer::draw()
             break;
 
         case VectorModelType::predef1:
+            ofScale(0.2,0.2, 1.0);
             ofTranslate(models[index].position1[0],
                         models[index].position1[1],
                         models[index].position1[2]);
@@ -360,15 +382,29 @@ void Renderer::draw()
             mouse_current_x,
             mouse_current_y);
     }
+    camera->end();
 }
 
 // fonction qui vide le tableau de primitives vectorielles (Comme dans les exemples du cours)
 void Renderer::reset()
 {
     for (index = 0; index < buffer_count; ++index)
+    {
         shapes[index].type = VectorPrimitiveType::none;
-
-    buffer_head = 0;
+        buffer_head = 0;
+    }
+    for (index =0 ; index < buffer_model_count; ++index){
+        models[index].type = VectorModelType::none;
+        buffer_model_head = 0;
+    }
+    offset_camera = 5.0f;
+    camera_devant.setPosition(0, 0, -offset_camera);
+    camera_derriere.setPosition(0, 0, offset_camera);
+    camera_gauche.setPosition(-offset_camera, 0, 0);
+    camera_droite.setPosition(offset_camera, 0, 0);
+    camera_dessus.setPosition(0, offset_camera, 0);
+    camera_dessous.setPosition(0, -offset_camera, 0);
+    camera_active = Camera::devant;
 
     ofLog() << "<reset>";
 }
@@ -666,12 +702,6 @@ void Renderer::updateSelectedShapesAttribute(float newStrokeWidth, const ofColor
     }
 }
 
-
-
-
-// La fin de mon code
-
-
 void Renderer::translateLastShape(float offsetX, float offsetY) {
     int dernier_primitive = get_last_primitive();
     if (dernier_primitive >= 0 && dernier_primitive < buffer_count) {
@@ -746,6 +776,42 @@ void Renderer::update()
     mTimeModelLoaded = ofGetElapsedTimef();
 
     calculateBoundingBox();
+
+    time_current = ofGetElapsedTimef();
+    time_elapsed = time_current - time_last;
+    time_last = time_current;
+
+    speed_translation = speed_delta * time_elapsed;
+    speed_rotation = speed_translation / 8.0f;
+
+    if (is_camera_move_left)
+        camera->truck(-speed_translation);
+    if (is_camera_move_right)
+        camera->truck(speed_translation);
+    if (is_camera_move_up)
+        camera->boom(speed_translation);
+    if (is_camera_move_down)
+        camera->boom(-speed_translation);
+    if (is_camera_move_forward)
+        camera->dolly(-speed_translation);
+    if (is_camera_move_backward)
+        camera->dolly(speed_translation);
+    if (is_camera_tilt_up)
+        camera->tiltDeg(-speed_rotation);
+    if (is_camera_tilt_down)
+        camera->tiltDeg(speed_rotation);
+    if (is_camera_pan_left)
+        camera->panDeg(speed_rotation);
+    if (is_camera_pan_right)
+        camera->panDeg(-speed_rotation);
+    if (is_camera_roll_left)
+        camera->rollDeg(-speed_rotation);
+    if (is_camera_roll_right)
+        camera->rollDeg(speed_rotation);
+
+    //camera_fov = std::max(camera_fov -= camera_fov_delta * time_elapsed, 0.0f);
+    camera->setFov(camera_fov);
+
 }
 
 //Fonction pour dessiner la zone de selection (Commed ans les exemples du cours)
@@ -768,10 +834,6 @@ void Renderer::draw_zone(float x1, float y1, float x2, float y2) const
     ofPopMatrix();
 }
 
-Renderer::~Renderer()
-{
-    std::free(shapes);
-}
 
 
 int Renderer::generate_unique_id() {
@@ -853,8 +915,9 @@ void Renderer::add_vector_models(VectorModelType type)
 {
     models[buffer_model_head].type = type;
 
-    models[buffer_model_head].position1[0] = mouse_current_x;
-    models[buffer_model_head].position1[1] = mouse_current_y;;
+    models[buffer_model_head].position1[0] = 0;
+    models[buffer_model_head].position1[1] = 0;
+    models[buffer_model_head].position1[2] = 0;
 
     models[buffer_model_head].stroke_color[0] = 0;
     models[buffer_model_head].stroke_color[1] = 0;
@@ -902,6 +965,79 @@ void Renderer::drawBoundingBox() {
     ofFill();
 }
 
+//Fonction de configuration très inspiré des exmples du cours
+void Renderer::setup_camera()
+{
+    camera_position = {0.0f, 0.0f, 0.0f};
+    camera_target = {0.0f, 0.0f, 0.0f};
+    camera_near_clipping = 50.0f;
+    camera_far_clipping = 1750.0f;
+    camera_fov = 60.0f;
+    camera_fov_delta = 16.0f;
+    speed_delta = 250.0f;
 
+    is_visible_axes = false;
+    is_visible_camera = false;
+    is_camera_move_left = false;
+    is_camera_move_right = false;
+    is_camera_move_up = false;
+    is_camera_move_down = false;
+    is_camera_move_forward = false;
+    is_camera_move_backward = false;
+    is_camera_tilt_up = false;
+    is_camera_tilt_down = false;
+    is_camera_pan_left = false;
+    is_camera_pan_right = false;
+    is_camera_roll_left = false;
+    is_camera_roll_right = false;
 
+    switch (camera_active)
+    {
+    case Camera::devant:
+        camera = &camera_devant;
+        camera_nom = "Avant";
+        break;
+    case Camera::derriere:
+        camera = &camera_derriere;
+        camera_nom = "Arrière";
+        break;
+    case Camera::gauche:
+        camera = &camera_gauche;
+        camera_nom = "Gauche";
+        break;
+    case Camera::droite:
+        camera = &camera_droite;
+        camera_nom = "Droite";
+        break;
+    case Camera::dessus:
+        camera = &camera_dessus;
+        camera_nom = "Haut";
+        break;
+    case Camera::dessous:
+        camera = &camera_dessous;
+        camera_nom = "Bas";
+        break;
+    default:
+        break;
+    }
+    camera_position = camera->getPosition();
+    camera_orientation = camera->getOrientationQuat();
+
+    //Ajout mode orthogonale ici car mode default perspective
+
+    //Mode perspective
+    camera->disableOrtho();
+    //false pour ne pas inverser verticalement l image (selon sysy de coord)
+    camera->setupPerspective(false, camera_fov, camera_near_clipping, camera_far_clipping, ofVec2f(0, 0));
+    camera_projection = "perspective";
+    camera->setPosition(camera_position);
+    camera->setOrientation(camera_orientation);
+
+}
+
+Renderer::~Renderer()
+{
+    std::free(shapes);
+    std::free(models);
+}
 

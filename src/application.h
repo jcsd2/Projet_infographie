@@ -190,6 +190,12 @@ public:
     bool is_key_press_down;
     bool is_key_press_left;
     bool is_key_press_right;
+    bool is_key_press_numpad1;
+    bool is_key_press_numpad2;
+    bool is_key_press_numpad3;
+    bool is_key_press_numpad4;
+    bool is_key_press_numpad5;
+    bool is_key_press_numpad6;
 
     void setup();
     void update();

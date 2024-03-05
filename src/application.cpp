@@ -6,8 +6,8 @@ void Application::setup()
     ofSetWindowTitle("Projet_Session");
 
     ofLog() << "<app::setup>";
-
     renderer.setup();
+    
     gui.setPosition(1, 1);
     gui.setup("Interface"); //(2.5)
     checkbox.setName("Gui visible");
@@ -203,6 +203,14 @@ void Application::setup()
     gui.add(&groupe_geometrie);
 
     //5
+    //5.1
+    is_key_press_up = false;
+    is_key_press_down = false;
+    is_key_press_left = false;
+    is_key_press_right = false;
+    //5.2
+    
+    
 }
 
 
@@ -218,6 +226,7 @@ void Application::draw()
     if (importedImage.isAllocated()) {
         importedImage.draw(0, 0); // Ajustez la position et la taille selon vos besoins
     }
+    
 }
 
 
@@ -246,7 +255,7 @@ void Application::update()
             }
             else if(isRotatingActive)
             {
-                renderer.rotatePrimitive(renderer.speed/2.0 * time_elapsed);
+                renderer.rotatePrimitive(renderer.speed_delta/2.0 * time_elapsed);
             }
         }
         if (is_key_press_right)
@@ -264,7 +273,7 @@ void Application::update()
             }
             else if(isRotatingActive)
             {
-                renderer.rotatePrimitive(-renderer.speed/2.0 * time_elapsed);
+                renderer.rotatePrimitive(-renderer.speed_delta/2.0 * time_elapsed);
             }
         }
         if (is_key_press_up)
@@ -322,8 +331,6 @@ void Application::update()
 
     renderer.update();
 
-
-    
 }
 
 
@@ -1055,12 +1062,12 @@ void Application::keyReleased(int key)
         renderer.reset();
         break;
     case OF_KEY_LEFT: // key ←
-            is_key_press_left = false;
+        is_key_press_left = false;
       
       break;
 
     case OF_KEY_UP: // key ↑
-            is_key_press_up = false;
+        is_key_press_up = false;
       break;
 
     case OF_KEY_RIGHT: // key →
@@ -1068,11 +1075,44 @@ void Application::keyReleased(int key)
       break;
 
     case OF_KEY_DOWN: // key ↓
-            is_key_press_down = false;
+        is_key_press_down = false;
       break;
 
+    case 49: //Key numpad1
+        renderer.camera_active = Camera::devant;
+        renderer.setup_camera();
+        ofLog() << "<app::cam 1";
+    break;
+
+    case 50: //Key numpad2
+        renderer.camera_active = Camera::derriere;
+        renderer.setup_camera();
+        ofLog() << "<app::cam 2>";
+    break;
+
+    case 51: //Key numpad2
+        renderer.camera_active = Camera::gauche;
+        renderer.setup_camera();
+    break;
+
+    case 52: //Key numpad4
+        renderer.camera_active = Camera::droite;
+        renderer.setup_camera();
+    break;
+
+    case 53: //Key numpad5
+        renderer.camera_active = Camera::dessus;
+        renderer.setup_camera();
+    break;
+
+    case 54: //Key numpad5
+        renderer.camera_active = Camera::dessous;
+        renderer.setup_camera();
+    break;
+
     default:
-        break;
+        ofLog() << "<app::key num>" << key;
+    break;
     }
 }
 

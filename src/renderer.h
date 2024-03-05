@@ -11,6 +11,8 @@ enum class LineRenderer { none, dda, bresenham };
 //énumération de différents modeles 3d
 enum class VectorModelType {none, predef1, predef2, predef3, import};
 
+enum class Camera {devant, derriere, gauche, droite, dessus, dessous};
+
 //Structure pour primitive
 struct VectorPrimitive {
     int id; 
@@ -108,7 +110,6 @@ public:
     float delta_z;
     float radious;
     float proportion;
-    float speed;
     float angle;
 
 
@@ -166,7 +167,50 @@ public:
     void drawSphere(float x, float y, float z, float radius) const;
     float sphereRayon;
 
+    //Initialisation pour camera
+    Camera camera_active;
+    ofCamera camera_devant;
+    ofCamera camera_derriere;
+    ofCamera camera_gauche;
+    ofCamera camera_droite;
+    ofCamera camera_dessus;
+    ofCamera camera_dessous;
+    ofCamera *camera;
+    ofQuaternion camera_orientation;
+    ofVec3f camera_position;
+    ofVec3f camera_target;
+    string camera_nom;
+    string camera_projection;
+    float camera_near_clipping;
+    float camera_far_clipping;
+    float camera_fov;
+    float camera_fov_delta;
+    float speed_delta;
+    float speed_translation;
+    float speed_rotation;
+    float offset_camera;
+    float offset_color;
+    float offset_scene;
+    bool is_visible_axes;
+    bool is_visible_camera;
+    bool is_camera_move_left;
+    bool is_camera_move_right;
+    bool is_camera_move_up;
+    bool is_camera_move_down;
+    bool is_camera_move_forward;
+    bool is_camera_move_backward;
+    bool is_camera_tilt_up;
+    bool is_camera_tilt_down;
+    bool is_camera_pan_left;
+    bool is_camera_pan_right;
+    bool is_camera_roll_left;
+    bool is_camera_roll_right;
+    void setup_camera();
+
     void setup();
+    float time_current;
+    float time_last;
+    float time_elapsed;
     void update();
     void draw();
     void reset();
