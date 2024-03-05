@@ -62,28 +62,309 @@ void Renderer::setup()
 
 void Renderer::draw()
 {
+    if(!mode_cam){
+        camera->begin();
+        if (is_visible_camera)
+        {
+            if (camera_active != Camera::devant)
+                camera_devant.draw();
+            if (camera_active != Camera::derriere)
+                camera_derriere.draw();
+            if (camera_active != Camera::gauche)
+                camera_gauche.draw();
+            if (camera_active != Camera::droite)
+                camera_droite.draw();
+            if (camera_active != Camera::dessus)
+                camera_dessus.draw();
+            if (camera_active != Camera::dessous)
+                camera_dessous.draw();
+        }
+        if (is_mouse_button_pressed)
+        {
+            draw_zone(
+                mouse_press_x,
+                mouse_press_y,
+                mouse_current_x,
+                mouse_current_y);
+        }
+        draw_primitives();
+        drawModels();
+        camera->end();
+    } else {
+        glViewport(0,0, ofGetWindowWidth()/2.0, ofGetWindowHeight());
+        camera = &camera_gauche;
+        camera->begin();
+        draw_primitives();
+        drawModels();
+        camera->end();
+        glViewport(ofGetWindowWidth() / 2, 0, ofGetWindowWidth() / 2, ofGetWindowHeight());
+        camera = &camera_droite;
+        camera->begin();
+        draw_primitives();
+        drawModels();
+        if (is_visible_camera)
+        {
+            if (camera_active != Camera::devant)
+                camera_devant.draw();
+            if (camera_active != Camera::derriere)
+                camera_derriere.draw();
+            if (camera_active != Camera::gauche)
+                camera_gauche.draw();
+            if (camera_active != Camera::droite)
+                camera_droite.draw();
+            if (camera_active != Camera::dessus)
+                camera_dessus.draw();
+            if (camera_active != Camera::dessous)
+                camera_dessous.draw();
+        }
+        camera->end();
+    }
 
-    //Activer la camera
-    camera->begin();
-    //Mettre gizmo si mode active
     if (is_visible_axes)
         ofDrawRotationAxes(64);
-    if (is_visible_camera)
-    {
-        if (camera_active != Camera::devant)
-            camera_devant.draw();
-        if (camera_active != Camera::derriere)
-            camera_derriere.draw();
-        if (camera_active != Camera::gauche)
-            camera_gauche.draw();
-        if (camera_active != Camera::droite)
-            camera_droite.draw();
-        if (camera_active != Camera::dessus)
-            camera_dessus.draw();
-        if (camera_active != Camera::dessous)
-            camera_dessous.draw();
-  }
+}
 
+// fonction qui vide le tableau de primitives vectorielles (Comme dans les exemples du cours)
+void Renderer::reset()
+{
+    for (index = 0; index < buffer_count; ++index)
+    {
+        shapes[index].type = VectorPrimitiveType::none;
+        buffer_head = 0;
+    }
+    for (index =0 ; index < buffer_model_count; ++index){
+        models[index].type = VectorModelType::none;
+        buffer_model_head = 0;
+    }
+    offset_camera = 5.0f;
+    camera_devant.setPosition(0, 0, -offset_camera);
+    camera_derriere.setPosition(0, 0, offset_camera);
+    camera_gauche.setPosition(-offset_camera, 0, 0);
+    camera_droite.setPosition(offset_camera, 0, 0);
+    camera_dessus.setPosition(0, offset_camera, 0);
+    camera_dessous.setPosition(0, -offset_camera, 0);
+    camera_active = Camera::devant;
+
+    ofLog() << "<reset>";
+}
+
+// fonction qui ajoute une primitive vectorielle au tableau (Comme dans les exemples du cours)
+void Renderer::add_vector_shape(VectorPrimitiveType type)
+{
+    shapes[buffer_head].type = type;
+
+    shapes[buffer_head].position1[0] = mouse_press_x;
+    shapes[buffer_head].position1[1] = mouse_press_y;
+
+    shapes[buffer_head].position2[0] = mouse_current_x;
+    shapes[buffer_head].position2[1] = mouse_current_y;
+
+
+    shapes[buffer_head].stroke_width = (lineThickness > 0) ? lineThickness : stroke_width_default; //outil de dessin
+    shapes[buffer_head].stroke_color[0] = (lineColor.a > 0) ? lineColor.r : stroke_color_r;
+    shapes[buffer_head].stroke_color[1] = (lineColor.a > 0) ? lineColor.g : stroke_color_g;
+    shapes[buffer_head].stroke_color[2] = (lineColor.a > 0) ? lineColor.b : stroke_color_g;
+    shapes[buffer_head].stroke_color[3] = (lineColor.a > 0) ? lineColor.a : stroke_color_a;
+
+    shapes[buffer_head].fill_color[0] = (fillColor.a > 0) ? fillColor.r : fill_color_r;
+    shapes[buffer_head].fill_color[1] = (fillColor.a > 0) ? fillColor.g : fill_color_g;
+    shapes[buffer_head].fill_color[2] = (fillColor.a > 0) ? fillColor.b : fill_color_b;
+    shapes[buffer_head].fill_color[3] = (fillColor.a > 0) ? fillColor.a : fill_color_a;
+
+
+    ofLog() << "<new primitive at index: " << buffer_head << ">";
+
+    buffer_head = ++buffer_head >= buffer_count ? 0 : buffer_head; // boucler sur le tableau si plein
+}
+
+// fonction qui dessine un pixel (Comme dans les exemples du cours)
+void Renderer::draw_pixel(float x, float y) const
+{
+    //Floorf : fonction qui arrondit un nombre flottant vers le bas pour obtenir le nombres entier immédiatement inférieur
+    int pixel_x = floorf(x);
+    int pixel_y = floorf(y);
+
+    ofDrawRectangle(pixel_x, pixel_y, 1, 1);
+}
+
+// fonction qui dessine un point
+void Renderer::draw_point(float x, float y, float radius) const
+{
+    ofDrawEllipse(x, y, radius, radius);
+}
+
+// fonction qui dessine une ligne
+void Renderer::draw_line(float x1, float y1, float x2, float y2) const
+{
+    switch (lineRenderer) {
+    case LineRenderer::none:
+        // Utilisez l'algorithme par défaut ou choisissez-en un
+        ofDrawLine(x1, y1, x2, y2);
+        break;
+    case LineRenderer::dda:
+        // Utilisez l'algorithme DDA pour rasteriser la ligne
+        draw_line_dda(x1, y1, x2, y2);
+        break;
+    case LineRenderer::bresenham:
+        // Utilisez l'algorithme Bresenham pour rasteriser la ligne
+        draw_line_bresenham(x1, y1, x2, y2);
+        break;
+    default:
+        break;
+    }
+}
+
+// Fonction de dessin de ligne avec l'algorithme DDA
+void Renderer::draw_line_dda(float x1, float y1, float x2, float y2) const
+{
+    float dx = x2 - x1;
+    float dy = y2 - y1;
+    float steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+    float x_increment = dx / steps;
+    float y_increment = dy / steps;
+    float x = x1;
+    float y = y1;
+
+    for (int i = 0; i <= steps; ++i)
+    {
+        draw_pixel(x, y);
+        x += x_increment;
+        y += y_increment;
+    }
+}
+
+// Fonction de dessin de ligne avec l'algorithme Bresenham
+void Renderer::draw_line_bresenham(float x1, float y1, float x2, float y2) const
+{
+    int dx = abs(x2 - x1);
+    int dy = abs(y2 - y1);
+    int x_sign = x1 < x2 ? 1 : -1;
+    int y_sign = y1 < y2 ? 1 : -1;
+
+    int error = dx - dy;
+
+    int x = static_cast<int>(x1);
+    int y = static_cast<int>(y1);
+
+    draw_pixel(x, y);
+
+    while (x != static_cast<int>(x2) || y != static_cast<int>(y2))
+    {
+        int error2 = error * 2;
+
+        if (error2 > -dy)
+        {
+            error -= dy;
+            x += x_sign;
+        }
+
+        if (error2 < dx)
+        {
+            error += dx;
+            y += y_sign;
+        }
+
+        draw_pixel(x, y);
+    }
+}
+
+// Fonction de dessin de rectangle
+void Renderer::draw_square(float x1, float y1, float x2, float y2) const
+{
+    float squareX = min(x1, x2);
+    float squareY = min(y1, y2);
+    float squareSize = min(abs(x2 - x1), abs(y2 - y1));
+    ofDrawRectangle(squareX, squareY, squareSize, squareSize);
+}
+
+// fonction qui dessine un rectangle (Comme dans les exemples du cours)
+void Renderer::draw_rectangle(float x1, float y1, float x2, float y2) const
+{
+    ofDrawRectangle(x1, y1, x2 - x1, y2 - y1);
+}
+
+//Fonction qui dessine un cercle
+void Renderer::draw_circle(float x1, float y1, float x2, float y2) const
+{
+    // Calculer la distance euclidienne entre les deux points
+    float distance = ofDist(x1, y1, x2, y2);
+
+    // Calculer le centre du cercle
+    float centerX = (x1 + x2) / 2;
+    float centerY = (y1 + y2) / 2;
+
+    // Utiliser la moitié de la distance comme rayon (ou toute autre formule selon vos besoins)
+    float radius_circle = distance / 2;
+    // Utiliser le centre et le rayon pour dessiner le cercle
+    ofDrawCircle(centerX, centerY, radius_circle);
+}
+
+// fonction qui dessine une ellipse (Comme dans les exemples du cours)
+void Renderer::draw_ellipse(float x1, float y1, float x2, float y2) const
+{
+    float diameter_x = x2 - x1;
+    float diameter_y = y2 - y1;
+
+    ofDrawEllipse(x1 + diameter_x / 2.0f, y1 + diameter_y / 2.0f, diameter_x, diameter_y);
+}
+
+//Fonction qui dessine un triangle
+void Renderer::draw_triangle(float x1, float y1, float x2, float y2) const
+{
+    // Calculer les points du triangle
+    float baseLength = x2 - x1;
+    float xCenter = (x1 + x2) / 2;
+
+    float x1_triangle = xCenter - baseLength / 2;
+    float y1_triangle = y2;
+    float x2_triangle = xCenter + baseLength / 2;
+    float y2_triangle = y2;
+    float x3_triangle = xCenter;
+    float y3_triangle = y1;
+
+    // Dessiner le triangle
+    ofDrawTriangle(x1_triangle, y1_triangle, x2_triangle, y2_triangle, x3_triangle, y3_triangle);
+}
+
+
+void Renderer::draw_face(float x1, float y1, float x2, float y2) const
+{
+    // Calculer la distance euclidienne entre les deux points
+    float distance = ofDist(x1, y1, x2, y2);
+
+    // Calculer le centre du cercle
+    float centerX = (x1 + x2) / 2;
+    float centerY = (y1 + y2) / 2;
+    float largeur = (x2 - x1);
+    float hauteur = (y2 - y1);
+
+    // Utiliser la moitié de la distance comme rayon (ou toute autre formule selon vos besoins)
+    float rayon = distance / 2;
+
+    ofDrawCircle(centerX, centerY, rayon);
+    ofSetColor(0, 0, 0);
+    ofDrawCircle(centerX - largeur / 3, centerY - hauteur / 3, rayon / 10);
+    ofDrawCircle(centerX + largeur / 3, centerY - hauteur / 3, rayon / 10);
+    ofDrawLine(x1 + largeur / 4, y2 - hauteur / 4, x2 - largeur / 4, y2 - hauteur / 4);
+}
+
+void Renderer::draw_maison(float x1, float y1, float x2, float y2) const
+{
+    float hauteur = (y2 - y1);
+    float largeur = (x2 - x1);
+
+    float y_t = hauteur / 3;
+    float x_t = largeur / 2;
+
+    ofDrawTriangle(x1, y1 + y_t, x1 + x_t, y1, x2, y1 + y_t);
+    ofSetColor(66);
+    ofDrawRectangle(x1, y2 - hauteur * 2 / 3, largeur, hauteur * 2 / 3);
+    ofSetColor(255, 0, 0);
+    ofDrawRectangle(x1 + 0.2 * largeur, y2 - hauteur * 1 / 4, largeur * 0.1, hauteur * 0.25);
+}
+
+void Renderer::draw_primitives()
+{
     for (index = 0; index < buffer_count; ++index)
     {
         ofPushMatrix();
@@ -333,295 +614,6 @@ void Renderer::draw()
         ofPopMatrix();
         ofPopStyle();
     }
-    //Buffer de model
-    for (index = 0; index < buffer_model_count; ++index)
-    {
-        ofPushMatrix();
-        ofPushStyle();
-        switch (models[index].type)
-        {
-        case VectorModelType::none:
-            break;
-
-        case VectorModelType::predef1:
-            ofScale(0.2,0.2, 1.0);
-            ofTranslate(models[index].position1[0],
-                        models[index].position1[1],
-                        models[index].position1[2]);
-            model1.draw(OF_MESH_FILL);
-            break;
-
-        case VectorModelType::predef2:
-
-            ofTranslate(models[index].position1[0],
-                        models[index].position1[1],
-                        models[index].position1[2]);
-            model2.draw(OF_MESH_FILL);
-            break;
-
-        case VectorModelType::predef3:
-            ofTranslate(models[index].position1[0],
-                        models[index].position1[1],
-                        models[index].position1[2]);
-            model3.draw(OF_MESH_FILL);
-            break;
-
-        case VectorModelType::import:
-            break;
-        }
-        ofPopMatrix();
-        ofPopStyle();
-    }
-
-    // afficher la zone de sélection
-    if (is_mouse_button_pressed)
-    {
-        draw_zone(
-            mouse_press_x,
-            mouse_press_y,
-            mouse_current_x,
-            mouse_current_y);
-    }
-    camera->end();
-}
-
-// fonction qui vide le tableau de primitives vectorielles (Comme dans les exemples du cours)
-void Renderer::reset()
-{
-    for (index = 0; index < buffer_count; ++index)
-    {
-        shapes[index].type = VectorPrimitiveType::none;
-        buffer_head = 0;
-    }
-    for (index =0 ; index < buffer_model_count; ++index){
-        models[index].type = VectorModelType::none;
-        buffer_model_head = 0;
-    }
-    offset_camera = 5.0f;
-    camera_devant.setPosition(0, 0, -offset_camera);
-    camera_derriere.setPosition(0, 0, offset_camera);
-    camera_gauche.setPosition(-offset_camera, 0, 0);
-    camera_droite.setPosition(offset_camera, 0, 0);
-    camera_dessus.setPosition(0, offset_camera, 0);
-    camera_dessous.setPosition(0, -offset_camera, 0);
-    camera_active = Camera::devant;
-
-    ofLog() << "<reset>";
-}
-
-// fonction qui ajoute une primitive vectorielle au tableau (Comme dans les exemples du cours)
-void Renderer::add_vector_shape(VectorPrimitiveType type)
-{
-    shapes[buffer_head].type = type;
-
-    shapes[buffer_head].position1[0] = mouse_press_x;
-    shapes[buffer_head].position1[1] = mouse_press_y;
-
-    shapes[buffer_head].position2[0] = mouse_current_x;
-    shapes[buffer_head].position2[1] = mouse_current_y;
-
-
-    shapes[buffer_head].stroke_width = (lineThickness > 0) ? lineThickness : stroke_width_default; //outil de dessin
-    shapes[buffer_head].stroke_color[0] = (lineColor.a > 0) ? lineColor.r : stroke_color_r;
-    shapes[buffer_head].stroke_color[1] = (lineColor.a > 0) ? lineColor.g : stroke_color_g;
-    shapes[buffer_head].stroke_color[2] = (lineColor.a > 0) ? lineColor.b : stroke_color_g;
-    shapes[buffer_head].stroke_color[3] = (lineColor.a > 0) ? lineColor.a : stroke_color_a;
-
-    shapes[buffer_head].fill_color[0] = (fillColor.a > 0) ? fillColor.r : fill_color_r;
-    shapes[buffer_head].fill_color[1] = (fillColor.a > 0) ? fillColor.g : fill_color_g;
-    shapes[buffer_head].fill_color[2] = (fillColor.a > 0) ? fillColor.b : fill_color_b;
-    shapes[buffer_head].fill_color[3] = (fillColor.a > 0) ? fillColor.a : fill_color_a;
-
-
-    ofLog() << "<new primitive at index: " << buffer_head << ">";
-
-    buffer_head = ++buffer_head >= buffer_count ? 0 : buffer_head; // boucler sur le tableau si plein
-}
-
-// fonction qui dessine un pixel (Comme dans les exemples du cours)
-void Renderer::draw_pixel(float x, float y) const
-{
-    //Floorf : fonction qui arrondit un nombre flottant vers le bas pour obtenir le nombres entier immédiatement inférieur
-    int pixel_x = floorf(x);
-    int pixel_y = floorf(y);
-
-    ofDrawRectangle(pixel_x, pixel_y, 1, 1);
-}
-
-// fonction qui dessine un point
-void Renderer::draw_point(float x, float y, float radius) const
-{
-    ofDrawEllipse(x, y, radius, radius);
-}
-
-// fonction qui dessine une ligne
-void Renderer::draw_line(float x1, float y1, float x2, float y2) const
-{
-    switch (lineRenderer) {
-    case LineRenderer::none:
-        // Utilisez l'algorithme par défaut ou choisissez-en un
-        ofDrawLine(x1, y1, x2, y2);
-        break;
-    case LineRenderer::dda:
-        // Utilisez l'algorithme DDA pour rasteriser la ligne
-        draw_line_dda(x1, y1, x2, y2);
-        break;
-    case LineRenderer::bresenham:
-        // Utilisez l'algorithme Bresenham pour rasteriser la ligne
-        draw_line_bresenham(x1, y1, x2, y2);
-        break;
-    default:
-        break;
-    }
-}
-
-// Fonction de dessin de ligne avec l'algorithme DDA
-void Renderer::draw_line_dda(float x1, float y1, float x2, float y2) const
-{
-    float dx = x2 - x1;
-    float dy = y2 - y1;
-    float steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
-    float x_increment = dx / steps;
-    float y_increment = dy / steps;
-    float x = x1;
-    float y = y1;
-
-    for (int i = 0; i <= steps; ++i)
-    {
-        draw_pixel(x, y);
-        x += x_increment;
-        y += y_increment;
-    }
-}
-
-// Fonction de dessin de ligne avec l'algorithme Bresenham
-void Renderer::draw_line_bresenham(float x1, float y1, float x2, float y2) const
-{
-    int dx = abs(x2 - x1);
-    int dy = abs(y2 - y1);
-    int x_sign = x1 < x2 ? 1 : -1;
-    int y_sign = y1 < y2 ? 1 : -1;
-
-    int error = dx - dy;
-
-    int x = static_cast<int>(x1);
-    int y = static_cast<int>(y1);
-
-    draw_pixel(x, y);
-
-    while (x != static_cast<int>(x2) || y != static_cast<int>(y2))
-    {
-        int error2 = error * 2;
-
-        if (error2 > -dy)
-        {
-            error -= dy;
-            x += x_sign;
-        }
-
-        if (error2 < dx)
-        {
-            error += dx;
-            y += y_sign;
-        }
-
-        draw_pixel(x, y);
-    }
-}
-
-// Fonction de dessin de rectangle
-void Renderer::draw_square(float x1, float y1, float x2, float y2) const
-{
-    float squareX = min(x1, x2);
-    float squareY = min(y1, y2);
-    float squareSize = min(abs(x2 - x1), abs(y2 - y1));
-    ofDrawRectangle(squareX, squareY, squareSize, squareSize);
-}
-
-// fonction qui dessine un rectangle (Comme dans les exemples du cours)
-void Renderer::draw_rectangle(float x1, float y1, float x2, float y2) const
-{
-    ofDrawRectangle(x1, y1, x2 - x1, y2 - y1);
-}
-
-//Fonction qui dessine un cercle
-void Renderer::draw_circle(float x1, float y1, float x2, float y2) const
-{
-    // Calculer la distance euclidienne entre les deux points
-    float distance = ofDist(x1, y1, x2, y2);
-
-    // Calculer le centre du cercle
-    float centerX = (x1 + x2) / 2;
-    float centerY = (y1 + y2) / 2;
-
-    // Utiliser la moitié de la distance comme rayon (ou toute autre formule selon vos besoins)
-    float radius_circle = distance / 2;
-    // Utiliser le centre et le rayon pour dessiner le cercle
-    ofDrawCircle(centerX, centerY, radius_circle);
-}
-
-// fonction qui dessine une ellipse (Comme dans les exemples du cours)
-void Renderer::draw_ellipse(float x1, float y1, float x2, float y2) const
-{
-    float diameter_x = x2 - x1;
-    float diameter_y = y2 - y1;
-
-    ofDrawEllipse(x1 + diameter_x / 2.0f, y1 + diameter_y / 2.0f, diameter_x, diameter_y);
-}
-
-//Fonction qui dessine un triangle
-void Renderer::draw_triangle(float x1, float y1, float x2, float y2) const
-{
-    // Calculer les points du triangle
-    float baseLength = x2 - x1;
-    float xCenter = (x1 + x2) / 2;
-
-    float x1_triangle = xCenter - baseLength / 2;
-    float y1_triangle = y2;
-    float x2_triangle = xCenter + baseLength / 2;
-    float y2_triangle = y2;
-    float x3_triangle = xCenter;
-    float y3_triangle = y1;
-
-    // Dessiner le triangle
-    ofDrawTriangle(x1_triangle, y1_triangle, x2_triangle, y2_triangle, x3_triangle, y3_triangle);
-}
-
-
-void Renderer::draw_face(float x1, float y1, float x2, float y2) const
-{
-    // Calculer la distance euclidienne entre les deux points
-    float distance = ofDist(x1, y1, x2, y2);
-
-    // Calculer le centre du cercle
-    float centerX = (x1 + x2) / 2;
-    float centerY = (y1 + y2) / 2;
-    float largeur = (x2 - x1);
-    float hauteur = (y2 - y1);
-
-    // Utiliser la moitié de la distance comme rayon (ou toute autre formule selon vos besoins)
-    float rayon = distance / 2;
-
-    ofDrawCircle(centerX, centerY, rayon);
-    ofSetColor(0, 0, 0);
-    ofDrawCircle(centerX - largeur / 3, centerY - hauteur / 3, rayon / 10);
-    ofDrawCircle(centerX + largeur / 3, centerY - hauteur / 3, rayon / 10);
-    ofDrawLine(x1 + largeur / 4, y2 - hauteur / 4, x2 - largeur / 4, y2 - hauteur / 4);
-}
-
-void Renderer::draw_maison(float x1, float y1, float x2, float y2) const
-{
-    float hauteur = (y2 - y1);
-    float largeur = (x2 - x1);
-
-    float y_t = hauteur / 3;
-    float x_t = largeur / 2;
-
-    ofDrawTriangle(x1, y1 + y_t, x1 + x_t, y1, x2, y1 + y_t);
-    ofSetColor(66);
-    ofDrawRectangle(x1, y2 - hauteur * 2 / 3, largeur, hauteur * 2 / 3);
-    ofSetColor(255, 0, 0);
-    ofDrawRectangle(x1 + 0.2 * largeur, y2 - hauteur * 1 / 4, largeur * 0.1, hauteur * 0.25);
 }
 
 // Section 4 Primitives géometrique sphere et cube
@@ -933,7 +925,48 @@ void Renderer::add_vector_models(VectorModelType type)
     buffer_model_head = ++buffer_model_head >= buffer_model_count ? 0 : buffer_model_head; // boucler sur le tableau si plein
 }
 
+void Renderer::drawModels()
+{
+for (index = 0; index < buffer_model_count; ++index)
+    {
+        ofPushMatrix();
+        ofPushStyle();
+        switch (models[index].type)
+        {
+        case VectorModelType::none:
+            break;
 
+        case VectorModelType::predef1:
+            ofScale(0.1,0.1, 1.0);
+            ofTranslate(models[index].position1[0],
+                        models[index].position1[1],
+                        models[index].position1[2] - 150);
+            model1.draw(OF_MESH_FILL);
+            break;
+
+        case VectorModelType::predef2:
+            ofScale(0.1,0.1, 1.0);
+            ofTranslate(models[index].position1[0],
+                        models[index].position1[1],
+                        models[index].position1[2]);
+            model2.draw(OF_MESH_FILL);
+            break;
+
+        case VectorModelType::predef3:
+            ofScale(0.1,0.1, 1.0);
+            ofTranslate(models[index].position1[0],
+                        models[index].position1[1],
+                        models[index].position1[2]);
+            model3.draw(OF_MESH_FILL);
+            break;
+
+        case VectorModelType::import:
+            break;
+        }
+        ofPopMatrix();
+        ofPopStyle();
+    }
+}
 
 void Renderer::calculateBoundingBox() {
     if (!model.getMeshCount()) return; 
@@ -970,7 +1003,7 @@ void Renderer::setup_camera()
 {
     camera_position = {0.0f, 0.0f, 0.0f};
     camera_target = {0.0f, 0.0f, 0.0f};
-    camera_near_clipping = 50.0f;
+    camera_near_clipping = 5.0f;
     camera_far_clipping = 1750.0f;
     camera_fov = 60.0f;
     camera_fov_delta = 16.0f;
@@ -990,6 +1023,7 @@ void Renderer::setup_camera()
     is_camera_pan_right = false;
     is_camera_roll_left = false;
     is_camera_roll_right = false;
+    mode_cam = false;
 
     switch (camera_active)
     {

@@ -167,6 +167,12 @@ public:
     void perspectiveButtonPressed();
     void orthogonaleButtonPressed();
 
+    //Modes pov multiple
+    ofxButton mode_1cam_button;
+    ofxButton mode_2cam_button;
+    void mode_1cam_pressed();
+    void mode_2cam_pressed();
+
     // Méthodes associées aux boutons
     void noneTransformationButtonPressed();
     void translateButtonPressed();

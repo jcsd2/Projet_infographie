@@ -80,6 +80,7 @@ public:
     void draw_triangle(float x1, float y1, float x2, float y2) const;
     void draw_face(float x1, float y1, float x2, float y2) const;
     void draw_maison(float x1, float y1, float x2, float y2) const;
+    void draw_primitives();
 
     void setLineRenderer(LineRenderer renderer);
 
@@ -161,6 +162,7 @@ public:
     ofxAssimpModelLoader model3;
     int get_last_model() const;
     void translateLastModel(float offsetX, float offsetY, float offsetZ);
+    void drawModels();
 
     //Primitives geometrique 3D
     void drawCube(float x, float y, float z, float width, float height, float depth) const;
@@ -205,6 +207,7 @@ public:
     bool is_camera_pan_right;
     bool is_camera_roll_left;
     bool is_camera_roll_right;
+    bool mode_cam;
     void setup_camera();
 
     void setup();

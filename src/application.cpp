@@ -226,7 +226,12 @@ void Application::setup()
     mode_projection.minimize();
 
     //5.3 Point de vue multiple
-
+    mode_1cam_button.setup("Mode 1 camera");
+    mode_2cam_button.setup("Mode 2 cameras");
+    mode_1cam_button.addListener(this, &Application::mode_1cam_pressed);
+    mode_2cam_button.addListener(this, &Application::mode_2cam_pressed);
+    groupe_camera.add(&mode_1cam_button);
+    groupe_camera.add(&mode_2cam_button);
     //5.4 Occlusion
 
 
@@ -250,7 +255,7 @@ void Application::setup()
 
 void Application::draw()
 {
-    renderer.draw();
+    
     if (checkbox)
         gui.draw();
 
@@ -260,7 +265,7 @@ void Application::draw()
     if (importedImage.isAllocated()) {
         importedImage.draw(0, 0); // Ajustez la position et la taille selon vos besoins
     }
-    
+    renderer.draw();
 }
 
 
@@ -1220,8 +1225,14 @@ void Application::selectElementPressed() {
 
 }
 
-
-
+void Application::mode_1cam_pressed()
+{
+    renderer.mode_cam = false;
+}
+void Application::mode_2cam_pressed()
+{
+    renderer.mode_cam = true;
+}
 
 void Application::exit()
 {
@@ -1250,6 +1261,9 @@ void Application::exit()
     addElementButton.removeListener(this, &Application::addElementPressed);
     removeElementButton.removeListener(this, &Application::removeElementPressed);
     selectElementButton.removeListener(this, &Application::selectElementPressed);
+
+    mode_1cam_button.removeListener(this, &Application::mode_1cam_pressed);
+    mode_2cam_button.removeListener(this, &Application::mode_2cam_pressed);
 
     ofLog() << "<app::exit>";
 
