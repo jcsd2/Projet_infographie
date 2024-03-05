@@ -854,7 +854,7 @@ void Application::translateButtonPressed(bool& pressed)
 {
     if (pressed) 
     {
-        isTranslationActive = pressed;
+        isTranslationActive = !isTranslationActive;
         isRotatingActive = false;
         isScalingActive = false;
         rotateButton = false;
@@ -867,13 +867,12 @@ void Application::rotateButtonPressed(bool& pressed)
 {
     if (pressed) {
         isTranslationActive = false;
-        isRotatingActive = pressed;
+        isRotatingActive = !isRotatingActive;
         isScalingActive = false;
         translateButton = false;
         scaleButton = false;
-        ofLog() << "<mode: rotation>";
+        ofLog() << "<mode: rotation>" << isRotatingActive ;
     }
-
 }
 
 void Application::scaleButtonPressed(bool& pressed) {
@@ -881,10 +880,10 @@ void Application::scaleButtonPressed(bool& pressed) {
     if (pressed) {
         isTranslationActive = false;
         isRotatingActive = false;
-        isScalingActive = pressed;
+        isScalingActive = !isScalingActive;
         translateButton = false;
         rotateButton = false;
-        ofLog() << "<mode: scale>";
+        ofLog() << "<mode: scale>" << isScalingActive;
     }
 }
 

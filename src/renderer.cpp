@@ -831,9 +831,9 @@ void Renderer::calculateBoundingBox() {
 
 
 void Renderer::drawBoundingBox() {
-    //if (!bBoundingBoxCalculated) return;
+    if (!bBoundingBoxCalculated) return;
     ofNoFill();
-    //ofDrawBox((minBounds.x + maxBounds.x) / 2, (minBounds.y + maxBounds.y) / 2, (minBounds.z + maxBounds.z) / 2, maxBounds.x - minBounds.x, maxBounds.y - minBounds.y, maxBounds.z - minBounds.z);
+    ofDrawBox((minBounds.x + maxBounds.x) / 2, (minBounds.y + maxBounds.y) / 2, (minBounds.z + maxBounds.z) / 2, maxBounds.x - minBounds.x, maxBounds.y - minBounds.y, maxBounds.z - minBounds.z);
     ofFill();
 }
 
