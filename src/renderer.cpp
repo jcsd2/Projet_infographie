@@ -274,6 +274,41 @@ void Renderer::draw()
                 shapes[index].position2[0], shapes[index].position2[1]);
             break;
 
+        case VectorPrimitiveType::cube: {
+
+
+            ofFill();
+            ofSetLineWidth(0);
+            ofSetColor(shapes[index].fill_color[0], shapes[index].fill_color[1], shapes[index].fill_color[2]);
+
+            float cubeWidth = 100;
+            float cubeHeight = 100;
+            float cubeDepth = 100;
+
+            drawCube(
+                shapes[index].position1[0], // x
+                shapes[index].position1[1], // y
+                0,
+                cubeWidth, cubeHeight, cubeDepth);
+
+            break;
+        }
+        case VectorPrimitiveType::sphere: {
+            ofFill();
+            ofSetLineWidth(0);
+
+            float sphereRayon = 50;
+
+            drawSphere(
+                shapes[index].position1[0],
+                shapes[index].position1[1],
+                0,
+                sphereRayon);
+
+
+            break;
+        }
+
         default:
             break;
         }
@@ -550,6 +585,25 @@ void Renderer::draw_maison(float x1, float y1, float x2, float y2) const
     ofDrawRectangle(x1, y2 - hauteur * 2 / 3, largeur, hauteur * 2 / 3);
     ofSetColor(255, 0, 0);
     ofDrawRectangle(x1 + 0.2 * largeur, y2 - hauteur * 1 / 4, largeur * 0.1, hauteur * 0.25);
+}
+
+// Section 4 Primitives géometrique sphere et cube
+
+void Renderer::drawCube(float x, float y, float z, float width, float height, float depth) const {
+
+    ofSetColor(255, 0, 0);
+    ofFill();
+    ofDrawBox(x, y, z, width, height, depth);
+
+}
+
+void Renderer::drawSphere(float x, float y, float z, float radius) const {
+
+
+    ofSetColor(0, 255, 0); // Couleur verte fixée
+    ofFill();
+    ofDrawSphere(x, y, z, radius);
+
 }
 
 //Fonction de cahngement de algo pour les lignes

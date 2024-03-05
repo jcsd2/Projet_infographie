@@ -3,7 +3,7 @@
 #include "ofxAssimpModelLoader.h"
 
 // énumération des différents types de primitives vectorielles
-enum class VectorPrimitiveType { none, pixel, point, line, square, rectangle, circle, ellipse, triangle, face, maison };
+enum class VectorPrimitiveType { none, pixel, point, line, square, rectangle, circle, ellipse, triangle, face, maison, cube, sphere };
 
 // énumération de différents algorithmes de rastérisation de ligne
 enum class LineRenderer { none, dda, bresenham };
@@ -172,6 +172,11 @@ public:
     ofxAssimpModelLoader model3;
     int get_last_model() const;
     void translateLastModel(float offsetX, float offsetY, float offsetZ);
+
+    //Primitives geometrique 3D
+    void drawCube(float x, float y, float z, float width, float height, float depth) const;
+    void drawSphere(float x, float y, float z, float radius) const;
+    float sphereRayon;
 
     void setup();
     void update();

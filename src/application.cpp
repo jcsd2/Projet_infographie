@@ -513,7 +513,8 @@ void Application::ajout_boutons_formes()
     group_dessin_vectoriel_formes.add(triangle_shape_button.setup("Triangle", ofParameter<bool>(false)));
     group_dessin_vectoriel_formes.add(face_shape_button.setup("Face", ofParameter<bool>(false)));
     group_dessin_vectoriel_formes.add(maison_shape_button.setup("Maison", ofParameter<bool>(false)));
-
+    groupe_geometrie.add(cubeButton.setup("Cube", ofParameter<bool>(false)));
+    groupe_geometrie.add(sphereButton.setup("Sphere", ofParameter<bool>(false)));
 
     // Ajout des listeners pour chaque bouton
     none_shape_button.addListener(this, &Application::button_none_pressed);
@@ -549,7 +550,8 @@ void Application::retirer_boutons_formes() {
     triangle_shape_button.removeListener(this, &Application::button_triangle_pressed);
     face_shape_button.removeListener(this, &Application::button_face_pressed);
     maison_shape_button.removeListener(this, &Application::button_maison_pressed);
-
+    cubeButton.removeListener(this, &Application::cubeButtonPressed);
+    sphereButton.removeListener(this, &Application::sphereButtonPressed);
 }
 
 void Application::button_none_pressed(bool& pressed)
@@ -889,8 +891,41 @@ void Application::scaleButtonPressed(bool& pressed) {
 
 //4.2 Primitive geometriques
 void Application::cubeButtonPressed(bool& pressed) {
+    {
+        if (pressed) {
+            renderer.draw_mode = VectorPrimitiveType::cube;
+            ofLog() << "<mode: cube>";
+            none_shape_button = false;
+            pixel_shape_button = false;
+            point_shape_button = false;
+            line_shape_button = false;
+            square_shape_button = false;
+            rectangle_shape_button = false;
+            circle_shape_button = false;
+            ellipse_shape_button = false;
+            triangle_shape_button = false;
+            face_shape_button = false;
+        }
+    }
 }
+
 void Application::sphereButtonPressed(bool& pressed) {
+    {
+        if (pressed) {
+            renderer.draw_mode = VectorPrimitiveType::sphere;
+            ofLog() << "<mode: sphere>";
+            none_shape_button = false;
+            pixel_shape_button = false;
+            point_shape_button = false;
+            line_shape_button = false;
+            square_shape_button = false;
+            rectangle_shape_button = false;
+            circle_shape_button = false;
+            ellipse_shape_button = false;
+            triangle_shape_button = false;
+            face_shape_button = false;
+        }
+    }
 }
 
 

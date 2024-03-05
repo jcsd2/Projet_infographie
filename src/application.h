@@ -138,17 +138,15 @@ public:
     void predef2_model_button_pressed();
     void predef3_model_button_pressed();
     void remove_last_model_button_pressed();
+ 
 
-    // Primitives géométriques 4.2    
-
-
-        // Primitives géométriques 4.2    
+   // Primitives géométriques 4.2    
 
 
     ofxGuiGroup groupe_primitive_geometrie;
     ofxToggle cubeButton;
     ofxToggle sphereButton;
-   
+
 
     void cubeButtonPressed(bool& pressed);
     void sphereButtonPressed(bool& pressed);
