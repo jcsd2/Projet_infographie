@@ -155,6 +155,17 @@ public:
     void sphereButtonPressed(bool& pressed);
    
 
+    // Section 5 Caméra
+    ofxGuiGroup groupe_camera;
+
+
+    // Modes de projection 5.2
+    ofxGuiGroup mode_projection;
+    ofxButton perspectiveButton;
+    ofxButton orthogonaleButton;
+
+    void perspectiveButtonPressed();
+    void orthogonaleButtonPressed();
 
 
     // Méthodes associées aux boutons
