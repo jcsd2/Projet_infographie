@@ -929,7 +929,6 @@ bool Application::isInside(int x, int y, const VectorPrimitive& shape) {
         float squareX = std::min(shape.position1[0], shape.position2[0]);
         float squareY = std::min(shape.position1[1], shape.position2[1]);
         float squareSize = std::min(abs(shape.position2[0] - shape.position1[0]), abs(shape.position2[1] - shape.position1[1]));
-
         return x >= squareX && x <= squareX + squareSize && y >= squareY && y <= squareY + squareSize;
     }
     else if (shape.type == VectorPrimitiveType::rectangle) {
@@ -937,11 +936,70 @@ bool Application::isInside(int x, int y, const VectorPrimitive& shape) {
         float right = std::max(shape.position1[0], shape.position2[0]);
         float top = std::min(shape.position1[1], shape.position2[1]);
         float bottom = std::max(shape.position1[1], shape.position2[1]);
-
         return x >= left && x <= right && y >= top && y <= bottom;
     }
+    else if (shape.type == VectorPrimitiveType::circle) {
+        float centerX = (shape.position1[0] + shape.position2[0]) / 2;
+        float centerY = (shape.position1[1] + shape.position2[1]) / 2;
+        float radius = ofDist(shape.position1[0], shape.position1[1], shape.position2[0], shape.position2[1]) / 2;
+        return (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY) <= radius * radius;
+    }
+    else if (shape.type == VectorPrimitiveType::ellipse) {
+        float centerX = (shape.position1[0] + shape.position2[0]) / 2;
+        float centerY = (shape.position1[1] + shape.position2[1]) / 2;
+        float radiusX = abs(shape.position2[0] - shape.position1[0]) / 2;
+        float radiusY = abs(shape.position2[1] - shape.position1[1]) / 2;
+        return (pow(x - centerX, 2) / pow(radiusX, 2)) + (pow(y - centerY, 2) / pow(radiusY, 2)) <= 1;
+    }
+    else if (shape.type == VectorPrimitiveType::face) {
+     
+        float centerX = (shape.position1[0] + shape.position2[0]) / 2;
+        float centerY = (shape.position1[1] + shape.position2[1]) / 2;
+        float radius = ofDist(shape.position1[0], shape.position1[1], shape.position2[0], shape.position2[1]) / 2;
+        return (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY) <= radius * radius;
+    }
+    else if (shape.type == VectorPrimitiveType::maison) {
+      
+        float rectLeft = shape.position1[0];
+        float rectTop = shape.position1[1] + (shape.position2[1] - shape.position1[1]) / 3;
+        float rectWidth = shape.position2[0] - shape.position1[0];
+        float rectHeight = 2 * (shape.position2[1] - shape.position1[1]) / 3;
+        bool inRectangle = x >= rectLeft && x <= rectLeft + rectWidth && y >= rectTop && y <= rectTop + rectHeight;
+    
+        float x1 = shape.position1[0];
+        float y1 = shape.position1[1] + (shape.position2[1] - shape.position1[1]) / 3;
+        float x2 = shape.position2[0];
+        float y2 = rectTop;
+        float x3 = (shape.position1[0] + shape.position2[0]) / 2;
+        float y3 = shape.position1[1];
+        float areaTotal = abs((x1 * (y1 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0);
+        float area1 = abs((x * (y1 - y3) + x2 * (y3 - y) + x3 * (y - y1)) / 2.0);
+        float area2 = abs((x1 * (y - y3) + x * (y3 - y1) + x3 * (y1 - y)) / 2.0);
+        float area3 = abs((x1 * (y1 - y) + x2 * (y - y1) + x * (y1 - y2)) / 2.0);
+        bool inTriangle = areaTotal == area1 + area2 + area3;
+        return inRectangle || inTriangle;
+    }
+    else if (shape.type == VectorPrimitiveType::cube) {
+        
+        float rectLeft = shape.position1[0] - 50;
+        float rectTop = shape.position1[1] - 50;
+        float rectRight = rectLeft + 100;
+        float rectBottom = rectTop + 100; 
+
+        return x >= rectLeft && x <= rectRight && y >= rectTop && y <= rectBottom;
+    }
+    else if (shape.type == VectorPrimitiveType::sphere) {
+        
+        float centerX = shape.position1[0];
+        float centerY = shape.position1[1];
+        float radius = 50;
+
+        return (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY) <= radius * radius;
+    }
+
     return false;
 }
+
 
 void Application::noneTransformationButtonPressed(){
     isTranslationActive = false;
