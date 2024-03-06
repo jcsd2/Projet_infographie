@@ -63,6 +63,7 @@ void Renderer::setup()
     loadModels();
     init_buffer_model();
     setup_camera();
+
 }
 
 void Renderer::draw()
@@ -157,13 +158,10 @@ void Renderer::draw()
     
     default:
         break;
-    }
-
-
-
 
     if (is_visible_axes)
         ofDrawRotationAxes(64);
+}
 }
 
 // fonction qui vide le tableau de primitives vectorielles (Comme dans les exemples du cours)
@@ -727,6 +725,29 @@ void Renderer::drawSphere(float x, float y, float z, float radius) const {
 }
 
 
+void Renderer::drawCubeSVG() {
+    ofDrawBitmapString(ofToString(ofGetFrameRate()), 20, 20);
+    ofPushMatrix();
+    ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
+    if (ofGetMousePressed()) {
+        ofNoFill();
+        for (ofPolyline& line : outlines) {
+            int num = step * line.size();
+
+            ofBeginShape();
+            for (int j = 0; j < num; j++) {
+                ofVertex(line[j]);
+            }
+            ofEndShape();
+        }
+    }
+    else {
+        svg.draw();
+    }
+
+    ofPopMatrix();
+}
+
 //Fonction de cahngement de algo pour les lignes
 void Renderer::setLineRenderer(LineRenderer renderer)
 {
@@ -911,6 +932,16 @@ void Renderer::update()
     //camera_fov = std::max(camera_fov -= camera_fov_delta * time_elapsed, 0.0f);
     camera->setFov(camera_fov);
 
+    //4.3
+    step += 0.001;
+    if (step > 1) {
+        step -= 1;
+    }
+
+    deg += 1;
+    if (deg > 360) {
+        deg = 0;
+    }
 }
 
 //Fonction pour dessiner la zone de selection (Commed ans les exemples du cours)
@@ -993,6 +1024,15 @@ void Renderer::loadModels(){
 	model1.loadModel("Bender/Bender.gltf");
 	model2.loadModel("Obama/Obama.fbx");
 	model3.loadModel("Shinji/Shinji.obj");
+    ofSetVerticalSync(true);
+    svg.load("cube.svg");
+    for (ofPath p : svg.getPaths()) {
+        p.setPolyWindingMode(OF_POLY_WINDING_ODD);
+        const vector<ofPolyline>& lines = p.getOutline();
+        for (const ofPolyline& line : lines) {
+            outlines.push_back(line.getResampledBySpacing(1));
+        }
+    }
     ofLog() << " All models loaded ";
 }
 
@@ -1066,6 +1106,32 @@ for (index = 0; index < buffer_model_count; ++index)
                         models[index].position1[2]);
             model3.draw(OF_MESH_FILL);
             break;
+
+        case VectorModelType::predef4:
+            ofDrawBitmapString(ofToString(ofGetFrameRate()), 20, 20);
+            ofPushMatrix();
+            ofTranslate(ofGetWidth() / 2, ofGetHeight() / 4);
+            ofScale(0.5, 0.5, 1);
+            if (ofGetMousePressed()) {
+                ofNoFill();
+                ofRotateDeg(deg, 0, deg, 0);
+                for (ofPolyline& line : outlines) {
+                    int num = step * line.size();
+
+                    ofBeginShape();
+                    for (int j = 0; j < num; j++) {
+                        ofVertex(line[j]);
+                    }
+                    ofEndShape();
+                }
+            }
+            else {
+                svg.draw();
+            }
+
+            ofPopMatrix();
+            break;
+
 
         case VectorModelType::import:
             break;
@@ -1182,3 +1248,47 @@ Renderer::~Renderer()
     std::free(models);
 }
 
+void Renderer::remove_vector_shap(int index) {
+    if (index < 0 || index >= buffer_head) return;
+
+    for (int i = index; i < buffer_head - 1; i++) {
+        shapes[i] = shapes[i + 1];
+    }
+
+    buffer_head--;
+    ofLog() << "<removed shape at index: " << index << ">";
+}
+
+void Renderer::remove_vector_model(int index) {
+    if (index < 0 || index >= buffer_model_head) return;
+
+    for (int i = index; i < buffer_model_head - 1; i++) {
+        models[i] = models[i + 1];
+    }
+
+    buffer_model_head--;
+    ofLog() << "<removed model at index: " << index << ">";
+}
+
+
+
+
+void Renderer::select_vector_shap(int index) {
+    if (index < 0 || index >= buffer_head) return;
+    selectedShapeIndex = index;
+    ofLog() << "<selected shape at index: " << index << ">";
+}
+
+void Renderer::select_vector_model(int index) {
+    if (index < 0 || index >= buffer_model_head) return;
+    selectedModelIndex = index;
+    ofLog() << "<selected model at index: " << index << ">";
+}
+
+int Renderer::getBufferHead() {
+    return buffer_head;
+}
+
+int Renderer::getBufferModelHead() {
+    return buffer_model_head;
+}

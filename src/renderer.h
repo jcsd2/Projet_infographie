@@ -2,6 +2,7 @@
 #include "ofMain.h"
 #include "ofxAssimpModelLoader.h"
 #include <algorithm>
+#include "ofxSvg.h"
 
 enum class BackgroundColorType {none, rgb, hsb};
 
@@ -12,7 +13,7 @@ enum class VectorPrimitiveType { none, importedImage, pixel, point, line, square
 enum class LineRenderer { none, dda, bresenham };
 
 //énumération de différents modeles 3d
-enum class VectorModelType {none, predef1, predef2, predef3, import};
+enum class VectorModelType {none, predef1, predef2, predef3, predef4, import};
 
 enum class Camera {devant, derriere, gauche, droite, dessus, dessous};
 
@@ -46,6 +47,15 @@ class Renderer
 {
 public:
 
+
+    void remove_vector_shap(int index);
+     void remove_vector_model(int index);
+     void select_vector_shap(int index);
+      void select_vector_model(int index);
+      int getBufferHead();
+    int getBufferModelHead();
+    int selectedShapeIndex = -1;
+    int selectedModelIndex = -1;
 
     
     //Dimension du framebuffer
@@ -193,6 +203,13 @@ public:
     bool is_camera_fov_wide;
     bool is_camera_perspective;
 
+
+    //4.3
+    void drawCubeSVG();
+    ofxSvg svg;
+    float deg;
+    float step;
+    vector<ofPolyline> outlines;
 
     //Initialisation pour camera
     Camera camera_active;

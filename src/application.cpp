@@ -164,18 +164,21 @@ void Application::setup()
     predef1_model_button.setup("Modele 1");
     predef2_model_button.setup("Modele 2");
     predef3_model_button.setup("Modele 3");
+    predef4_model_button.setup("Modele 4");
     remove_last_model_button.setup("Retirer dernier\n modele");
     none_model_button.addListener(this, &Application::non_model_button_pressed);
     import_model_button.addListener(this, &Application::import_model_button_pressed);
     predef1_model_button.addListener(this, &Application::predef1_model_button_pressed);
     predef2_model_button.addListener(this, &Application::predef2_model_button_pressed);
     predef3_model_button.addListener(this, &Application::predef3_model_button_pressed);
+    predef4_model_button.addListener(this, &Application::predef4_model_button_pressed);
     remove_last_model_button.addListener(this,&Application::remove_last_model_button_pressed);
     groupe_geometrie.add(&none_model_button);
     groupe_geometrie.add(&import_model_button);
     groupe_geometrie.add(&predef1_model_button);
     groupe_geometrie.add(&predef2_model_button);
     groupe_geometrie.add(&predef3_model_button);
+    groupe_geometrie.add(&predef4_model_button);
     groupe_geometrie.add(&remove_last_model_button);
 
     // Chargez les modèles
@@ -200,9 +203,7 @@ void Application::setup()
     sphereButton.addListener(this, &Application::sphereButtonPressed);
  
 
-    //4.3 
-
-    //4.4
+    //4.3
     groupe_geometrie.minimize();
     gui.add(&groupe_geometrie);
 
@@ -1178,6 +1179,10 @@ void Application::predef3_model_button_pressed(){
         renderer.draw_mode = VectorPrimitiveType::none;
         renderer.draw_mode_models = VectorModelType::predef3;
 }
+void Application::predef4_model_button_pressed() { 
+    renderer.draw_mode = VectorPrimitiveType::none;
+    renderer.draw_mode_models = VectorModelType::predef4;
+}
 
 //Fonction pour retirer le dernier modele affiche
 void Application::remove_last_model_button_pressed(){
@@ -1335,27 +1340,49 @@ void Application::cursorRotateButtonPressed() {
 }
 
 void Application::addElementPressed() {
-    VectorPrimitive newElement;
-    elements.push_back(newElement);
 
+    renderer.add_vector_shape(VectorPrimitiveType::line);
+
+    renderer.add_vector_models(VectorModelType::predef1);
 }
+
+
+
 
 void Application::removeElementPressed() {
-    if (!elements.empty()) {
-        elements.pop_back();
 
+    if (selectedShapeIndex != -1) {
+        renderer.remove_vector_shape(selectedShapeIndex);
+        selectedShapeIndex = -1;
+    }
+
+    if (selectedModelIndex != -1) {
+        renderer.remove_vector_model(selectedModelIndex);
+        selectedModelIndex = -1;
     }
 }
+
 
 void Application::selectElementPressed() {
-    if (selectedElementIndex < elements.size() - 1) {
-        selectedElementIndex++;
+
+    static bool selectPrimitiveNext = true;
+
+    if (selectPrimitiveNext) {
+        selectedShapeIndex = (selectedShapeIndex + 1) % renderer.getBufferHead();
+        renderer.select_vector_shape(selectedShapeIndex);
+        ofLog() << "Primitive sélectionnée à l'index: " << selectedShapeIndex;
     }
     else {
-        selectedElementIndex = -1;
+
+        selectedModelIndex = (selectedModelIndex + 1) % renderer.getBufferModelHead();
+        renderer.select_vector_model(selectedModelIndex);
+        ofLog() << "Modèle sélectionné à l'index: " << selectedModelIndex;
     }
 
+    selectPrimitiveNext = !selectPrimitiveNext;
 }
+
+
 
 void Application::mode_dessin_pressed()
 {
@@ -1399,6 +1426,7 @@ void Application::exit()
     predef1_model_button.removeListener(this, &Application::predef1_model_button_pressed);
     predef2_model_button.removeListener(this, &Application::predef2_model_button_pressed);
     predef3_model_button.removeListener(this, &Application::predef3_model_button_pressed);
+    predef4_model_button.removeListener(this, &Application::predef4_model_button_pressed);
     remove_last_model_button.removeListener(this, &Application::remove_last_model_button_pressed);
 
     addElementButton.removeListener(this, &Application::addElementPressed);
