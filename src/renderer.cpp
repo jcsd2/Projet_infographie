@@ -1119,3 +1119,47 @@ Renderer::~Renderer()
     std::free(models);
 }
 
+void Renderer::remove_vector_shap(int index) {
+    if (index < 0 || index >= buffer_head) return;
+
+    for (int i = index; i < buffer_head - 1; i++) {
+        shapes[i] = shapes[i + 1];
+    }
+
+    buffer_head--;
+    ofLog() << "<removed shape at index: " << index << ">";
+}
+
+void Renderer::remove_vector_model(int index) {
+    if (index < 0 || index >= buffer_model_head) return;
+
+    for (int i = index; i < buffer_model_head - 1; i++) {
+        models[i] = models[i + 1];
+    }
+
+    buffer_model_head--;
+    ofLog() << "<removed model at index: " << index << ">";
+}
+
+
+
+
+void Renderer::select_vector_shap(int index) {
+    if (index < 0 || index >= buffer_head) return;
+    selectedShapeIndex = index;
+    ofLog() << "<selected shape at index: " << index << ">";
+}
+
+void Renderer::select_vector_model(int index) {
+    if (index < 0 || index >= buffer_model_head) return;
+    selectedModelIndex = index;
+    ofLog() << "<selected model at index: " << index << ">";
+}
+
+int Renderer::getBufferHead() {
+    return buffer_head;
+}
+
+int Renderer::getBufferModelHead() {
+    return buffer_model_head;
+}

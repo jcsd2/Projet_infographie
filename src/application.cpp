@@ -1319,27 +1319,49 @@ void Application::cursorRotateButtonPressed() {
 }
 
 void Application::addElementPressed() {
-    VectorPrimitive newElement;
-    elements.push_back(newElement);
 
+    renderer.add_vector_shape(VectorPrimitiveType::line);
+
+    renderer.add_vector_models(VectorModelType::predef1);
 }
+
+
+
 
 void Application::removeElementPressed() {
-    if (!elements.empty()) {
-        elements.pop_back();
 
+    if (selectedShapeIndex != -1) {
+        renderer.remove_vector_shape(selectedShapeIndex);
+        selectedShapeIndex = -1;
+    }
+
+    if (selectedModelIndex != -1) {
+        renderer.remove_vector_model(selectedModelIndex);
+        selectedModelIndex = -1;
     }
 }
+
 
 void Application::selectElementPressed() {
-    if (selectedElementIndex < elements.size() - 1) {
-        selectedElementIndex++;
+
+    static bool selectPrimitiveNext = true;
+
+    if (selectPrimitiveNext) {
+        selectedShapeIndex = (selectedShapeIndex + 1) % renderer.getBufferHead();
+        renderer.select_vector_shape(selectedShapeIndex);
+        ofLog() << "Primitive sélectionnée à l'index: " << selectedShapeIndex;
     }
     else {
-        selectedElementIndex = -1;
+
+        selectedModelIndex = (selectedModelIndex + 1) % renderer.getBufferModelHead();
+        renderer.select_vector_model(selectedModelIndex);
+        ofLog() << "Modèle sélectionné à l'index: " << selectedModelIndex;
     }
 
+    selectPrimitiveNext = !selectPrimitiveNext;
 }
+
+
 
 void Application::mode_dessin_pressed()
 {

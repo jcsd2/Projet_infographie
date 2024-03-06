@@ -45,6 +45,15 @@ class Renderer
 public:
 
 
+    void remove_vector_shap(int index);
+     void remove_vector_model(int index);
+     void select_vector_shap(int index);
+      void select_vector_model(int index);
+      int getBufferHead();
+    int getBufferModelHead();
+    int selectedShapeIndex = -1;
+    int selectedModelIndex = -1;
+
     
     //Dimension du framebuffer
     float frame_buffer_width;

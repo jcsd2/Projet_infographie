@@ -42,6 +42,8 @@ public:
     void addElementPressed();
     void removeElementPressed();
     void selectElementPressed();
+    int selectedShapeIndex = -1;
+    int selectedModelIndex = -1;
    
     
     ofxGuiGroup group_image;
