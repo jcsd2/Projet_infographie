@@ -1,6 +1,7 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxAssimpModelLoader.h"
+#include <algorithm>
 
 // énumération des différents types de primitives vectorielles
 enum class VectorPrimitiveType { none, pixel, point, line, square, rectangle, circle, ellipse, triangle, face, maison, cube, sphere };
@@ -168,6 +169,21 @@ public:
     void drawCube(float x, float y, float z, float width, float height, float depth) const;
     void drawSphere(float x, float y, float z, float radius) const;
     float sphereRayon;
+
+    // Mode de projection 5.2
+
+
+
+  
+ 
+    string camera_name;
+ 
+    float camera_near;
+    float camera_far;
+    bool is_camera_fov_narrow;
+    bool is_camera_fov_wide;
+    bool is_camera_perspective;
+
 
     //Initialisation pour camera
     Camera camera_active;

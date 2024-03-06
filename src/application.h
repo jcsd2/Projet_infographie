@@ -160,6 +160,10 @@ public:
 
 
     // Modes de projection 5.2
+
+    ofVec3f camera_position;
+    ofVec3f camera_target;
+
     ofxGuiGroup mode_projection;
     ofxButton perspectiveButton;
     ofxButton orthogonaleButton;

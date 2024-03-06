@@ -626,6 +626,7 @@ void Renderer::drawCube(float x, float y, float z, float width, float height, fl
 
 }
 
+
 void Renderer::drawSphere(float x, float y, float z, float radius) const {
 
 
@@ -634,6 +635,7 @@ void Renderer::drawSphere(float x, float y, float z, float radius) const {
     ofDrawSphere(x, y, z, radius);
 
 }
+
 
 //Fonction de cahngement de algo pour les lignes
 void Renderer::setLineRenderer(LineRenderer renderer)
@@ -800,6 +802,21 @@ void Renderer::update()
         camera->rollDeg(-speed_rotation);
     if (is_camera_roll_right)
         camera->rollDeg(speed_rotation);
+    if (is_camera_perspective) // camera perspective
+    {
+        if (is_camera_fov_narrow)
+        {
+            camera_fov = std::max(camera_fov -= camera_fov_delta * time_elapsed, 0.0f);
+            camera->setFov(camera_fov);
+        }
+
+        if (is_camera_fov_wide)
+        {
+            camera_fov = std::min(camera_fov += camera_fov_delta * time_elapsed, 180.0f);
+            camera->setFov(camera_fov);
+        }
+    }
+
 
     //camera_fov = std::max(camera_fov -= camera_fov_delta * time_elapsed, 0.0f);
     camera->setFov(camera_fov);

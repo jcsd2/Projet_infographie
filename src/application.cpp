@@ -434,23 +434,47 @@ void Application::mousePressed(int x, int y, int button)
 
     ofLog() << "<app::mouse pressed  at: (" << x << ", " << y << ")>";
 
-   
- 
+
+
     if (isSelectionModeActive) {
-        shapeSelected = false; 
+        bool isSelected = false;
+        int selectedShapeId = -1;
+
+        // Trouver la forme sous le curseur
         for (int i = 0; i < renderer.buffer_count; i++) {
             if (isInside(x, y, renderer.shapes[i])) {
-                renderer.selectShape(i);
-                shapeSelected = true;
-                break; 
+                isSelected = true;
+                selectedShapeId = i;
+                break;
+            }
+        }
+
+        // Sélectionner ou désélectionner la forme
+        if (isSelected) {
+            if (std::find(renderer.selectedIds.begin(), renderer.selectedIds.end(), selectedShapeId) != renderer.selectedIds.end()) {
+                renderer.deselectShape(selectedShapeId);
+            }
+            else {
+                renderer.selectShape(selectedShapeId);
             }
         }
     }
 }
 
 
-void Application::mouseDragged(int x, int y, int button)
-{
+void Application::mouseDragged(int x, int y, int button) {
+    if (isSelectionModeActive) {
+        int dx = x - renderer.mouse_current_x;
+        int dy = y - renderer.mouse_current_y;
+
+        for (int i : renderer.selectedIds) {
+            renderer.shapes[i].position1[0] += dx;
+            renderer.shapes[i].position1[1] += dy;
+            renderer.shapes[i].position2[0] += dx;
+            renderer.shapes[i].position2[1] += dy;
+        }
+    }
+
     renderer.mouse_current_x = x;
     renderer.mouse_current_y = y;
 }
@@ -461,7 +485,6 @@ void Application::mouseReleased(int x, int y, int button)
     selection_end.set(renderer.mouse_current_x, renderer.mouse_current_y);
     renderer.is_mouse_button_pressed = false;
 
-    // Vérifier si le mode de capture d'écran est activé
     if (captureMode)
     {
         screenshot(x, y, false);
@@ -470,16 +493,20 @@ void Application::mouseReleased(int x, int y, int button)
     {
         screenshot(x, y, true);
     }
-    else if (renderer.draw_mode != VectorPrimitiveType::none)
+    else if (!isSelectionModeActive) // ELEVER LAJOUT DE FORME SI SELECTION MULTIPLE EST ACTIVÉ
     {
-        renderer.add_vector_shape(renderer.draw_mode);
-    }
-    else if (renderer.draw_mode_models != VectorModelType::none){
-        renderer.add_vector_models(renderer.draw_mode_models);
+        if (renderer.draw_mode != VectorPrimitiveType::none)
+        {
+            renderer.add_vector_shape(renderer.draw_mode);
+        }
+        else if (renderer.draw_mode_models != VectorModelType::none)
+        {
+            renderer.add_vector_models(renderer.draw_mode_models);
+        }
     }
     else
     {
-        ofLog() << "<Fin de la sélection de zone>";
+        ofLog() << "<Fin de la selection de zone>";
     }
 }
 
@@ -881,28 +908,39 @@ void Application::button_maison_pressed(bool& pressed)
 void Application::selection_multiple(bool& pressed) {
     isSelectionModeActive = pressed;
     ofLog() << "<mode: selection multiple> " << (pressed ? "active" : "desactive");
+
+    none_shape_button = false;
+    pixel_shape_button = false;
+    point_shape_button = false;
+    line_shape_button = false;
+    square_shape_button = false;
+    rectangle_shape_button = false;
+    circle_shape_button = false;
+    ellipse_shape_button = false;
+    triangle_shape_button = false;
+    face_shape_button = false;
+    maison_shape_button = false;
+    cubeButton = false;
+    sphereButton = false;
 }
 
 bool Application::isInside(int x, int y, const VectorPrimitive& shape) {
-    switch (shape.type) {
-    case VectorPrimitiveType::circle: {
-        float dx = x - shape.position1[0];
-        float dy = y - shape.position1[1];
-        float radius = sqrt((shape.position2[0] - shape.position1[0]) * (shape.position2[0] - shape.position1[0]) +
-            (shape.position2[1] - shape.position1[1]) * (shape.position2[1] - shape.position1[1]));
-        return (dx * dx + dy * dy) <= (radius * radius);
+    if (shape.type == VectorPrimitiveType::square) {
+        float squareX = std::min(shape.position1[0], shape.position2[0]);
+        float squareY = std::min(shape.position1[1], shape.position2[1]);
+        float squareSize = std::min(abs(shape.position2[0] - shape.position1[0]), abs(shape.position2[1] - shape.position1[1]));
+
+        return x >= squareX && x <= squareX + squareSize && y >= squareY && y <= squareY + squareSize;
     }
-    case VectorPrimitiveType::rectangle: {
+    else if (shape.type == VectorPrimitiveType::rectangle) {
         float left = std::min(shape.position1[0], shape.position2[0]);
         float right = std::max(shape.position1[0], shape.position2[0]);
         float top = std::min(shape.position1[1], shape.position2[1]);
         float bottom = std::max(shape.position1[1], shape.position2[1]);
+
         return x >= left && x <= right && y >= top && y <= bottom;
     }
-                                       // A rajouté triangle carrer ellipse etc
-    default:
-        return false;
-    }
+    return false;
 }
 
 void Application::noneTransformationButtonPressed(){
@@ -953,6 +991,7 @@ void Application::cubeButtonPressed(bool& pressed) {
             ellipse_shape_button = false;
             triangle_shape_button = false;
             face_shape_button = false;
+            sphereButton = false;
         }
     }
 }
@@ -972,16 +1011,19 @@ void Application::sphereButtonPressed(bool& pressed) {
             ellipse_shape_button = false;
             triangle_shape_button = false;
             face_shape_button = false;
+            cubeButton = false;
         }
     }
 }
 
 void Application::perspectiveButtonPressed() {
-    
+    renderer.is_camera_perspective = true;
+    renderer.setup_camera();
 }
 
 void Application::orthogonaleButtonPressed() {
-    
+    renderer.is_camera_perspective = false;
+    renderer.setup_camera();
 }
 
 
@@ -1156,6 +1198,19 @@ void Application::keyReleased(int key)
         renderer.camera_active = Camera::dessous;
         renderer.setup_camera();
     break;
+
+    case 'p': // key p 
+        renderer.is_camera_perspective = true;
+        renderer.setup_camera();
+        ofLog() << "<perpective projection>";
+        break;
+
+    case 'o': // key o
+        renderer.is_camera_perspective = false;
+        renderer.setup_camera();
+        ofLog() << "<orthographic projection>";
+        break;
+
 
     default:
         ofLog() << "<app::key num>" << key;
