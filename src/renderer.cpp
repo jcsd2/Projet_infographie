@@ -55,6 +55,9 @@ void Renderer::setup()
     animationPosition = 0;
     bAnimate = true;
 
+    //Mode de vue dessin ou 3d
+    mode_vue = Mode_Vue::dessin;
+
     loadModels();
     init_buffer_model();
     setup_camera();
@@ -63,6 +66,23 @@ void Renderer::setup()
 
 void Renderer::draw()
 {
+    switch (mode_vue)
+    {
+    case Mode_Vue::dessin:
+        if (is_mouse_button_pressed)
+        {
+            draw_zone(
+                mouse_press_x,
+                mouse_press_y,
+                mouse_current_x,
+                mouse_current_y);
+        }
+        draw_primitives();
+        drawModels();
+        break;
+    
+    case Mode_Vue::camera_3d:
+        camera->begin();
     if(!mode_cam){
         //camera->begin();
         if (is_visible_camera)
@@ -90,6 +110,10 @@ void Renderer::draw()
         }
         draw_primitives();
         drawModels();
+        camera->end();
+        break;
+
+    case Mode_Vue::double_cam:
         //camera->end();
     } else {
         glViewport(0,0, ofGetWindowWidth()/2.0, ofGetWindowHeight());
@@ -119,7 +143,14 @@ void Renderer::draw()
                 camera_dessous.draw();
         }
         camera->end();
+        break;
+    
+    default:
+        break;
     }
+
+
+
 
     if (is_visible_axes)
         ofDrawRotationAxes(64);
@@ -627,6 +658,7 @@ void Renderer::drawCube(float x, float y, float z, float width, float height, fl
 
 }
 
+
 void Renderer::drawSphere(float x, float y, float z, float radius) const {
 
 
@@ -635,6 +667,7 @@ void Renderer::drawSphere(float x, float y, float z, float radius) const {
     ofDrawSphere(x, y, z, radius);
 
 }
+
 
 void Renderer::drawCubeSVG() {
     ofDrawBitmapString(ofToString(ofGetFrameRate()), 20, 20);
@@ -824,6 +857,21 @@ void Renderer::update()
         camera->rollDeg(-speed_rotation);
     if (is_camera_roll_right)
         camera->rollDeg(speed_rotation);
+    if (is_camera_perspective) // camera perspective
+    {
+        if (is_camera_fov_narrow)
+        {
+            camera_fov = std::max(camera_fov -= camera_fov_delta * time_elapsed, 0.0f);
+            camera->setFov(camera_fov);
+        }
+
+        if (is_camera_fov_wide)
+        {
+            camera_fov = std::min(camera_fov += camera_fov_delta * time_elapsed, 180.0f);
+            camera->setFov(camera_fov);
+        }
+    }
+
 
     //camera_fov = std::max(camera_fov -= camera_fov_delta * time_elapsed, 0.0f);
     camera->setFov(camera_fov);
@@ -1144,3 +1192,47 @@ Renderer::~Renderer()
     std::free(models);
 }
 
+void Renderer::remove_vector_shap(int index) {
+    if (index < 0 || index >= buffer_head) return;
+
+    for (int i = index; i < buffer_head - 1; i++) {
+        shapes[i] = shapes[i + 1];
+    }
+
+    buffer_head--;
+    ofLog() << "<removed shape at index: " << index << ">";
+}
+
+void Renderer::remove_vector_model(int index) {
+    if (index < 0 || index >= buffer_model_head) return;
+
+    for (int i = index; i < buffer_model_head - 1; i++) {
+        models[i] = models[i + 1];
+    }
+
+    buffer_model_head--;
+    ofLog() << "<removed model at index: " << index << ">";
+}
+
+
+
+
+void Renderer::select_vector_shap(int index) {
+    if (index < 0 || index >= buffer_head) return;
+    selectedShapeIndex = index;
+    ofLog() << "<selected shape at index: " << index << ">";
+}
+
+void Renderer::select_vector_model(int index) {
+    if (index < 0 || index >= buffer_model_head) return;
+    selectedModelIndex = index;
+    ofLog() << "<selected model at index: " << index << ">";
+}
+
+int Renderer::getBufferHead() {
+    return buffer_head;
+}
+
+int Renderer::getBufferModelHead() {
+    return buffer_model_head;
+}

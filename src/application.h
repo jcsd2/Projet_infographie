@@ -42,6 +42,8 @@ public:
     void addElementPressed();
     void removeElementPressed();
     void selectElementPressed();
+    int selectedShapeIndex = -1;
+    int selectedModelIndex = -1;
    
     
     ofxGuiGroup group_image;
@@ -162,6 +164,10 @@ public:
 
 
     // Modes de projection 5.2
+
+    ofVec3f camera_position;
+    ofVec3f camera_target;
+
     ofxGuiGroup mode_projection;
     ofxButton perspectiveButton;
     ofxButton orthogonaleButton;
@@ -170,8 +176,10 @@ public:
     void orthogonaleButtonPressed();
 
     //Modes pov multiple
+    ofxButton mode_dessincam_button;
     ofxButton mode_1cam_button;
     ofxButton mode_2cam_button;
+    void mode_dessin_pressed();
     void mode_1cam_pressed();
     void mode_2cam_pressed();
 

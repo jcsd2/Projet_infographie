@@ -1,6 +1,7 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxAssimpModelLoader.h"
+#include <algorithm>
 #include "ofxSvg.h"
 
 // énumération des différents types de primitives vectorielles
@@ -13,6 +14,9 @@ enum class LineRenderer { none, dda, bresenham };
 enum class VectorModelType {none, predef1, predef2, predef3, predef4, import};
 
 enum class Camera {devant, derriere, gauche, droite, dessus, dessous};
+
+//Mode de vue dessin 2d ou camera 3d
+enum class Mode_Vue {dessin, camera_3d, double_cam};
 
 //Structure pour primitive
 struct VectorPrimitive {
@@ -41,6 +45,15 @@ class Renderer
 {
 public:
 
+
+    void remove_vector_shap(int index);
+     void remove_vector_model(int index);
+     void select_vector_shap(int index);
+      void select_vector_model(int index);
+      int getBufferHead();
+    int getBufferModelHead();
+    int selectedShapeIndex = -1;
+    int selectedModelIndex = -1;
 
     
     //Dimension du framebuffer
@@ -170,6 +183,21 @@ public:
     void drawSphere(float x, float y, float z, float radius) const;
     float sphereRayon;
 
+    // Mode de projection 5.2
+
+
+
+  
+ 
+    string camera_name;
+ 
+    float camera_near;
+    float camera_far;
+    bool is_camera_fov_narrow;
+    bool is_camera_fov_wide;
+    bool is_camera_perspective;
+
+
     //4.3
     void drawCubeSVG();
     ofxSvg svg;
@@ -217,6 +245,7 @@ public:
     bool is_camera_roll_right;
     bool mode_cam;
     void setup_camera();
+    Mode_Vue mode_vue;
 
     void setup();
     float time_current;
