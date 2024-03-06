@@ -1,6 +1,7 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxAssimpModelLoader.h"
+#include "ofxSvg.h"
 
 // énumération des différents types de primitives vectorielles
 enum class VectorPrimitiveType { none, pixel, point, line, square, rectangle, circle, ellipse, triangle, face, maison, cube, sphere };
@@ -9,7 +10,7 @@ enum class VectorPrimitiveType { none, pixel, point, line, square, rectangle, ci
 enum class LineRenderer { none, dda, bresenham };
 
 //énumération de différents modeles 3d
-enum class VectorModelType {none, predef1, predef2, predef3, import};
+enum class VectorModelType {none, predef1, predef2, predef3, predef4, import};
 
 enum class Camera {devant, derriere, gauche, droite, dessus, dessous};
 
@@ -168,6 +169,13 @@ public:
     void drawCube(float x, float y, float z, float width, float height, float depth) const;
     void drawSphere(float x, float y, float z, float radius) const;
     float sphereRayon;
+
+    //4.3
+    void drawCubeSVG();
+    ofxSvg svg;
+    float deg;
+    float step;
+    vector<ofPolyline> outlines;
 
     //Initialisation pour camera
     Camera camera_active;
