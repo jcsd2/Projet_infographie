@@ -4,7 +4,7 @@
 #include "ofSystemUtils.h"
 #include "renderer.h"
 #include "ofxAssimpModelLoader.h"
-
+#include <iostream>
 
 
 class Application : public ofBaseApp
@@ -43,12 +43,17 @@ public:
     void removeElementPressed();
     void selectElementPressed();
    
-    
+    //1.3
     ofxGuiGroup group_image;
     ofxToggle screenshot_button;
     ofxToggle screenshot_button_funny;
-    //ofParameter<ofColor> color_picker_background; //changer couleur fond
+    //1.4
+    ofxButton background_rgb_button;
+    ofxButton background_hsb_button;
+    ofParameter<ofColor> color_picker_background; //changer couleur fond
     ofParameter<ofColor> color_picker_background_HSB; //changer  HSB
+    void background_rgb_button_pressed();
+    void background_hsb_button_pressed();
 
     ofxGuiGroup group_dessin_vectoriel;
     ofxGuiGroup group_dessin_vectoriel_formes;
@@ -63,7 +68,7 @@ public:
      
     
 
-    ofImage importedImage; // stocker l'image charge
+    //ofImage importedImage; // stocker l'image charge
     ofxButton importImageButton; //bouton pour importer l'images
     ofxButton exportation_button; // Parametre Exportation
     void exportation_button_pressed();

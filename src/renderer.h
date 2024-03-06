@@ -3,8 +3,10 @@
 #include "ofxAssimpModelLoader.h"
 #include <algorithm>
 
+enum class BackgroundColorType {none, rgb, hsb};
+
 // énumération des différents types de primitives vectorielles
-enum class VectorPrimitiveType { none, pixel, point, line, square, rectangle, circle, ellipse, triangle, face, maison, cube, sphere };
+enum class VectorPrimitiveType { none, importedImage, pixel, point, line, square, rectangle, circle, ellipse, triangle, face, maison, cube, sphere };
 
 // énumération de différents algorithmes de rastérisation de ligne
 enum class LineRenderer { none, dda, bresenham };
@@ -49,9 +51,13 @@ public:
     //Dimension du framebuffer
     float frame_buffer_width;
     float frame_buffer_heigth;
-    //ofColor background_color1;
+    ofColor background_color1;
     ofColor background_color2;
+    BackgroundColorType color_mode;
 
+    //1.4
+    ofImage importedImage;
+    void import_image();
     //Declaration pours les primitives vectorieles
     VectorPrimitiveType draw_mode;
     VectorPrimitive* shapes;

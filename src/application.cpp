@@ -37,9 +37,15 @@ void Application::setup()
     captureMode = false; // Initialisation l'indicateur du mode de capture d'écran
     captureMode_funny = false;
     //Espace de couleur (1.4)
-    //color_picker_background.set("couleur du canevas RGB", ofColor(60), ofColor(0, 0), ofColor(255, 255));
-    color_picker_background_HSB.set("couleur du canevas HSB", ofColor::fromHsb(128, 255, 255));
-    //group_image.add(color_picker_background);
+    background_rgb_button.setup("Espace RGB");
+    background_hsb_button.setup("Espace HSB");
+    background_rgb_button.addListener(this, &Application::background_rgb_button_pressed);
+    background_hsb_button.addListener(this, &Application::background_hsb_button_pressed);
+    color_picker_background.set("couleur du canevas RGB", ofColor(60), ofColor(0, 0), ofColor(255, 255));
+    color_picker_background_HSB.set("couleur du canevas HSB", ofColor::fromHsb(60, 0, 255));
+    group_image.add(&background_rgb_button);
+    group_image.add(&background_hsb_button);
+    group_image.add(color_picker_background);
     group_image.add(color_picker_background_HSB);
     //Histogramme ici (1.5)
     group_image.minimize();
@@ -265,9 +271,9 @@ void Application::draw()
     drawCursor();
 
     // Dessiner l'image importée si elle est chargée
-    if (importedImage.isAllocated()) {
-        importedImage.draw(0, 0); // Ajustez la position et la taille selon vos besoins
-    }
+    //if (importedImage.isAllocated()) {
+        //importedImage.draw(0, 0); // Ajustez la position et la taille selon vos besoins
+    //}
     renderer.draw();
 }
 
@@ -276,8 +282,10 @@ void Application::draw()
 
 void Application::update()
 {
-    //renderer.background_color1 = color_picker_background;
+    renderer.background_color1 = color_picker_background;
     renderer.background_color2 = color_picker_background_HSB;
+
+
 
     time_current = ofGetElapsedTimef();
     time_elapsed = time_current - time_last;
@@ -375,12 +383,8 @@ void Application::update()
 
 }
 
-
 void Application::importImage() {
-    ofFileDialogResult result = ofSystemLoadDialog("Importer une image", false);
-    if (result.bSuccess) {
-        importedImage.load(result.getPath());
-    }
+    renderer.import_image();
 }
 
 void Application::exportation_button_pressed() {
@@ -418,6 +422,18 @@ void Application::screenshot_funny_button_pressed(bool& value)
         ofLog() << "Mode de capture d'écran désactivé.";
     }
 }
+
+void Application::background_rgb_button_pressed()
+{
+    renderer.color_mode = BackgroundColorType::rgb;
+}
+
+void Application::background_hsb_button_pressed()
+{
+    renderer.color_mode = BackgroundColorType::hsb;
+}
+
+
 
 void Application::mouseMoved(int x, int y)
 {
@@ -1361,6 +1377,10 @@ void Application::exit()
 {
     // Remove the listener for toggle button valueChanged event
     screenshot_button.removeListener(this, &Application::screenshot_button_pressed);
+    screenshot_button_funny.removeListener(this, &Application::screenshot_funny_button_pressed);
+    background_rgb_button.removeListener(this, &Application::background_rgb_button_pressed);
+    background_hsb_button.removeListener(this, &Application::background_hsb_button_pressed);
+
     retirer_boutons_formes();
     translateButton.removeListener(this, &Application::translateButtonPressed);
     rotateButton.removeListener(this, &Application::rotateButtonPressed);

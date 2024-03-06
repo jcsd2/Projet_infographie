@@ -5,7 +5,7 @@ void Renderer::setup()
     ofSetFrameRate(60);
     // couleur fond arriere
     ofSetBackgroundColor(20);
-
+    ofLog() << "<app::BackgroundColor:" << ofGetBackgroundColor();
     //Initisialisation des variable (Comme dans les exemples du cours)
     // nombre maximal de primitives vectorielles dans le tableau
     buffer_count = 100;
@@ -35,6 +35,8 @@ void Renderer::setup()
     //largeur de la ligne de contour
     stroke_width_default = 500;
     radius = 4.0f;
+    //mode de couleur
+    color_mode = BackgroundColorType::rgb;
 
     //Speed de deplacement
     speed_delta = 100.0f;
@@ -68,6 +70,18 @@ void Renderer::draw()
     switch (mode_vue)
     {
     case Mode_Vue::dessin:
+
+        switch (color_mode)
+        {
+        case BackgroundColorType::rgb:
+            ofSetBackgroundColor(background_color1);
+            break;
+
+        case BackgroundColorType::hsb:
+            ofSetBackgroundColor(background_color2);
+        default:
+            break;
+        }
         if (is_mouse_button_pressed)
         {
             draw_zone(
@@ -76,6 +90,7 @@ void Renderer::draw()
                 mouse_current_x,
                 mouse_current_y);
         }
+
         draw_primitives();
         drawModels();
         break;
@@ -198,10 +213,55 @@ void Renderer::add_vector_shape(VectorPrimitiveType type)
     shapes[buffer_head].fill_color[2] = (fillColor.a > 0) ? fillColor.b : fill_color_b;
     shapes[buffer_head].fill_color[3] = (fillColor.a > 0) ? fillColor.a : fill_color_a;
 
+    switch (shapes[buffer_head].type)
+    {
+    case VectorPrimitiveType::importedImage:
+        shapes[buffer_head].position1[0] = 0;
+        shapes[buffer_head].position1[1] = 0;
+        break;
+    case VectorPrimitiveType::rectangle:
+    {
+        ofColor couleur_hsb = ofColor::fromHsb(background_color2.r, background_color2.g, background_color2.b);
+        float hue = couleur_hsb.getHue();
+        float sat = couleur_hsb.getSaturation();
+        float lumi = couleur_hsb.getBrightness();
+        shapes[buffer_head].fill_color[0] = hue;
+        shapes[buffer_head].fill_color[1] = sat;
+        shapes[buffer_head].fill_color[2] = lumi;
+        ofLog() << "<Color to hsb r: " << couleur_hsb <<"hue:" <<hue<<"sat:"<<sat<< "Lumi : "<< lumi;
+        break; 
+    }
+    default:
+        break;
+    }
 
     ofLog() << "<new primitive at index: " << buffer_head << ">";
 
     buffer_head = ++buffer_head >= buffer_count ? 0 : buffer_head; // boucler sur le tableau si plein
+}
+
+//Fonction qui importe une image et load celle-ci
+void Renderer::import_image()
+{
+    string defaultPath = ofFilePath::getUserHomeDir();
+    ofLog() << "Default path" << defaultPath;
+    ofFileDialogResult result = ofSystemLoadDialog("Importer une image", false);
+    if (result.bSuccess) {
+        importedImage.load(result.getPath());
+        draw_mode = VectorPrimitiveType::importedImage;
+    } else {
+        std::string path;
+        std::cout << "Veuillez entrer le chemin de l'image à importer : ";
+        std::getline(std::cin, path);
+
+        if (!path.empty()) {
+            importedImage.load(path);
+            draw_mode = VectorPrimitiveType::importedImage;
+        } else {
+            ofLog() << "Erreur import";
+        }
+    }
+
 }
 
 // fonction qui dessine un pixel (Comme dans les exemples du cours)
@@ -399,6 +459,9 @@ void Renderer::draw_primitives()
         switch (shapes[index].type)
         {
         case VectorPrimitiveType::none:
+            break;
+        case VectorPrimitiveType::importedImage:
+            importedImage.draw(shapes[index].position1[0], shapes[index].position1[1]);
             break;
 
         case VectorPrimitiveType::pixel:
