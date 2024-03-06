@@ -226,10 +226,13 @@ void Application::setup()
     mode_projection.minimize();
 
     //5.3 Point de vue multiple
+    mode_dessincam_button.setup("Mode dessin");
     mode_1cam_button.setup("Mode 1 camera");
     mode_2cam_button.setup("Mode 2 cameras");
+    mode_dessincam_button.addListener(this, &Application::mode_dessin_pressed);
     mode_1cam_button.addListener(this, &Application::mode_1cam_pressed);
     mode_2cam_button.addListener(this, &Application::mode_2cam_pressed);
+    groupe_camera.add(&mode_dessincam_button);
     groupe_camera.add(&mode_1cam_button);
     groupe_camera.add(&mode_2cam_button);
     //5.4 Occlusion
@@ -1338,13 +1341,20 @@ void Application::selectElementPressed() {
 
 }
 
+void Application::mode_dessin_pressed()
+{
+    renderer.mode_vue = Mode_Vue::dessin;
+}
+
 void Application::mode_1cam_pressed()
 {
-    renderer.mode_cam = false;
+    renderer.mode_vue = Mode_Vue::camera_3d;
+    //renderer.mode_cam = false;
 }
 void Application::mode_2cam_pressed()
 {
-    renderer.mode_cam = true;
+    renderer.mode_vue = Mode_Vue::double_cam;
+    //renderer.mode_cam = true;
 }
 
 void Application::exit()
@@ -1375,6 +1385,7 @@ void Application::exit()
     removeElementButton.removeListener(this, &Application::removeElementPressed);
     selectElementButton.removeListener(this, &Application::selectElementPressed);
 
+    mode_dessincam_button.removeListener(this, &Application::mode_dessin_pressed);
     mode_1cam_button.removeListener(this, &Application::mode_1cam_pressed);
     mode_2cam_button.removeListener(this, &Application::mode_2cam_pressed);
 

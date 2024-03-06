@@ -55,6 +55,9 @@ void Renderer::setup()
     animationPosition = 0;
     bAnimate = true;
 
+    //Mode de vue dessin ou 3d
+    mode_vue = Mode_Vue::dessin;
+
     loadModels();
     init_buffer_model();
     setup_camera();
@@ -62,7 +65,22 @@ void Renderer::setup()
 
 void Renderer::draw()
 {
-    if(!mode_cam){
+    switch (mode_vue)
+    {
+    case Mode_Vue::dessin:
+        if (is_mouse_button_pressed)
+        {
+            draw_zone(
+                mouse_press_x,
+                mouse_press_y,
+                mouse_current_x,
+                mouse_current_y);
+        }
+        draw_primitives();
+        drawModels();
+        break;
+    
+    case Mode_Vue::camera_3d:
         camera->begin();
         if (is_visible_camera)
         {
@@ -90,7 +108,9 @@ void Renderer::draw()
         draw_primitives();
         drawModels();
         camera->end();
-    } else {
+        break;
+
+    case Mode_Vue::double_cam:
         glViewport(0,0, ofGetWindowWidth()/2.0, ofGetWindowHeight());
         camera = &camera_gauche;
         camera->begin();
@@ -118,7 +138,14 @@ void Renderer::draw()
                 camera_dessous.draw();
         }
         camera->end();
+        break;
+    
+    default:
+        break;
     }
+
+
+
 
     if (is_visible_axes)
         ofDrawRotationAxes(64);

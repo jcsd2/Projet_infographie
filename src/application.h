@@ -172,8 +172,10 @@ public:
     void orthogonaleButtonPressed();
 
     //Modes pov multiple
+    ofxButton mode_dessincam_button;
     ofxButton mode_1cam_button;
     ofxButton mode_2cam_button;
+    void mode_dessin_pressed();
     void mode_1cam_pressed();
     void mode_2cam_pressed();
 

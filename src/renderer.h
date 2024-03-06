@@ -14,6 +14,9 @@ enum class VectorModelType {none, predef1, predef2, predef3, import};
 
 enum class Camera {devant, derriere, gauche, droite, dessus, dessous};
 
+//Mode de vue dessin 2d ou camera 3d
+enum class Mode_Vue {dessin, camera_3d, double_cam};
+
 //Structure pour primitive
 struct VectorPrimitive {
     int id; 
@@ -225,6 +228,7 @@ public:
     bool is_camera_roll_right;
     bool mode_cam;
     void setup_camera();
+    Mode_Vue mode_vue;
 
     void setup();
     float time_current;
