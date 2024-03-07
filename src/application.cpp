@@ -220,12 +220,12 @@ void Application::setup()
     groupe_camera.add(&mode_projection);
 
     
-    perspectiveButton.setup("Perspective", false);
+    perspectiveButton.setup("Perspective \n Key P", false);
     mode_projection.add(&perspectiveButton);
     perspectiveButton.addListener(this, &Application::perspectiveButtonPressed);
 
     
-    orthogonaleButton.setup("Orthogonale", false);
+    orthogonaleButton.setup("Orthogonale\n Key O", false);
     mode_projection.add(&orthogonaleButton);
     orthogonaleButton.addListener(this, &Application::orthogonaleButtonPressed);
 
@@ -614,6 +614,8 @@ void Application::ajout_boutons_formes()
     group_dessin_vectoriel_formes.add(maison_shape_button.setup("Maison", ofParameter<bool>(false)));
     groupe_geometrie.add(cubeButton.setup("Cube", ofParameter<bool>(false)));
     groupe_geometrie.add(sphereButton.setup("Sphere", ofParameter<bool>(false)));
+    groupe_camera.add(perspectiveButton.setup("Perspective", ofParameter<bool>(false)));
+    groupe_camera.add(orthogonaleButton.setup("Orthogonale", ofParameter<bool>(false)));
 
     // Ajout des listeners pour chaque bouton
     none_shape_button.addListener(this, &Application::button_none_pressed);
