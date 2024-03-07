@@ -152,7 +152,7 @@ public:
     ofxButton predef1_model_button;
     ofxButton predef2_model_button;
     ofxButton predef3_model_button;
-    ofxButton predef4_model_button;
+
     ofxButton remove_last_model_button;
     bool bShowModel;
     void non_model_button_pressed();
@@ -160,7 +160,7 @@ public:
     void predef1_model_button_pressed();
     void predef2_model_button_pressed();
     void predef3_model_button_pressed();
-    void predef4_model_button_pressed();
+
     void remove_last_model_button_pressed();
  
 

@@ -195,21 +195,21 @@ void Application::setup()
     predef1_model_button.setup("Modele 1");
     predef2_model_button.setup("Modele 2");
     predef3_model_button.setup("Modele 3");
-    predef4_model_button.setup("Modele 4");
+
     remove_last_model_button.setup("Retirer dernier\n modele");
     none_model_button.addListener(this, &Application::non_model_button_pressed);
     import_model_button.addListener(this, &Application::import_model_button_pressed);
     predef1_model_button.addListener(this, &Application::predef1_model_button_pressed);
     predef2_model_button.addListener(this, &Application::predef2_model_button_pressed);
     predef3_model_button.addListener(this, &Application::predef3_model_button_pressed);
-    predef4_model_button.addListener(this, &Application::predef4_model_button_pressed);
+
     remove_last_model_button.addListener(this,&Application::remove_last_model_button_pressed);
     groupe_geometrie.add(&none_model_button);
     groupe_geometrie.add(&import_model_button);
     groupe_geometrie.add(&predef1_model_button);
     groupe_geometrie.add(&predef2_model_button);
     groupe_geometrie.add(&predef3_model_button);
-    groupe_geometrie.add(&predef4_model_button);
+
     groupe_geometrie.add(&remove_last_model_button);
  
     //4.4 Animation
@@ -1237,10 +1237,7 @@ void Application::predef3_model_button_pressed(){
         renderer.draw_mode = VectorPrimitiveType::none;
         renderer.draw_mode_models = VectorModelType::predef3;
 }
-void Application::predef4_model_button_pressed() { 
-    renderer.draw_mode = VectorPrimitiveType::none;
-    renderer.draw_mode_models = VectorModelType::predef4;
-}
+
 
 //Fonction pour retirer le dernier modele affiche
 void Application::remove_last_model_button_pressed(){
@@ -1498,7 +1495,7 @@ void Application::exit()
     predef1_model_button.removeListener(this, &Application::predef1_model_button_pressed);
     predef2_model_button.removeListener(this, &Application::predef2_model_button_pressed);
     predef3_model_button.removeListener(this, &Application::predef3_model_button_pressed);
-    predef4_model_button.removeListener(this, &Application::predef4_model_button_pressed);
+
     remove_last_model_button.removeListener(this, &Application::remove_last_model_button_pressed);
 
     addElementButton.removeListener(this, &Application::addElementPressed);

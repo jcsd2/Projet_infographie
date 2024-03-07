@@ -16,7 +16,7 @@ enum class VectorPrimitiveType { none, importedImage, pixel, point, line, square
 enum class LineRenderer { none, dda, bresenham };
 
 //énumération de différents modeles 3d
-enum class VectorModelType {none, predef1, predef2, predef3, predef4, import};
+enum class VectorModelType {none, predef1, predef2, predef3, import};
 
 enum class Camera {devant, derriere, gauche, droite, dessus, dessous};
 

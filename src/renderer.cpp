@@ -1243,33 +1243,6 @@ for (index = 0; index < buffer_model_count; ++index)
                 break;
             }
 
-        case VectorModelType::predef4:
-            
-            ofDrawBitmapString(ofToString(ofGetFrameRate()), 20, 20);
-            ofPushMatrix();
-            ofTranslate(ofGetWidth() / 2, ofGetHeight() / 4);
-            ofScale(0.5, 0.5, 1);
-            if (ofGetMousePressed()) {
-                ofNoFill();
-                ofRotateDeg(deg, 0, deg, 0);
-                for (ofPolyline& line : outlines) {
-                    int num = step * line.size();
-
-                    ofBeginShape();
-                    for (int j = 0; j < num; j++) {
-                        ofVertex(line[j]);
-                    }
-                    ofEndShape();
-                }
-            }
-            else {
-                svg.draw();
-            }
-
-            ofPopMatrix();
-            break;
-
-
         case VectorModelType::import:
             break;
         }
