@@ -96,6 +96,13 @@ void Renderer::draw()
         if (is_active_histogram){
             histogram();
         }
+        if (animation_svg_object_active)
+        {
+            ofPushMatrix();
+            ofRotateDeg(ofGetFrameNum() * 0.6f, 0.0f, 0.0f, 1.0f);
+            drawCubeSVG();
+            ofPopMatrix();
+        }
 
         draw_primitives();
         drawModels();
@@ -737,9 +744,11 @@ void Renderer::drawSphere(float x, float y, float z, float radius) const {
 
 
 void Renderer::drawCubeSVG() {
+
     ofDrawBitmapString(ofToString(ofGetFrameRate()), 20, 20);
     ofPushMatrix();
-    ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
+    ofScale(0.2);
+    ofTranslate(ofGetWidth(), 0);
     if (ofGetMousePressed()) {
         ofNoFill();
         for (ofPolyline& line : outlines) {
