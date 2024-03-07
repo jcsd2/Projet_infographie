@@ -138,6 +138,13 @@ public:
     ofxButton rotateButton;
     ofxButton scaleButton;
 
+    //Section 3.4 UNdo Redo
+    ofxGuiGroup historique_group;
+    ofxButton undo_button;
+    ofxButton redo_button;
+    void undo_button_pressed();
+    void redo_button_pressed();
+
     //Section 4 Geometrie
     ofxGuiGroup groupe_geometrie;
     ofxButton none_model_button;

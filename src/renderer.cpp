@@ -209,6 +209,14 @@ void Renderer::reset()
 // fonction qui ajoute une primitive vectorielle au tableau (Comme dans les exemples du cours)
 void Renderer::add_vector_shape(VectorPrimitiveType type)
 {
+    //Pousse l'etat actuelle dans la pile
+    undoStack.push(shapes[buffer_head]);
+    //Vider la pile avant chaque action
+    while(!redoStack.empty())
+    {
+        redoStack.pop();
+    }
+
     shapes[buffer_head].type = type;
 
     shapes[buffer_head].position1[0] = mouse_press_x;
@@ -252,7 +260,7 @@ void Renderer::add_vector_shape(VectorPrimitiveType type)
     }
 
     ofLog() << "<new primitive at index: " << buffer_head << ">";
-
+    
     buffer_head = ++buffer_head >= buffer_count ? 0 : buffer_head; // boucler sur le tableau si plein
 }
 
@@ -931,6 +939,15 @@ void Renderer::scalePrimitive(float scaleFactor){
         shapes[dernier_primitive].position2[1] *= scaleFactor;
     }
 }
+
+void Renderer::undo(){}
+
+void Renderer::redo(){}
+
+void Renderer::stash(){}
+
+void Renderer::execute(){}
+
 
 void Renderer::update()
 {

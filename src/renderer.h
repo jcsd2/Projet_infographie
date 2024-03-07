@@ -109,7 +109,7 @@ public:
 
     void setLineRenderer(LineRenderer renderer);
 
-    //5.1
+    //1.5
     bool is_active_histogram;
     ofImage histogram_im;
     ofxCvGrayscaleImage screenGrayscale;
@@ -145,8 +145,12 @@ public:
     float proportion;
     float angle;
 
-
-
+    std::stack<VectorPrimitive> undoStack;
+    std::stack<VectorPrimitive> redoStack;
+    void undo();
+    void redo();
+    void stash();
+    void execute();
 
     //Temporary declaration
     int clear_color_gray;

@@ -158,6 +158,14 @@ void Application::setup()
     groupe_transforamtion_interactive.add(&scaleButton);
 
     //Ajouter 3.4 ici vv
+    historique_group.setup("Historique\n Undo/Redo");
+    undo_button.setup("Undo");
+    redo_button.setup("Redo");
+    undo_button.addListener(this, &Application::undo_button_pressed);
+    redo_button.addListener(this, &Application::redo_button_pressed);
+    historique_group.add(&undo_button);
+    historique_group.add(&redo_button);
+    group_transformation.add(&historique_group);
 
     group_transformation.minimize();
     gui.add(&group_transformation);
@@ -1077,6 +1085,17 @@ void Application::scaleButtonPressed()
         ofLog() << "<mode: scale>" << isScalingActive;
 }
 
+//3.4
+void Application::undo_button_pressed()
+{
+
+}
+
+void Application::redo_button_pressed()
+{
+    
+}
+
 //4.2 Primitive geometriques
 void Application::cubeButtonPressed(bool& pressed) {
     {
@@ -1447,6 +1466,9 @@ void Application::exit()
     translateButton.removeListener(this, &Application::translateButtonPressed);
     rotateButton.removeListener(this, &Application::rotateButtonPressed);
     scaleButton.removeListener(this, &Application::scaleButtonPressed);
+
+    undo_button.removeListener(this, &Application::undo_button_pressed);
+    redo_button.removeListener(this, &Application::redo_button_pressed);
 
     cursorDefaultButton.removeListener(this, &Application::cursorDefaultButtonPressed);
     cursorDrawLineButton.removeListener(this, &Application::cursorDrawLineButtonPressed);
