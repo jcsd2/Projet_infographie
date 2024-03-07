@@ -263,7 +263,12 @@ void Application::setup()
     groupe_camera.add(&mode_1cam_button);
     groupe_camera.add(&mode_2cam_button);
     //5.4 Occlusion
-
+    meshfilled_button.setup("Mode meshfilled");
+    wireframe_button.setup("Mode wireframe");
+    meshfilled_button.addListener(this, &Application::meshfilled_button_pressed);
+    wireframe_button.addListener(this, &Application::wireframe_button_pressed);
+    groupe_camera.add(&meshfilled_button);
+    groupe_camera.add(&wireframe_button);
 
     groupe_camera.minimize();
 
@@ -1453,6 +1458,16 @@ void Application::mode_2cam_pressed()
     //renderer.mode_cam = true;
 }
 
+void Application::meshfilled_button_pressed()
+{
+    renderer.occlusion = Occlusion::meshfiled;
+}
+
+void Application::wireframe_button_pressed()
+{
+    renderer.occlusion = Occlusion::wireframe;
+}
+
 void Application::exit()
 {
     // Remove the listener for toggle button valueChanged event
@@ -1493,6 +1508,9 @@ void Application::exit()
     mode_dessincam_button.removeListener(this, &Application::mode_dessin_pressed);
     mode_1cam_button.removeListener(this, &Application::mode_1cam_pressed);
     mode_2cam_button.removeListener(this, &Application::mode_2cam_pressed);
+
+    meshfilled_button.removeListener(this, &Application::meshfilled_button_pressed);
+    wireframe_button.removeListener(this, &Application::wireframe_button_pressed);
 
     ofLog() << "<app::exit>";
 

@@ -5,6 +5,8 @@
 #include "ofxSvg.h"
 #include "ofxOpenCv.h"
 
+enum class Occlusion {none, wireframe, meshfiled};
+
 enum class BackgroundColorType {none, rgb, hsb};
 
 // énumération des différents types de primitives vectorielles
@@ -274,6 +276,8 @@ public:
     Mode_Vue mode_vue;
 
     //Section
+
+    Occlusion occlusion;
 
     void setup();
     float time_current;

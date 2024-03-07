@@ -209,6 +209,12 @@ public:
     void mode_1cam_pressed();
     void mode_2cam_pressed();
 
+    //Occlusion 
+    ofxButton meshfilled_button;
+    ofxButton wireframe_button;
+    void meshfilled_button_pressed();
+    void wireframe_button_pressed();
+
     // Méthodes associées aux boutons
     void noneTransformationButtonPressed();
     void translateButtonPressed();
