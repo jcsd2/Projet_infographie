@@ -63,6 +63,15 @@ public:
     int getBufferModelHead();
     int selectedShapeIndex = -1;
     int selectedModelIndex = -1;
+    void zoomIn();
+    void zoomOut();
+    void rotateAround(float angle, ofVec3f axis);
+    void changeView(Camera newView);
+    bool is_camera_interactive;
+    bool is_moving_forward;
+    bool is_rotating_left;
+    bool is_moving_backward;
+   bool is_rotating_right;
 
     
     //Dimension du framebuffer
