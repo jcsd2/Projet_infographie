@@ -3,6 +3,7 @@
 #include "ofxAssimpModelLoader.h"
 #include <algorithm>
 #include "ofxSvg.h"
+#include "ofxOpenCv.h"
 
 enum class BackgroundColorType {none, rgb, hsb};
 
@@ -103,6 +104,13 @@ public:
     void draw_primitives();
 
     void setLineRenderer(LineRenderer renderer);
+
+    //5.1
+    bool is_active_histogram;
+    ofImage histogram_im;
+    ofxCvGrayscaleImage screenGrayscale;
+    ofxCvContourFinder contourFinders;
+    void histogram();
 
     // Fonction et déclaration pour Sélection Multiples
 

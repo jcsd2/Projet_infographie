@@ -2,5 +2,7 @@ ofxAssimpModelLoader
 ofxAssimpModelLoader
 ofxGui
 ofxGui
+ofxOpenCv
+ofxOpenCv
 ofxSvg
 ofxSvg

@@ -48,8 +48,13 @@ void Application::setup()
     group_image.add(color_picker_background);
     group_image.add(color_picker_background_HSB);
     //Histogramme ici (1.5)
+    histogramme_button.setup("Afficher histogramme");
+    histogramme_button.addListener(this, &Application::histogramme_button_pressed);
+    group_image.add(&histogramme_button);
+
     group_image.minimize();
     gui.add(&group_image);
+    //fin 1
 
     //Groupe du critere 2 Dessin vectoriel 
     group_dessin_vectoriel.setup("Dessin Vectoriel");
@@ -223,8 +228,6 @@ void Application::setup()
     perspectiveButton.setup("Perspective", false);
     mode_projection.add(&perspectiveButton);
     perspectiveButton.addListener(this, &Application::perspectiveButtonPressed);
-
-    
     orthogonaleButton.setup("Orthogonale", false);
     mode_projection.add(&orthogonaleButton);
     orthogonaleButton.addListener(this, &Application::orthogonaleButtonPressed);
@@ -434,6 +437,14 @@ void Application::background_hsb_button_pressed()
     renderer.color_mode = BackgroundColorType::hsb;
 }
 
+void Application::histogramme_button_pressed()
+{
+    renderer.is_active_histogram = !renderer.is_active_histogram;
+    //renderer.histogram = renderer.histogram.load(0,0,ofGetWidth(), ofGetHeight());
+    // Convert to grayscale
+    //renderer.histogram.setFromColorImage(renderer.histogram);
+    
+}
 
 
 void Application::mouseMoved(int x, int y)
@@ -1407,6 +1418,7 @@ void Application::exit()
     screenshot_button_funny.removeListener(this, &Application::screenshot_funny_button_pressed);
     background_rgb_button.removeListener(this, &Application::background_rgb_button_pressed);
     background_hsb_button.removeListener(this, &Application::background_hsb_button_pressed);
+    histogramme_button.removeListener(this, &Application::histogramme_button_pressed);
 
     retirer_boutons_formes();
     translateButton.removeListener(this, &Application::translateButtonPressed);

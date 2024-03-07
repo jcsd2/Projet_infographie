@@ -7,6 +7,7 @@
 #include <iostream>
 
 
+
 class Application : public ofBaseApp
 {
 public:
@@ -56,6 +57,10 @@ public:
     ofParameter<ofColor> color_picker_background_HSB; //changer  HSB
     void background_rgb_button_pressed();
     void background_hsb_button_pressed();
+
+    //1.5
+    ofxButton histogramme_button;
+    void histogramme_button_pressed();
 
     ofxGuiGroup group_dessin_vectoriel;
     ofxGuiGroup group_dessin_vectoriel_formes;

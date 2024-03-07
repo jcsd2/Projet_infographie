@@ -48,7 +48,7 @@ void Renderer::setup()
 
     mouse_press_x = mouse_press_y = mouse_current_x = mouse_current_y = 0;
     is_mouse_button_pressed = false;
-
+    is_active_histogram = false;
 
     //Initialisation des variable pour les modeles 3d
     modelIndex = 1;
@@ -90,6 +90,9 @@ void Renderer::draw()
                 mouse_press_y,
                 mouse_current_x,
                 mouse_current_y);
+        }
+        if (is_active_histogram){
+            histogram();
         }
 
         draw_primitives();
@@ -963,7 +966,27 @@ void Renderer::draw_zone(float x1, float y1, float x2, float y2) const
     ofDrawEllipse(x2_clamp, y2_clamp, radius, radius);
     ofPopMatrix();
 }
+void Renderer::histogram()
+{
+    int x = ofGetWidth();
+    int y = ofGetHeight();
+    histogram_im.allocate(x, y, OF_IMAGE_COLOR);
+    histogram_im.grabScreen(0,0,x,y);
+    screenGrayscale = histogram_im;
+    contourFinders.findContours(screenGrayscale, 10, ofGetWidth() * ofGetHeight(), 1, false);
+    for (int i = 0; i < contourFinders.nBlobs; ++i)
+    {
+        float bar_x = ofMap(i, 0, contourFinders.nBlobs, 0, ofGetWidth());
+        float height = ofMap(contourFinders.blobs[i].area, 0, ofGetWidth() * ofGetHeight(), 0, ofGetHeight());
 
+        // Adjust the drawing of rectangles
+        ofPushMatrix();
+        ofTranslate(0, 0); // Translate to the top-left corner
+        ofScale(0.7);
+        ofDrawRectangle(bar_x, y, ofGetWidth() * 0.7 / contourFinders.nBlobs, -height);
+        ofPopMatrix();
+    }
+}
 
 
 int Renderer::generate_unique_id() {
