@@ -211,13 +211,6 @@ void Renderer::reset()
 // fonction qui ajoute une primitive vectorielle au tableau (Comme dans les exemples du cours)
 void Renderer::add_vector_shape(VectorPrimitiveType type)
 {
-    //Pousse l'etat actuelle dans la pile
-    undoStack.push(shapes[buffer_head]);
-    //Vider la pile avant chaque action
-    while(!redoStack.empty())
-    {
-        redoStack.pop();
-    }
 
     shapes[buffer_head].type = type;
 
@@ -262,7 +255,7 @@ void Renderer::add_vector_shape(VectorPrimitiveType type)
     }
 
     ofLog() << "<new primitive at index: " << buffer_head << ">";
-    
+    execute();
     buffer_head = ++buffer_head >= buffer_count ? 0 : buffer_head; // boucler sur le tableau si plein
 }
 
@@ -806,7 +799,6 @@ void Renderer::dispatch_random_models(int count, float range)
     vector_proportion.y = scale;
     vector_proportion.z = scale;
 
-    // configurer les attributs de transformation du teapot
     shapes[index].position1[0] = vector_position.x;
     models[index].position1[1] = vector_position.y;
     models[index].position1[2] = vector_position.z;
@@ -883,10 +875,13 @@ void Renderer::updateSelectedShapesAttribute(float newStrokeWidth, const ofColor
 void Renderer::translateLastShape(float offsetX, float offsetY) {
     int dernier_primitive = get_last_primitive();
     if (dernier_primitive >= 0 && dernier_primitive < buffer_count) {
+        //execute();
+
         shapes[dernier_primitive].position1[0] += offsetX;
         shapes[dernier_primitive].position1[1] += offsetY;
         shapes[dernier_primitive].position2[0] += offsetX;
         shapes[dernier_primitive].position2[1] += offsetY;
+        
     }
 }
 
@@ -942,13 +937,56 @@ void Renderer::scalePrimitive(float scaleFactor){
     }
 }
 
-void Renderer::undo(){}
+void Renderer::undo(){
+    if(!undoStack.empty())
+    {
+        // On pousse l'état actuel dans la pile de rétablissement
+        redoStack.push(shapes[buffer_head]);
 
-void Renderer::redo(){}
+        // On récupère l'état précédent depuis la pile d'annulation
+        shapes[buffer_head] = undoStack.top();
+        undoStack.pop();
+    }
+}
 
-void Renderer::stash(){}
+void Renderer::redo(){
+    if(!redoStack.empty())
+    {
+        // On pousse l'état actuel dans la pile d'annulation
+        undoStack.push(shapes[buffer_head]);
 
-void Renderer::execute(){}
+        // On récupère l'état suivant depuis la pile de rétablissement
+        shapes[buffer_head] = redoStack.top();
+        redoStack.pop();
+    }
+}
+
+
+void Renderer::execute()
+{
+
+    while(!redoStack.empty())
+    {
+        redoStack.pop();
+    }
+    VectorPrimitive new_state = primitive_state;
+
+    new_state.type = shapes[buffer_head].type;
+    new_state.position1[0] = shapes[buffer_head].position1[0];
+    new_state.position1[1] = shapes[buffer_head].position1[1];
+    new_state.position2[0] = shapes[buffer_head].position2[0];
+    new_state.position2[1] = shapes[buffer_head].position2[1];
+    new_state.stroke_width = shapes[buffer_head].stroke_width;
+    new_state.stroke_color[0] = shapes[buffer_head].stroke_color[0];
+    new_state.stroke_color[1] = shapes[buffer_head].stroke_color[1];
+    new_state.stroke_color[2] = shapes[buffer_head].stroke_color[2];
+    new_state.stroke_color[3] = shapes[buffer_head].stroke_color[3];
+
+    undoStack.push(new_state);
+    if(!undoStack.empty()){
+        ofLog() << "Pile non vide";
+    }
+}
 
 
 void Renderer::update()

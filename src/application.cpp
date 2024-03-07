@@ -371,7 +371,9 @@ void Application::update()
         if (is_key_press_down)
         {
             if(isTranslationActive){
+                
                 if(renderer.draw_mode != VectorPrimitiveType::none) {
+                    
                     renderer.translateLastShape(0, renderer.delta_y * time_elapsed);
                 }
                 if(renderer.draw_mode_models != VectorModelType::none)
@@ -1093,12 +1095,12 @@ void Application::scaleButtonPressed()
 //3.4
 void Application::undo_button_pressed()
 {
-
+    renderer.undo();
 }
 
 void Application::redo_button_pressed()
 {
-    
+    renderer.redo();
 }
 
 //4.2 Primitive geometriques

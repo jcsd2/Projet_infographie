@@ -147,12 +147,14 @@ public:
     float proportion;
     float angle;
 
+    VectorPrimitive primitive_state;
+    VectorPrimitive new_state;
     std::stack<VectorPrimitive> undoStack;
     std::stack<VectorPrimitive> redoStack;
     void undo();
     void redo();
-    void stash();
     void execute();
+    
 
     //Temporary declaration
     int clear_color_gray;
