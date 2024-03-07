@@ -57,6 +57,8 @@ void Renderer::setup()
     animationPosition = 0;
     bAnimate = true;
 
+    is_camera_perspective = false;
+
     //Mode de vue dessin ou 3d
     mode_vue = Mode_Vue::dessin;
 
@@ -1253,13 +1255,19 @@ void Renderer::setup_camera()
     camera_position = camera->getPosition();
     camera_orientation = camera->getOrientationQuat();
 
-    //Ajout mode orthogonale ici car mode default perspective
+    // mode de projection de la caméra
+    if (is_camera_perspective)
+    {
+        camera->disableOrtho();
+        camera->setupPerspective(false, camera_fov, camera_near, camera_far, ofVec2f(0, 0));
+        camera_projection = "perspective";
+    }
+    else
+    {
+        camera->enableOrtho();
+        camera_projection = "orthogonale";
+    }
 
-    //Mode perspective
-    camera->disableOrtho();
-    //false pour ne pas inverser verticalement l image (selon sysy de coord)
-    camera->setupPerspective(false, camera_fov, camera_near_clipping, camera_far_clipping, ofVec2f(0, 0));
-    camera_projection = "perspective";
     camera->setPosition(camera_position);
     camera->setOrientation(camera_orientation);
 
