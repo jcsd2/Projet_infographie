@@ -1017,11 +1017,24 @@ void Renderer::update()
 
         if (is_rotating_left) {
             ofQuaternion rotation;
-            rotation.makeRotate(speed_rotation * time_elapsed, ofVec3f(0, 1, 0)); // Y-axis
+            rotation.makeRotate(speed_rotation * time_elapsed, ofVec3f(0, 1, 0)); 
+            camera_orientation *= rotation;
+            camera->setOrientation(camera_orientation);
+        }
+
+        if (is_moving_backward) {
+            camera_position -= camera->getLookAtDir() * speed_translation * time_elapsed;
+            camera->setPosition(camera_position);
+        }
+
+        if (is_rotating_right) {
+            ofQuaternion rotation;
+            rotation.makeRotate(-speed_rotation * time_elapsed, ofVec3f(0, 1, 0));
             camera_orientation *= rotation;
             camera->setOrientation(camera_orientation);
         }
     }
+
 
 
 

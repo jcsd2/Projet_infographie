@@ -70,6 +70,8 @@ public:
     bool is_camera_interactive;
     bool is_moving_forward;
     bool is_rotating_left;
+    bool is_moving_backward;
+   bool is_rotating_right;
 
     
     //Dimension du framebuffer
