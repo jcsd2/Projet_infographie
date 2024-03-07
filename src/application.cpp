@@ -164,6 +164,24 @@ void Application::setup()
 
     //Ajouter Geometrie ici vv
     groupe_geometrie.setup("Geometrie");
+    groupe_geometrie.add(drawBoundingBoxButton.setup("Dessiner arrete", false));
+
+    // Configuration du groupe pour "Primitives Géométriques"
+    groupe_primitive_geometrie.setup("Primitives \nGeometriques");
+    groupe_geometrie.add(&groupe_primitive_geometrie);
+
+    // Configuration et ajout du toggle "Cube"
+    cubeButton.setup("Cube", false);
+    groupe_primitive_geometrie.add(&cubeButton);
+    cubeButton.addListener(this, &Application::cubeButtonPressed);
+    // Configuration et ajout du toggle "Sphere"
+    sphereButton.setup("Sphere", false);
+    groupe_primitive_geometrie.add(&sphereButton);
+    sphereButton.addListener(this, &Application::sphereButtonPressed);
+
+
+    //4.3
+    
     none_model_button.setup("Mode : Aucun");
     import_model_button.setup("Importer modele");
     predef1_model_button.setup("Modele 1");
@@ -185,30 +203,21 @@ void Application::setup()
     groupe_geometrie.add(&predef3_model_button);
     groupe_geometrie.add(&predef4_model_button);
     groupe_geometrie.add(&remove_last_model_button);
-
-    // Chargez les modèles
-       
-
-    //4.1
-    groupe_geometrie.add(drawBoundingBoxButton.setup("Dessiner arrete", false));
-
-    //4.2
-
-    // Configuration du groupe pour "Primitives Géométriques"
-    groupe_primitive_geometrie.setup("Primitives \nGeometriques");
-    groupe_geometrie.add(&groupe_primitive_geometrie);
-
-    // Configuration et ajout du toggle "Triangle"
-    cubeButton.setup("Cube", false);
-    groupe_primitive_geometrie.add(&cubeButton);
-    cubeButton.addListener(this, &Application::cubeButtonPressed);
-    // Configuration et ajout du toggle "Triangle"
-    sphereButton.setup("Sphere", false);
-    groupe_primitive_geometrie.add(&sphereButton);
-    sphereButton.addListener(this, &Application::sphereButtonPressed);
  
+    //4.4 Animation
+    geometrie_animation.setup("Animation");
+    animation_button.setup("Activer animation");
+    animation_button.addListener(this, &Application::animation_button_pressed);
+    animation_svg_object_active = false;
+    geometrie_animation.add(&animation_button);
+    groupe_geometrie.add(&geometrie_animation);
 
-    //4.3
+    //4.5 instanciation
+    instanciation_button.setup("Instanciation\n du cube");
+    instanciation_button.addListener(this, &Application::instanciation_button_pressed);
+    animation_svg_object_active = false;
+    groupe_geometrie.add(&instanciation_button);
+
     groupe_geometrie.minimize();
     gui.add(&groupe_geometrie);
 
@@ -229,9 +238,6 @@ void Application::setup()
     mode_projection.add(&perspectiveButton);
     perspectiveButton.addListener(this, &Application::perspectiveButtonPressed);
     orthogonaleButton.setup("Orthogonale", false);
-
-    
-    orthogonaleButton.setup("Orthogonale\n Key O", false);
     mode_projection.add(&orthogonaleButton);
     orthogonaleButton.addListener(this, &Application::orthogonaleButtonPressed);
 
@@ -672,6 +678,8 @@ void Application::retirer_boutons_formes() {
     maison_shape_button.removeListener(this, &Application::button_maison_pressed);
     cubeButton.removeListener(this, &Application::cubeButtonPressed);
     sphereButton.removeListener(this, &Application::sphereButtonPressed);
+    animation_button.removeListener(this, &Application::animation_button_pressed);
+    instanciation_button.removeListener(this, &Application::instanciation_button_pressed);
 }
 
 void Application::button_none_pressed(bool& pressed)
@@ -1113,6 +1121,16 @@ void Application::sphereButtonPressed(bool& pressed) {
             cubeButton = false;
         }
     }
+}
+
+void Application::animation_button_pressed()
+{
+    renderer.animation_svg_object_active = !(renderer.animation_svg_object_active);
+}
+
+void Application::instanciation_button_pressed()
+{
+    renderer.instanciation_active = !(renderer.instanciation_active);
 }
 
 void Application::perspectiveButtonPressed() {

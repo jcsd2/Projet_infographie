@@ -168,6 +168,15 @@ public:
     void cubeButtonPressed(bool& pressed);
     void sphereButtonPressed(bool& pressed);
 
+    //Section 4.4 Animation
+    ofxGuiGroup geometrie_animation;
+    ofxButton animation_button;
+    bool animation_svg_object_active;
+    void animation_button_pressed();
+
+    //Section 4.5 instanciation
+    ofxButton instanciation_button;
+    void instanciation_button_pressed();
 
     // Section 5 Caméra
     ofxGuiGroup groupe_camera;
