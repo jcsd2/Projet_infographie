@@ -66,6 +66,8 @@ void Renderer::setup()
     init_buffer_model();
     setup_camera();
 
+    occlusion = Occlusion::meshfiled;
+
 }
 
 void Renderer::draw()
@@ -1113,24 +1115,57 @@ for (index = 0; index < buffer_model_count; ++index)
             ofTranslate(models[index].position1[0],
                         models[index].position1[1],
                         models[index].position1[2] - 150);
-            model1.draw(OF_MESH_FILL);
-            break;
+            switch (occlusion)
+            {
+            case Occlusion::meshfiled:
+                model1.draw(OF_MESH_FILL);
+                    break;
+
+            case Occlusion::wireframe:
+                model1.drawWireframe();
+                break;
+
+            default:
+                break;
+            }
 
         case VectorModelType::predef2:
             ofScale(0.1,0.1, 1.0);
             ofTranslate(models[index].position1[0],
                         models[index].position1[1],
                         models[index].position1[2]);
-            model2.draw(OF_MESH_FILL);
-            break;
+            switch (occlusion)
+            {
+            case Occlusion::meshfiled:
+                model2.draw(OF_MESH_FILL);
+                break;
+
+            case Occlusion::wireframe:
+                model2.drawWireframe();
+                break;
+
+            default:
+                break;
+            }
 
         case VectorModelType::predef3:
             ofScale(0.1,0.1, 1.0);
             ofTranslate(models[index].position1[0],
                         models[index].position1[1],
                         models[index].position1[2]);
-            model3.draw(OF_MESH_FILL);
-            break;
+            switch (occlusion)
+            {
+            case Occlusion::meshfiled:
+                model3.draw(OF_MESH_FILL);
+                break;
+
+            case Occlusion::wireframe:
+                model3.drawWireframe();
+                break;
+
+            default:
+                break;
+            }
 
         case VectorModelType::predef4:
             ofDrawBitmapString(ofToString(ofGetFrameRate()), 20, 20);
