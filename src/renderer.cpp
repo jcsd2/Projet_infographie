@@ -1009,6 +1009,22 @@ void Renderer::update()
             camera->setFov(camera_fov);
         }
     }
+    if (is_camera_interactive) {
+        if (is_moving_forward) {
+            camera_position += camera->getLookAtDir() * speed_translation * time_elapsed;
+            camera->setPosition(camera_position);
+        }
+
+        if (is_rotating_left) {
+            ofQuaternion rotation;
+            rotation.makeRotate(speed_rotation * time_elapsed, ofVec3f(0, 1, 0)); // Y-axis
+            camera_orientation *= rotation;
+            camera->setOrientation(camera_orientation);
+        }
+    }
+
+
+
 
 
     //camera_fov = std::max(camera_fov -= camera_fov_delta * time_elapsed, 0.0f);
@@ -1407,4 +1423,21 @@ int Renderer::getBufferHead() {
 
 int Renderer::getBufferModelHead() {
     return buffer_model_head;
+}
+
+void Renderer::zoomIn() {
+    camera->dolly(-speed_translation);
+}
+
+void Renderer::zoomOut() {
+    camera->dolly(speed_translation);
+}
+
+void Renderer::rotateAround(float angle, ofVec3f axis) {
+    camera->rotateAround(angle, axis, camera_target);
+}
+
+void Renderer::changeView(Camera newView) {
+    camera_active = newView;
+    setup_camera();
 }

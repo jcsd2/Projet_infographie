@@ -234,6 +234,12 @@ void Application::setup()
     groupe_camera.setup("Camera");
 
     // 5.1 Caméra interactive
+    camera_interactive.setup("Camera interactive");
+    groupe_camera.add(&camera_interactive);
+    camera_interactive.addListener(this, &Application::toggleCameraInteractive);
+
+
+
 
 
 
@@ -1162,6 +1168,12 @@ void Application::orthogonaleButtonPressed() {
     renderer.setup_camera();
 }
 
+void Application::toggleCameraInteractive() {
+    renderer.is_camera_interactive = false;
+    renderer.setup_camera();
+}
+
+
 
 
 void Application::drawCursor() {
@@ -1243,7 +1255,7 @@ void Application::predef3_model_button_pressed(){
 void Application::remove_last_model_button_pressed(){
 }
 
-void Application::keyPressed(int key)
+/*void Application::keyPressed(int key)
 {
   switch (key)
   {
@@ -1274,7 +1286,45 @@ void Application::keyPressed(int key)
     default:
       break;
   }
+}*/
+
+
+void Application::keyPressed(int key)
+{
+    switch (key)
+    {
+    case OF_KEY_LEFT: // Déplacer la caméra ou l'objet vers la gauche
+        is_key_press_left = true;
+        break;
+    case OF_KEY_UP: // Zoom avant
+        renderer.zoomIn();
+        break;
+    case OF_KEY_RIGHT: // Déplacer la caméra ou l'objet vers la droite
+        is_key_press_right = true;
+        break;
+    case OF_KEY_DOWN: // Zoom arrière
+        renderer.zoomOut();
+        break;
+    case 'a': // Rotation vers la gauche
+        renderer.rotateAround(-5, ofVec3f(0, 1, 0));
+        break;
+    case 'd': // Rotation vers la droite
+        renderer.rotateAround(5, ofVec3f(0, 1, 0));
+        break;
+
+    case 'z':
+        //position_.undo();
+        break;
+
+    case 'x':
+        //position_.redo();
+        break;
+
+    default:
+        break;
+    }
 }
+
 
 void Application::keyReleased(int key)
 {
@@ -1508,6 +1558,9 @@ void Application::exit()
 
     meshfilled_button.removeListener(this, &Application::meshfilled_button_pressed);
     wireframe_button.removeListener(this, &Application::wireframe_button_pressed);
+    camera_interactive.removeListener(this, &Application::toggleCameraInteractive);
+
+
 
     ofLog() << "<app::exit>";
 

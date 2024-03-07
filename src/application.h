@@ -35,7 +35,7 @@ public:
     ofxButton addElementButton;
     ofxButton removeElementButton;
     ofxButton selectElementButton;
-
+    void toggleCameraInteractive();
    
     ofxToggle drawBoundingBoxButton;
     std::vector<VectorPrimitive> elements;
@@ -195,6 +195,7 @@ public:
     ofVec3f camera_target;
 
     ofxGuiGroup mode_projection;
+    ofxButton camera_interactive;
     ofxButton perspectiveButton;
     ofxButton orthogonaleButton;
 
