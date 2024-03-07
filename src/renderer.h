@@ -18,6 +18,8 @@ enum class VectorModelType {none, predef1, predef2, predef3, predef4, import};
 
 enum class Camera {devant, derriere, gauche, droite, dessus, dessous};
 
+
+
 //Mode de vue dessin 2d ou camera 3d
 enum class Mode_Vue {dessin, camera_3d, double_cam};
 
@@ -37,6 +39,8 @@ struct VectorPrimitive {
 struct VectorModel {
     VectorModelType type;
     float position1[3];
+    float rotation[3];
+    float proportion[3];
     float normal1[3];
     float texcoord1[2];
     unsigned char stroke_color[4];
@@ -197,12 +201,22 @@ public:
     void drawSphere(float x, float y, float z, float radius) const;
     float sphereRayon;
 
-    // Mode de projection 5.2
-
-
-
-  
+    // Instanciation
+    void dispatch_random_models(int count, float range);
+    ofVec3f vector_position;
+    ofVec3f vector_rotation;
+    ofVec3f vector_proportion;
+    bool instanciation_active;
  
+
+    //4.3
+    void drawCubeSVG();
+    ofxSvg svg;
+    float deg;
+    float step;
+    vector<ofPolyline> outlines;
+    bool animation_svg_object_active;
+
     string camera_name;
  
     float camera_near;
@@ -212,12 +226,6 @@ public:
     bool is_camera_perspective;
 
 
-    //4.3
-    void drawCubeSVG();
-    ofxSvg svg;
-    float deg;
-    float step;
-    vector<ofPolyline> outlines;
 
     //Initialisation pour camera
     Camera camera_active;
@@ -260,6 +268,8 @@ public:
     bool mode_cam;
     void setup_camera();
     Mode_Vue mode_vue;
+
+    //Section
 
     void setup();
     float time_current;

@@ -126,6 +126,12 @@ void Renderer::draw()
                 mouse_current_x,
                 mouse_current_y);
         }
+        if(instanciation_active)
+        {
+            dispatch_random_models(buffer_model_count, min(ofGetWidth() * 0.6f, ofGetHeight() * 0.6f));
+            ofLog() << "<Dispatch done>";
+            instanciation_active = false;
+        }
         draw_primitives();
         drawModels();
         camera->end();
@@ -753,6 +759,49 @@ void Renderer::drawCubeSVG() {
     ofPopMatrix();
 }
 
+//Fonction pour faire instanciation comme les exemples du cours
+void Renderer::dispatch_random_models(int count, float range)
+{
+  float scale;
+
+  if (count <= 0 || range <= 0 || count > buffer_model_count)
+    return;
+
+  float halfRange = range / 2.0f;
+
+  buffer_model_head = count;
+
+  for (int index = 0; index < buffer_model_head; ++index)
+  {
+    vector_position.x = ofRandom(-halfRange, halfRange);
+    vector_position.y = ofRandom(-halfRange, halfRange);
+    vector_position.z = ofRandom(-halfRange, halfRange);
+
+    vector_rotation.x = 0.0f;
+    vector_rotation.y = ofRandom(0.0f, 360.0f);
+    vector_rotation.z = 0.0f;
+
+    scale = ofRandom(0.05f, 0.35f);
+
+    vector_proportion.x = scale;
+    vector_proportion.y = scale;
+    vector_proportion.z = scale;
+
+    // configurer les attributs de transformation du teapot
+    shapes[index].position1[0] = vector_position.x;
+    models[index].position1[1] = vector_position.y;
+    models[index].position1[2] = vector_position.z;
+
+    models[index].rotation[0] = vector_rotation.x;
+    models[index].rotation[1] = vector_rotation.y;
+    models[index].rotation[2] = vector_rotation.z;
+
+    models[index].proportion[0] = vector_proportion.x;
+    models[index].proportion[1] = vector_proportion.y;
+    models[index].proportion[2] = vector_proportion.z;
+  }
+}
+
 //Fonction de cahngement de algo pour les lignes
 void Renderer::setLineRenderer(LineRenderer renderer)
 {
@@ -1046,6 +1095,7 @@ void Renderer::init_buffer_model(){
 
 //
 void Renderer::loadModels(){
+    buffer_model_count = 100;
 	model1.loadModel("Bender/Bender.gltf");
 	model2.loadModel("Obama/Obama.fbx");
 	model3.loadModel("Shinji/Shinji.obj");
@@ -1133,6 +1183,7 @@ for (index = 0; index < buffer_model_count; ++index)
             break;
 
         case VectorModelType::predef4:
+            
             ofDrawBitmapString(ofToString(ofGetFrameRate()), 20, 20);
             ofPushMatrix();
             ofTranslate(ofGetWidth() / 2, ofGetHeight() / 4);
