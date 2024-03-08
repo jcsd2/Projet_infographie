@@ -1,44 +1,49 @@
 #include "renderer.h"
 
+/*
+* brief: Initialise les paramètres et variables nécessaires pour le rendu
+*/
+
 void Renderer::setup()
 {
+    // Frame
     ofSetFrameRate(60);
-    // couleur fond arriere
+    // Couleur Background
     ofSetBackgroundColor(20);
-    ofLog() << "<app::BackgroundColor:" << ofGetBackgroundColor();
-    //Initisialisation des variable (Comme dans les exemples du cours)
-    // nombre maximal de primitives vectorielles dans le tableau
+
+
+    // Nombre maximal de primitives vectorielles dans le tableau
     buffer_count = 100;
-    // position de la prochaine primitive
+    // Position de la prochaine primitive
     buffer_head = 0;
-    // calculer la taille de la structure générique commune à toutes les primitives vectorielles
+    // Calculer la taille de la structure générique commune à toutes les primitives vectorielles
     buffer_stride = sizeof(VectorPrimitive);
-    // calculer le nombre d'octets à allouer en mémoire pour contenir le tableau de primitives vectorielles
+    // Calculer le nombre d'octets à allouer en mémoire pour contenir le tableau de primitives vectorielles
     buffer_size = buffer_count * buffer_stride;
-    // allocation d'un espace mémoire suffisamment grand pour contenir les données de l'ensemble des primitives vectorielles
+    // Allocation d'un espace mémoire suffisamment grand pour contenir les données de l'ensemble des primitives vectorielles
     shapes = (VectorPrimitive*)std::malloc(buffer_size);
-    // mode de dessin par défaut
+    // Mode de dessin par défaut
     draw_mode = VectorPrimitiveType::none;
 
-    //Initisialisation general 1.0
-
-    // couleur de la ligne de contour (color_stroke)
+    //Initialisation
+ 
+    //  Couleur de la ligne de contour (color_stroke)
     stroke_color_r = 255;
     stroke_color_g = 255;
     stroke_color_b = 255;
     stroke_color_a = 255;
-    // couleur de la zone de remplissage (color_fill())
+    // Couleur de la zone de remplissage (color_fill())
     fill_color_r = 0;
     fill_color_g = 0;
     fill_color_b = 255;
     fill_color_a = 255;
-    //largeur de la ligne de contour
+    // Largeur de la ligne de contour
     stroke_width_default = 500;
     radius = 4.0f;
-    //mode de couleur
+    // Mode de couleur
     color_mode = BackgroundColorType::rgb;
 
-    //Speed de deplacement
+    // Speed deplacement
     speed_delta = 100.0f;
     delta_x = speed_delta;
     delta_y = speed_delta;
@@ -50,7 +55,7 @@ void Renderer::setup()
     is_mouse_button_pressed = false;
     is_active_histogram = false;
 
-    //Initialisation des variable pour les modeles 3d
+    //Initialisation variables modele 3D
     modelIndex = 1;
     animationIndex = 0;
     mTimeModelLoaded = 0.f;
@@ -59,7 +64,7 @@ void Renderer::setup()
 
     is_camera_perspective = true;
 
-    //Init cam
+    //Initialisation camera
     camera_position = {0.0f, 0.0f, 0.0f};
     camera_target = {0.0f, 0.0f, 0.0f};
     camera_near = 3.0f;
@@ -98,6 +103,10 @@ void Renderer::setup()
     occlusion = Occlusion::meshfiled;
 
 }
+
+/*
+* brief: Exécute les opérations de dessin à chaque frame en fonction du mode de vue.
+*/
 
 void Renderer::draw()
 {
@@ -221,7 +230,10 @@ void Renderer::draw()
 }
 }
 
-// fonction qui vide le tableau de primitives vectorielles (Comme dans les exemples du cours)
+/*
+* brief: Réinitialise les formes et modèles vectoriels ainsi que la caméra à leurs états par défaut.
+*/
+
 void Renderer::reset()
 {
     for (index = 0; index < buffer_count; ++index)
@@ -245,7 +257,10 @@ void Renderer::reset()
     ofLog() << "<reset>";
 }
 
-// fonction qui ajoute une primitive vectorielle au tableau (Comme dans les exemples du cours)
+/*
+* brief: Ajoute une forme vectorielle à la scène en utilisant les paramètres actuels.
+*/
+
 void Renderer::add_vector_shape(VectorPrimitiveType type)
 {
 
@@ -258,7 +273,7 @@ void Renderer::add_vector_shape(VectorPrimitiveType type)
     shapes[buffer_head].position2[1] = mouse_current_y;
 
 
-    shapes[buffer_head].stroke_width = (lineThickness > 0) ? lineThickness : stroke_width_default; //outil de dessin
+    shapes[buffer_head].stroke_width = (lineThickness > 0) ? lineThickness : stroke_width_default;
     shapes[buffer_head].stroke_color[0] = (lineColor.a > 0) ? lineColor.r : stroke_color_r;
     shapes[buffer_head].stroke_color[1] = (lineColor.a > 0) ? lineColor.g : stroke_color_g;
     shapes[buffer_head].stroke_color[2] = (lineColor.a > 0) ? lineColor.b : stroke_color_g;
@@ -293,10 +308,13 @@ void Renderer::add_vector_shape(VectorPrimitiveType type)
 
     ofLog() << "<new primitive at index: " << buffer_head << ">";
     execute();
-    buffer_head = ++buffer_head >= buffer_count ? 0 : buffer_head; // boucler sur le tableau si plein
+    buffer_head = ++buffer_head >= buffer_count ? 0 : buffer_head;
 }
 
-//Fonction qui importe une image et load celle-ci
+/*
+* brief: Importe une image et la définit comme la forme vectorielle courante à dessiner.
+*/
+
 void Renderer::import_image()
 {
     string defaultPath = ofFilePath::getUserHomeDir();
@@ -320,23 +338,31 @@ void Renderer::import_image()
 
 }
 
-// fonction qui dessine un pixel (Comme dans les exemples du cours)
+/*
+* brief: Dessine un pixel à la position spécifiée.
+*/
+
 void Renderer::draw_pixel(float x, float y) const
 {
-    //Floorf : fonction qui arrondit un nombre flottant vers le bas pour obtenir le nombres entier immédiatement inférieur
     int pixel_x = floorf(x);
     int pixel_y = floorf(y);
 
     ofDrawRectangle(pixel_x, pixel_y, 1, 1);
 }
 
-// fonction qui dessine un point
+/*
+* brief: Dessine un point à la position spécifiée avec le rayon donné.
+*/
+
 void Renderer::draw_point(float x, float y, float radius) const
 {
     ofDrawEllipse(x, y, radius, radius);
 }
 
-// fonction qui dessine une ligne
+/*
+* brief: Dessine une ligne entre deux points en utilisant l'algorithme de rendu de ligne spécifié.
+*/
+
 void Renderer::draw_line(float x1, float y1, float x2, float y2) const
 {
     switch (lineRenderer) {
@@ -357,7 +383,10 @@ void Renderer::draw_line(float x1, float y1, float x2, float y2) const
     }
 }
 
-// Fonction de dessin de ligne avec l'algorithme DDA
+/*
+* brief: Dessine une ligne entre deux points en utilisant l'algorithme DDA.
+*/
+
 void Renderer::draw_line_dda(float x1, float y1, float x2, float y2) const
 {
     float dx = x2 - x1;
@@ -376,7 +405,10 @@ void Renderer::draw_line_dda(float x1, float y1, float x2, float y2) const
     }
 }
 
-// Fonction de dessin de ligne avec l'algorithme Bresenham
+/*
+* brief: Dessine une ligne entre deux points en utilisant l'algorithme Bresenham.
+*/
+
 void Renderer::draw_line_bresenham(float x1, float y1, float x2, float y2) const
 {
     int dx = abs(x2 - x1);
@@ -411,7 +443,10 @@ void Renderer::draw_line_bresenham(float x1, float y1, float x2, float y2) const
     }
 }
 
-// Fonction de dessin de rectangle
+/*
+* brief: Dessine un carré avec les coordonnées spécifiées.
+*/
+
 void Renderer::draw_square(float x1, float y1, float x2, float y2) const
 {
     float squareX = min(x1, x2);
@@ -420,13 +455,19 @@ void Renderer::draw_square(float x1, float y1, float x2, float y2) const
     ofDrawRectangle(squareX, squareY, squareSize, squareSize);
 }
 
-// fonction qui dessine un rectangle (Comme dans les exemples du cours)
+/*
+* brief: Dessine un rectangle avec les coordonnées spécifiées.
+*/
+
 void Renderer::draw_rectangle(float x1, float y1, float x2, float y2) const
 {
     ofDrawRectangle(x1, y1, x2 - x1, y2 - y1);
 }
 
-//Fonction qui dessine un cercle
+/*
+* brief: Dessine un cercle basé sur deux points spécifiés.
+*/
+
 void Renderer::draw_circle(float x1, float y1, float x2, float y2) const
 {
     // Calculer la distance euclidienne entre les deux points
@@ -442,7 +483,10 @@ void Renderer::draw_circle(float x1, float y1, float x2, float y2) const
     ofDrawCircle(centerX, centerY, radius_circle);
 }
 
-// fonction qui dessine une ellipse (Comme dans les exemples du cours)
+/*
+* brief: Dessine une ellipse basée sur deux points spécifiés.
+*/
+
 void Renderer::draw_ellipse(float x1, float y1, float x2, float y2) const
 {
     float diameter_x = x2 - x1;
@@ -451,7 +495,10 @@ void Renderer::draw_ellipse(float x1, float y1, float x2, float y2) const
     ofDrawEllipse(x1 + diameter_x / 2.0f, y1 + diameter_y / 2.0f, diameter_x, diameter_y);
 }
 
-//Fonction qui dessine un triangle
+/*
+* brief: Dessine un triangle basé sur deux points spécifiés.
+*/
+
 void Renderer::draw_triangle(float x1, float y1, float x2, float y2) const
 {
     // Calculer les points du triangle
@@ -469,6 +516,9 @@ void Renderer::draw_triangle(float x1, float y1, float x2, float y2) const
     ofDrawTriangle(x1_triangle, y1_triangle, x2_triangle, y2_triangle, x3_triangle, y3_triangle);
 }
 
+/*
+* brief: Dessine une face
+*/
 
 void Renderer::draw_face(float x1, float y1, float x2, float y2) const
 {
@@ -491,6 +541,10 @@ void Renderer::draw_face(float x1, float y1, float x2, float y2) const
     ofDrawLine(x1 + largeur / 4, y2 - hauteur / 4, x2 - largeur / 4, y2 - hauteur / 4);
 }
 
+/*
+* brief: Dessine une maison
+*/
+
 void Renderer::draw_maison(float x1, float y1, float x2, float y2) const
 {
     float hauteur = (y2 - y1);
@@ -505,6 +559,10 @@ void Renderer::draw_maison(float x1, float y1, float x2, float y2) const
     ofSetColor(255, 0, 0);
     ofDrawRectangle(x1 + 0.2 * largeur, y2 - hauteur * 1 / 4, largeur * 0.1, hauteur * 0.25);
 }
+
+/*
+* brief: Dessine toutes les primitives vectorielles actuellement stockées.
+*/
 
 void Renderer::draw_primitives()
 {
@@ -616,7 +674,7 @@ void Renderer::draw_primitives()
 
         case VectorPrimitiveType::circle:
 
-            //Remplissage
+    
             ofFill();
             ofSetLineWidth(0);
             ofSetCircleResolution(48);
@@ -629,7 +687,7 @@ void Renderer::draw_primitives()
                 shapes[index].position2[0],
                 shapes[index].position2[1]);
 
-            //Contour
+         
             ofNoFill();
             ofSetLineWidth(shapes[index].stroke_width);
             ofSetColor(
@@ -696,7 +754,7 @@ void Renderer::draw_primitives()
             break;
 
         case VectorPrimitiveType::face:
-            //Remplissage
+           
             ofFill();
             ofSetLineWidth(0);
             ofSetCircleResolution(48);
@@ -733,8 +791,8 @@ void Renderer::draw_primitives()
             float cubeDepth = 100;
 
             drawCube(
-                shapes[index].position1[0], // x
-                shapes[index].position1[1], // y
+                shapes[index].position1[0],
+                shapes[index].position1[1],
                 0,
                 cubeWidth, cubeHeight, cubeDepth);
 
@@ -762,7 +820,10 @@ void Renderer::draw_primitives()
     }
 }
 
-// Section 4 Primitives géometrique sphere et cube
+/*
+* brief: Dessine un cube rouge
+*/
+
 
 void Renderer::drawCube(float x, float y, float z, float width, float height, float depth) const {
 
@@ -772,15 +833,23 @@ void Renderer::drawCube(float x, float y, float z, float width, float height, fl
 
 }
 
+/*
+* brief: Dessine une sphere verte
+*/
+
 
 void Renderer::drawSphere(float x, float y, float z, float radius) const {
 
 
-    ofSetColor(0, 255, 0); // Couleur verte fixée
+    ofSetColor(0, 255, 0);
     ofFill();
     ofDrawSphere(x, y, z, radius);
 
 }
+
+/*
+* brief: Dessine un cube en utilisant une image SVG pour sa texture.
+*/
 
 
 void Renderer::drawCubeSVG() {
@@ -809,7 +878,10 @@ void Renderer::drawCubeSVG() {
     ofPopMatrix();
 }
 
-//Fonction pour faire instanciation comme les exemples du cours
+/*
+* brief: Génère un ensemble de modèles à des positions aléatoires dans une plage donnée.
+*/
+
 void Renderer::dispatch_random_models(int count, float range)
 {
   float scale;
@@ -851,50 +923,71 @@ void Renderer::dispatch_random_models(int count, float range)
   }
 }
 
-//Fonction de cahngement de algo pour les lignes
+/*
+* brief: Définit l'algorithme de rendu de ligne à utiliser pour dessiner les lignes.
+*/
+
 void Renderer::setLineRenderer(LineRenderer renderer)
 {
     lineRenderer = renderer;
 }
 
+/*
+* brief: Récupère l'indice de la dernière primitive vectorielle ajoutée au buffer.
+*/
+
 int Renderer::get_last_primitive() const {
-    // Récupérer la dernière primitive ajoutée
     int lastIndex = buffer_head - 1;
     if (lastIndex < 0) {
-        lastIndex = buffer_count - 1; // Si buffer_head est à 0, le dernier élément est à buffer_count - 1
+        lastIndex = buffer_count - 1;
     }
     return lastIndex;
 }
+
+/*
+* brief: Récupère l'indice du dernier modèle vectoriel ajouté au buffer.
+*/
 
 int Renderer::get_last_model() const {
-    // Récupérer la dernière primitive ajoutée
+   
     int lastIndex = buffer_model_head - 1;
     if (lastIndex < 0) {
-        lastIndex = buffer_model_count - 1; // Si buffer_head est à 0, le dernier élément est à buffer_count - 1
+        lastIndex = buffer_model_count - 1;
     }
     return lastIndex;
 }
 
-// Fonction Selection Multiple a complété (shape / deselectionne/ clearer et updater)
+/*
+* brief: Sélectionne une forme spécifique pour les opérations ultérieures.
+*/
+
 void Renderer::selectShape(int id) {
-    // Ajouter l'ID à la liste des formes sélectionnées si ce n'est pas déjà le cas
     if (std::find(selectedIds.begin(), selectedIds.end(), id) == selectedIds.end()) {
         selectedIds.push_back(id);
     }
 }
 
+/*
+* brief: Désélectionne une forme spécifique.
+*/
+
 void Renderer::deselectShape(int id) {
-    // Retirer l'ID de la liste des formes sélectionnées
     selectedIds.erase(std::remove(selectedIds.begin(), selectedIds.end(), id), selectedIds.end());
 }
 
+/*
+* brief: Efface toutes les sélections actuelles.
+*/
+
 void Renderer::clearSelection() {
-    // Effacer la liste des formes sélectionnées
     selectedIds.clear();
 }
 
+/*
+* brief: Met à jour les attributs des formes sélectionnées.
+*/
+
 void Renderer::updateSelectedShapesAttribute(float newStrokeWidth, const ofColor& newStrokeColor, const ofColor& newFillColor) {
-    // Mettre à jour les attributs pour chaque forme sélectionnée
     for (int id : selectedIds) {
         if (id >= 0 && id < buffer_count) {
             shapes[id].stroke_width = newStrokeWidth;
@@ -910,10 +1003,13 @@ void Renderer::updateSelectedShapesAttribute(float newStrokeWidth, const ofColor
     }
 }
 
+/*
+* brief: Translate la dernière forme ajoutée par les décalages spécifiés.
+*/
+
 void Renderer::translateLastShape(float offsetX, float offsetY) {
     int dernier_primitive = get_last_primitive();
     if (dernier_primitive >= 0 && dernier_primitive < buffer_count) {
-        //execute();
 
         shapes[dernier_primitive].position1[0] += offsetX;
         shapes[dernier_primitive].position1[1] += offsetY;
@@ -923,6 +1019,10 @@ void Renderer::translateLastShape(float offsetX, float offsetY) {
     }
 }
 
+/*
+* brief: Translate le dernier modèle ajouté par les décalages spécifiés.
+*/
+
 void Renderer::translateLastModel(float offsetX, float offsetY, float offsetZ) {
     int dernier_primitive = get_last_model();
     if (dernier_primitive >= 0 && dernier_primitive < buffer_model_count) {
@@ -931,19 +1031,23 @@ void Renderer::translateLastModel(float offsetX, float offsetY, float offsetZ) {
     }
 }
 
+/*
+* brief: Effectue une rotation de la forme spécifiée.
+*/
+
 void Renderer::rotatePrimitive(float angle){
     int dernier_primitive = get_last_primitive();
     if (dernier_primitive >= 0 && dernier_primitive < buffer_count) {
-        //Centre de la forme
+  
         float centerX = (shapes[dernier_primitive].position1[0] + shapes[dernier_primitive].position2[0]) / 2.0f;
         float centerY = (shapes[dernier_primitive].position1[1] + shapes[dernier_primitive].position2[1]) / 2.0f;
-        // Translate to the center, rotate, and then translate back
+
         ofPushMatrix();
         ofTranslate(centerX, centerY);
-        ofRotateZDeg(angle); // Rotate around the Z-axis (2D rotation)
+        ofRotateZDeg(angle);
         ofTranslate(-centerX, -centerY);
 
-        // Update the shape's positions after rotation
+
         float rotatedX1, rotatedY1, rotatedX2, rotatedY2;
         rotatePoint(shapes[dernier_primitive].position1[0], shapes[dernier_primitive].position1[1], centerX, centerY, angle, rotatedX1, rotatedY1);
         rotatePoint(shapes[dernier_primitive].position2[0], shapes[dernier_primitive].position2[1], centerX, centerY, angle, rotatedX2, rotatedY2);
@@ -957,15 +1061,22 @@ void Renderer::rotatePrimitive(float angle){
     }
 }
 
+/*
+* brief: Effectue une rotation d'un point autour d'un centre donné.
+*/
+
 void Renderer::rotatePoint(float x, float y, float centerX, float centerY, float angle, float& rotatedX, float& rotatedY) {
     float radians = ofDegToRad(angle);
     float cosA = cos(radians);
     float sinA = sin(radians);
 
-    // Rotate the point around the center
     rotatedX = cosA * (x - centerX) - sinA * (y - centerY) + centerX;
     rotatedY = sinA * (x - centerX) + cosA * (y - centerY) + centerY;
 }
+
+/*
+* brief: Met à l'échelle la dernière primitive vectorielle ajoutée.
+*/
 
 void Renderer::scalePrimitive(float scaleFactor){
     int dernier_primitive = get_last_primitive();
@@ -975,30 +1086,40 @@ void Renderer::scalePrimitive(float scaleFactor){
     }
 }
 
+/*
+* brief: Annule la dernière opération effectuée.
+*/
+
 void Renderer::undo(){
     if(!undoStack.empty())
     {
-        // On pousse l'état actuel dans la pile de rétablissement
+
         redoStack.push(shapes[buffer_head]);
 
-        // On récupère l'état précédent depuis la pile d'annulation
+
         shapes[buffer_head] = undoStack.top();
         undoStack.pop();
     }
 }
 
+/*
+* brief: Réapplique l'opération annulée la plus récente.
+*/
+
 void Renderer::redo(){
     if(!redoStack.empty())
     {
-        // On pousse l'état actuel dans la pile d'annulation
         undoStack.push(shapes[buffer_head]);
 
-        // On récupère l'état suivant depuis la pile de rétablissement
+   
         shapes[buffer_head] = redoStack.top();
         redoStack.pop();
     }
 }
 
+/*
+* brief: Applique les changements et nettoie la pile de redo.
+*/
 
 void Renderer::execute()
 {
@@ -1026,6 +1147,9 @@ void Renderer::execute()
     }
 }
 
+/*
+* brief: Met à jour les paramètres et effectue les calculs nécessaires à chaque frame.
+*/
 
 void Renderer::update()
 {
@@ -1072,11 +1196,9 @@ void Renderer::update()
     if (is_camera_roll_right)
         camera->rollDeg(speed_rotation);
 
-    //camera_fov = std::max(camera_fov -= camera_fov_delta * time_elapsed, 0.0f);
     camera->setFov(camera_fov);
 
 
-    //4.3
     step += 0.001;
     if (step > 1) {
         step -= 1;
@@ -1088,7 +1210,10 @@ void Renderer::update()
     }
 }
 
-//Fonction pour dessiner la zone de selection (Commed ans les exemples du cours)
+/*
+* brief: Dessine une zone de sélection rectangulaire.
+*/
+
 void Renderer::draw_zone(float x1, float y1, float x2, float y2) const
 {
     float x2_clamp = min(max(0.0f, x2), (float)ofGetWidth());
@@ -1096,17 +1221,22 @@ void Renderer::draw_zone(float x1, float y1, float x2, float y2) const
 
     ofPushMatrix();
     ofSetLineWidth(radius);
-    //ofSetColor(255, 0, 0, 100);
+
     ofNoFill();
     ofDrawRectangle(x1, y1, x2_clamp - x1, y2_clamp - y1);
     ofFill();
-    //Ellipse pour arrondir les coins de la selection
+
     ofDrawEllipse(x1, y1, radius, radius);
     ofDrawEllipse(x1, y2_clamp, radius, radius);
     ofDrawEllipse(x2_clamp, y1, radius, radius);
     ofDrawEllipse(x2_clamp, y2_clamp, radius, radius);
     ofPopMatrix();
 }
+
+/*
+* brief: Calcule et affiche un histogramme basé sur l'image à l'écran.
+*/
+
 void Renderer::histogram()
 {
     int x = ofGetWidth();
@@ -1120,12 +1250,12 @@ void Renderer::histogram()
 
     vector<int> histogram(256, 0);
 
-    // Calculate the histogram
+
     for (std::vector<int>::size_type y = 0; y < grayImage.getHeight(); y++) {
         for (std::vector<int>::size_type x = 0; x < grayImage.getWidth(); x++) 
         {
             ofColor color = grayImage.getColor(x, y);
-            histogram[color.r]++;  // color.r, color.g and color.b are the same in a grayscale image
+            histogram[color.r]++;
         }
     }
     ofPushMatrix();
@@ -1135,19 +1265,24 @@ void Renderer::histogram()
     ofTranslate(ofGetWidth() * 2.0,0);
     for (std::vector<int>::size_type i = 0; i < histogram.size(); i++) 
     {
-        ofDrawRectangle(i * 2, ofGetHeight(), 2, -histogram[i] / 100.0);  // Scale down the histogram values for better visibility
+        ofDrawRectangle(i * 2, ofGetHeight(), 2, -histogram[i] / 100.0);
     }
     ofPopStyle();
     ofPopMatrix();
 }
 
+/*
+* brief: Génère un identifiant unique pour les nouvelles primitives vectorielles ou modèles.
+*/
 
 int Renderer::generate_unique_id() {
     static int current_id = 0;
     return current_id++;
 }
 
-
+/*
+* brief: Supprime la forme vectorielle avec l'ID spécifié.
+*/
 
 void Renderer::remove_vector_shape(int id) {
     for (int i = 0; i < buffer_count; ++i) {
@@ -1162,10 +1297,18 @@ void Renderer::remove_vector_shape(int id) {
 
 std::vector<int> selected_ids;
 
+/*
+* brief: Selectionner shape
+*/
+
 void Renderer::select_vector_shape(int id) {
    
     selected_ids.push_back(id);
 }
+
+/*
+* brief: Translate les formes vectorielles sélectionnées.
+*/
 
 void Renderer::translateSelectedShapes(float offsetX, float offsetY) {
     for (int id : selected_ids) {
@@ -1179,6 +1322,10 @@ void Renderer::translateSelectedShapes(float offsetX, float offsetY) {
         }
     }
 }
+
+/*
+* brief: Initialise le buffer pour les modèles vectoriels.
+*/
 
 void Renderer::init_buffer_model(){
     // nombre maximal de models dans le tableau
@@ -1195,7 +1342,10 @@ void Renderer::init_buffer_model(){
     draw_mode_models = VectorModelType::none;
 }
 
-//
+/*
+* brief: Charge et prépare les modèles 3D pour le rendu.
+*/
+
 void Renderer::loadModels(){
     buffer_model_count = 100;
 	model1.load("Bender/Bender.gltf");
@@ -1213,6 +1363,10 @@ void Renderer::loadModels(){
     ofLog() << " All models loaded ";
 }
 
+/*
+* brief: Charge un modèle 3D à partir d'un fichier.
+*/
+
 void Renderer::loadModel(string filename){
     
     if( model.load(filename, ofxAssimpModelLoader::OPTIMIZE_DEFAULT) ){
@@ -1226,6 +1380,10 @@ void Renderer::loadModel(string filename){
     }
 	mTimeModelLoaded = ofGetElapsedTimef();
 }
+
+/*
+* brief: Ajoute un modèle vectoriel à la scène en fonction du type spécifié et du mode de vue actuel.
+*/
 
 void Renderer::add_vector_models(VectorModelType type)
 {
@@ -1283,6 +1441,10 @@ void Renderer::add_vector_models(VectorModelType type)
 
 
 }
+
+/*
+* brief: Dessine les modèles en fonction de leur type et de l'occlusion spécifiée.
+*/
 
 void Renderer::drawModels()
 {
@@ -1359,6 +1521,10 @@ for (index = 0; index < buffer_model_count; ++index)
     }
 }
 
+/*
+* brief: Calcule la boîte de delimitation pour le modèle chargé.
+*/
+
 void Renderer::calculateBoundingBox() {
     if (!model.getMeshCount()) return; 
 
@@ -1381,6 +1547,9 @@ void Renderer::calculateBoundingBox() {
     bBoundingBoxCalculated = true;
 }
 
+/*
+* brief: Dessine la boîte englobante autour du modèle.
+*/
 
 void Renderer::drawBoundingBox() {
     if (!bBoundingBoxCalculated) return;
@@ -1389,7 +1558,10 @@ void Renderer::drawBoundingBox() {
     ofFill();
 }
 
-//Fonction de configuration très inspiré des exmples du cours
+/*
+* brief: Configure la caméra en fonction du mode de vue actuel.
+*/
+
 void Renderer::setup_camera()
 {
 
@@ -1425,7 +1597,7 @@ void Renderer::setup_camera()
     camera_position = camera->getPosition();
     camera_orientation = camera->getOrientationQuat();
 
-    // mode de projection de la caméra
+    // Mode de projection
     if (!is_camera_perspective)
     {
         camera->disableOrtho();
@@ -1443,11 +1615,19 @@ void Renderer::setup_camera()
 
 }
 
+/*
+* brief: Destructeur Renderer
+*/
+
 Renderer::~Renderer()
 {
     std::free(shapes);
     std::free(models);
 }
+
+/*
+* brief : Supprime la forme vectorielle a l'index specifie, decale toutes les formes suivantes
+*/
 
 void Renderer::remove_vector_shap(int index) {
     if (index < 0 || index >= buffer_head) return;
@@ -1460,6 +1640,10 @@ void Renderer::remove_vector_shap(int index) {
     ofLog() << "<removed shape at index: " << index << ">";
 }
 
+/*
+* brief : Supprime le modele vectoriel a l'index specifie, decale toutes les formes suivantes
+*/
+
 void Renderer::remove_vector_model(int index) {
     if (index < 0 || index >= buffer_model_head) return;
 
@@ -1471,8 +1655,9 @@ void Renderer::remove_vector_model(int index) {
     ofLog() << "<removed model at index: " << index << ">";
 }
 
-
-
+/*
+* brief : Sélectionne la forme vectorielle à l'index spécifié
+*/
 
 void Renderer::select_vector_shap(int index) {
     if (index < 0 || index >= buffer_head) return;
@@ -1480,31 +1665,59 @@ void Renderer::select_vector_shap(int index) {
     ofLog() << "<selected shape at index: " << index << ">";
 }
 
+/*
+* brief : Sélectionne le modèle vectoriel à l'index spécifié pour des opérations ultérieures
+*/
+
 void Renderer::select_vector_model(int index) {
     if (index < 0 || index >= buffer_model_head) return;
     selectedModelIndex = index;
     ofLog() << "<selected model at index: " << index << ">";
 }
 
+/*
+* brief : Retourne l'index actuel de la tête du buffer pour les formes vectorielles
+*/
+
 int Renderer::getBufferHead() {
     return buffer_head;
 }
+
+/*
+* brief : Retourne l'index actuel de la tête du buffer pour les modèles vectoriels
+*/
 
 int Renderer::getBufferModelHead() {
     return buffer_model_head;
 }
 
+/*
+* brief : Effectue un zoom avant en déplaçant la caméra vers l'avant
+*/
+
 void Renderer::zoomIn() {
     camera->dolly(-speed_translation);
 }
+
+/*
+* brief : Effectue un zoom arrière en déplaçant la caméra vers l'arrière
+*/
 
 void Renderer::zoomOut() {
     camera->dolly(speed_translation);
 }
 
+/*
+* brief : Fait pivoter la caméra autour d'un axe et d'un angle donnés
+*/
+
 void Renderer::rotateAround(float angle, ofVec3f axis) {
     camera->rotateAroundDeg(angle, axis, camera_target);
 }
+
+/*
+* brief : Change la vue de la caméra en fonction du mode spécifié
+*/
 
 void Renderer::changeView(Camera newView) {
     camera_active = newView;

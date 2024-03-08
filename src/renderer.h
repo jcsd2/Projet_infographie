@@ -135,10 +135,6 @@ public:
     void clearSelection(); 
     void updateSelectedShapesAttribute(float newStrokeWidth, const ofColor& newStrokeColor, const ofColor& newFillColor);
 
-    // Ajouts pour les transformations
-    void rotateSelectedShapes(float angle);
-    void scaleSelectedShapes(float scaleFactor);
-
 
     // Transformation
     int get_last_primitive() const;
@@ -302,7 +298,7 @@ public:
 
     int generate_unique_id();
 
-  // Remove/Select/Translate
+    // Remove/Select/Translate
     void remove_vector_shape(int id);
     void select_vector_shape(int id);
     void translateSelectedShapes(float offsetX, float offsetY);

@@ -1063,7 +1063,6 @@ void Application::button_maison_pressed(bool& pressed)
 
 void Application::selection_multiple(bool& pressed) {
     isSelectionModeActive = pressed;
-    ofLog() << "<mode: selection multiple> " << (pressed ? "active" : "desactive");
 
     none_shape_button = false;
     pixel_shape_button = false;
