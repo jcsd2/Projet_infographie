@@ -1010,30 +1010,36 @@ void Renderer::update()
         }
     }
     if (is_camera_interactive) {
+       
         if (is_moving_forward) {
             camera_position += camera->getLookAtDir() * speed_translation * time_elapsed;
             camera->setPosition(camera_position);
         }
 
+        
         if (is_rotating_left) {
             ofQuaternion rotation;
-            rotation.makeRotate(speed_rotation * time_elapsed, ofVec3f(0, 1, 0)); 
+            rotation.makeRotate(speed_rotation * time_elapsed, ofVec3f(0, 1, 0)); // Autour de l'axe Y
             camera_orientation *= rotation;
             camera->setOrientation(camera_orientation);
         }
 
+        
         if (is_moving_backward) {
             camera_position -= camera->getLookAtDir() * speed_translation * time_elapsed;
             camera->setPosition(camera_position);
         }
 
+      
         if (is_rotating_right) {
             ofQuaternion rotation;
-            rotation.makeRotate(-speed_rotation * time_elapsed, ofVec3f(0, 1, 0));
+            rotation.makeRotate(-speed_rotation * time_elapsed, ofVec3f(0, 1, 0)); // Autour de l'axe Y, notez le signe négatif pour la rotation dans la direction opposée
             camera_orientation *= rotation;
             camera->setOrientation(camera_orientation);
         }
     }
+
+
 
 
 
