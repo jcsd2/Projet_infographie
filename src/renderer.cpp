@@ -100,10 +100,7 @@ void Renderer::draw()
         }
         if (animation_svg_object_active)
         {
-            ofPushMatrix();
-            ofRotateDeg(ofGetFrameNum() * 0.6f, 0.0f, 0.0f, 1.0f);
             drawCubeSVG();
-            ofPopMatrix();
         }
 
         draw_primitives();
@@ -757,8 +754,9 @@ void Renderer::drawCubeSVG() {
 
     ofDrawBitmapString(ofToString(ofGetFrameRate()), 20, 20);
     ofPushMatrix();
+    ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2, 0);
     ofScale(0.2);
-    ofTranslate(ofGetWidth(), 0);
+    ofRotateDeg(deg, 0, 0, deg);
     if (ofGetMousePressed()) {
         ofNoFill();
         for (ofPolyline& line : outlines) {
