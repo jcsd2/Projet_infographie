@@ -5,27 +5,28 @@
 #include "ofxSvg.h"
 #include "ofxOpenCv.h"
 
+// Énumération Occlusion
 enum class Occlusion {none, wireframe, meshfiled};
 
+// Énumération Couleur Background
 enum class BackgroundColorType {none, rgb, hsb};
 
-// énumération des différents types de primitives vectorielles
+// Énumération Primitives Vectorielles
 enum class VectorPrimitiveType { none, importedImage, pixel, point, line, square, rectangle, circle, ellipse, triangle, face, maison, cube, sphere };
 
-// énumération de différents algorithmes de rastérisation de ligne
+// Énumération Algorithmes
 enum class LineRenderer { none, dda, bresenham };
 
-//énumération de différents modeles 3d
+// Énumération Modele
 enum class VectorModelType {none, predef1, predef2, predef3, import};
 
+// Énumération Caméra
 enum class Camera {devant, derriere, gauche, droite, dessus, dessous};
 
-
-
-//Mode de vue dessin 2d ou camera 3d
+// Énumération Mode de Vue
 enum class Mode_Vue {dessin, camera_3d, double_cam};
 
-//Structure pour primitive
+// Structure pour primitive
 struct VectorPrimitive {
     int id; 
     VectorPrimitiveType type;
@@ -37,7 +38,7 @@ struct VectorPrimitive {
     unsigned char fill_color[4];
 };
 
-//Structure pour modele 3d importe
+// Structure pour Modele 3D importer
 struct VectorModel {
     VectorModelType type;
     float position1[3];
@@ -56,10 +57,10 @@ public:
 
 
     void remove_vector_shap(int index);
-     void remove_vector_model(int index);
-     void select_vector_shap(int index);
-      void select_vector_model(int index);
-      int getBufferHead();
+    void remove_vector_model(int index);
+    void select_vector_shap(int index);
+    void select_vector_model(int index);
+    int getBufferHead();
     int getBufferModelHead();
     int selectedShapeIndex = -1;
     int selectedModelIndex = -1;
@@ -75,16 +76,17 @@ public:
    
 
     
-    //Dimension du framebuffer
+    // Dimension du framebuffer
     float frame_buffer_width;
     float frame_buffer_heigth;
     ofColor background_color1;
     ofColor background_color2;
     BackgroundColorType color_mode;
 
-    //1.4
+    // Images
     ofImage importedImage;
     void import_image();
+
     //Declaration pours les primitives vectorieles
     VectorPrimitiveType draw_mode;
     VectorPrimitive* shapes;
@@ -104,7 +106,7 @@ public:
     unsigned char fill_color_g;
     unsigned char fill_color_b;
     unsigned char fill_color_a;
-    void add_vector_shape(VectorPrimitiveType type); //Fonction d'ajout de forme au vecteur(Il faut lajouter absolument)
+    void add_vector_shape(VectorPrimitiveType type); // Fonction d'ajout de forme au vecteur(Il faut lajouter absolument)
     void draw_pixel(float x, float y) const;
     void draw_point(float x, float y, float radius) const;
     void draw_line(float x1, float y1, float x2, float y2) const;
@@ -121,27 +123,26 @@ public:
 
     void setLineRenderer(LineRenderer renderer);
 
-    //1.5
+    // Histogramme
     bool is_active_histogram;
     ofImage histogram_im;
     ofxCvGrayscaleImage screenGrayscale;
     ofxCvContourFinder contourFinders;
     void histogram();
 
-    // Fonction et déclaration pour Sélection Multiples
-
-    std::vector<int> selectedIds; // IDs des formes sélectionnées
-    void selectShape(int id); // Sélectionner une forme par son ID
-    void deselectShape(int id); // Désélectionner une forme par son ID
-    void clearSelection(); // Désélectionner toutes les formes
-    void updateSelectedShapesAttribute(float newStrokeWidth, const ofColor& newStrokeColor, const ofColor& newFillColor); // Mettre à jour les attributs des formes sélectionnées
+    // Sélection Multiples
+    std::vector<int> selectedIds; 
+    void selectShape(int id); 
+    void deselectShape(int id); 
+    void clearSelection(); 
+    void updateSelectedShapesAttribute(float newStrokeWidth, const ofColor& newStrokeColor, const ofColor& newFillColor);
 
     // Ajouts pour les transformations
-    void rotateSelectedShapes(float angle); // Tourner les formes sélectionnées
-    void scaleSelectedShapes(float scaleFactor); // Mettre à l'échelle les formes sélectionnées
+    void rotateSelectedShapes(float angle);
+    void scaleSelectedShapes(float scaleFactor);
 
 
-    // Fonctions et déclarations pour les transformations
+    // Transformation
     int get_last_primitive() const;
     void translateLastShape(float offsetX, float offsetY);
     void rotatePrimitive(float angle);
@@ -166,7 +167,7 @@ public:
     void execute();
     
 
-    //Temporary declaration
+    // Declaration temporaire
     int clear_color_gray;
     int clear_color_r;
     int clear_color_g;
@@ -181,13 +182,12 @@ public:
     int mouse_current_x;
     int mouse_current_y;
 
-    // Paramètres de dessin
-    float lineThickness; // Epaisseur de la ligne
-    ofColor lineColor; // Couleur de lignes 
-    ofColor fillColor; // Couleur de remplissage
+    // Outils de dessin
+    float lineThickness;
+    ofColor lineColor;
+    ofColor fillColor;
 
-    //Section 4
-    //Fonction de dessin des formes 3d
+    // Formes 3D
     ofxAssimpModelLoader model;
     int modelIndex;
     int animationIndex;
@@ -198,7 +198,7 @@ public:
     void loadModels();
     void loadModel(string filename);
     
-    //VBO models
+    // Modeles VBO
     int buffer_model_count;
     int buffer_model_head;
     int buffer_model_stride;
@@ -214,7 +214,7 @@ public:
     void translateLastModel(float offsetX, float offsetY, float offsetZ);
     void drawModels();
 
-    //Primitives geometrique 3D
+    // Primitives geometrique 3D
     void drawCube(float x, float y, float z, float width, float height, float depth) const;
     void drawSphere(float x, float y, float z, float radius) const;
     float sphereRayon;
@@ -225,9 +225,8 @@ public:
     ofVec3f vector_rotation;
     ofVec3f vector_proportion;
     bool instanciation_active;
- 
 
-    //4.3
+    // Modeles 3D
     void drawCubeSVG();
     ofxSvg svg;
     float deg;
@@ -235,17 +234,7 @@ public:
     vector<ofPolyline> outlines;
     bool animation_svg_object_active;
 
-    string camera_name;
- 
-    float camera_near;
-    float camera_far;
-    bool is_camera_fov_narrow;
-    bool is_camera_fov_wide;
-    bool is_camera_perspective;
-
-
-
-    //Initialisation pour camera
+    // Camera
     Camera camera_active;
     ofCamera camera_devant;
     ofCamera camera_derriere;
@@ -258,9 +247,15 @@ public:
     ofVec3f camera_position;
     ofVec3f camera_target;
     string camera_nom;
+    string camera_name;
     string camera_projection;
     float camera_near_clipping;
     float camera_far_clipping;
+    float camera_near;
+    float camera_far;
+    bool is_camera_fov_narrow;
+    bool is_camera_fov_wide;
+    bool is_camera_perspective;
     float camera_fov;
     float camera_fov_delta;
     float speed_delta;
@@ -286,16 +281,21 @@ public:
     bool mode_cam;
     bool is_flip_axis_y;
     void setup_camera();
+
+
+    // Mode affichage actuel
     Mode_Vue mode_vue;
 
-    //Section
-
+    // Occlusion
     Occlusion occlusion;
 
     void setup();
+
+    // Temps
     float time_current;
     float time_last;
     float time_elapsed;
+
     void update();
     void draw();
     void reset();
@@ -304,7 +304,7 @@ public:
 
     int generate_unique_id();
 
-  
+  // Remove/Select/Translate
     void remove_vector_shape(int id);
     void select_vector_shape(int id);
     void translateSelectedShapes(float offsetX, float offsetY);
