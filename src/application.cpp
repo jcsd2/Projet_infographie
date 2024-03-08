@@ -1,9 +1,5 @@
 #include "application.h"
 
-/*
- * brief: Configuration inital de l'application.
- */
-
 
 void Application::setup()
 {
@@ -13,33 +9,34 @@ void Application::setup()
     renderer.setup();
     
     gui.setPosition(1, 1);
-    gui.setup("Interface"); // (Section 2.5)
+    gui.setup("Interface"); //(2.5)
     checkbox.setName("Gui visible");
 
-    checkbox = true; // Initialisation de l'indicateur du GUI
+    checkbox = true; // Initialisation de l'indicateur du Guis
     gui.add(checkbox);
 
-    // Groupe du critere 1 : Image
 
+
+    //Groupe du critere 1 Image (1.1)
     group_image.setup("Image");
-    // Bouton d'importation d'image(1.1)
+    //Bouton d'importation d'image
     importImageButton.setup("Importer Image");
     importImageButton.addListener(this, &Application::importImage);
     group_image.add(&importImageButton);
-    // Bouton d'exportation d'image (1.2)
+    //Bouton d'exportation d'image (1.2)
     exportation_button.setup("Exportation");
     exportation_button.addListener(this, &Application::exportation_button_pressed);
     group_image.add(&exportation_button);
-    // Bouton d'echantillonnage d'image(1.3)
+    //Bouton d'echantillonnage d'image(1.3)
     screenshot_button.setup("Capture d'ecran", false);
     screenshot_button.addListener(this, &Application::screenshot_button_pressed);
     group_image.add(&screenshot_button);
     screenshot_button_funny.setup("Capture surprise", false);
     screenshot_button_funny.addListener(this, &Application::screenshot_funny_button_pressed);
     group_image.add(&screenshot_button_funny);
-    captureMode = false;
+    captureMode = false; // Initialisation l'indicateur du mode de capture d'écran
     captureMode_funny = false;
-    // Espace de couleur (1.4)
+    //Espace de couleur (1.4)
     background_rgb_button.setup("Espace RGB");
     background_hsb_button.setup("Espace HSB");
     background_rgb_button.addListener(this, &Application::background_rgb_button_pressed);
@@ -50,19 +47,19 @@ void Application::setup()
     group_image.add(&background_hsb_button);
     group_image.add(color_picker_background);
     group_image.add(color_picker_background_HSB);
-    // Histogramme (1.5)
+    //Histogramme ici (1.5)
     histogramme_button.setup("Afficher histogramme");
     histogramme_button.addListener(this, &Application::histogramme_button_pressed);
     group_image.add(&histogramme_button);
 
     group_image.minimize();
     gui.add(&group_image);
+    //fin 1
 
-
-    // Groupe du critere 2 Dessin vectoriel 
+    //Groupe du critere 2 Dessin vectoriel 
     group_dessin_vectoriel.setup("Dessin Vectoriel");
+    // Ajout des boutons au sous - groupe des curseurs
 
-    // Curseur dynamique (2.1)
     cursorDefaultButton.setup("Curseur par defaut");
     cursorDefaultButton.addListener(this, &Application::cursorDefaultButtonPressed);
     group_dessin_vectoriel.add(&cursorDefaultButton);
@@ -81,7 +78,13 @@ void Application::setup()
     cursorRotateButton.setup("Curseur de rotation");
     cursorRotateButton.addListener(this, &Application::cursorRotateButtonPressed);
     group_dessin_vectoriel.add(&cursorRotateButton);
-    // Outil de dessin (2.2)
+
+
+
+
+
+    //Outil de dessin (2.2)
+
     group_outils_dessin.setup("Outils Dessin");
     group_outils_dessin.add(lineThickness.setup("Epaisseur", 1.0, 0.1, 10.0));
     group_outils_dessin.add(lineColor.setup("Couleur ligne", ofColor(255), ofColor(0), ofColor(255)));
@@ -90,10 +93,11 @@ void Application::setup()
     //Primitives vectorielles (2.3) 
     group_dessin_vectoriel_formes.setup("Formes a dessiner");
     group_dessin_vectoriel.add(&group_dessin_vectoriel_formes);
+    //Sous-groupe pour le type d'algo pour dessiner une ligne
     group_dessin_algo_ligne.setup("Algorithme \nde rasterisation");
-    // Formes vectorielles (2.4) (Sous-groupe 
-    ajout_boutons_formes();
 
+    // Ajout des boutons pour chaque formes  
+    ajout_boutons_formes(); //(Contient 2.4)
     group_dessin_vectoriel.minimize();
     gui.add(&group_dessin_vectoriel);
 
@@ -101,35 +105,35 @@ void Application::setup()
     //Groupe du critere 3 Transformation
     group_transformation.setup("Transformation");
 
-   // Graphe de scene (3.1)
+    //Ajouter 3.1
+
+    
     group_scene_control.setup("Graphe de Scene");
     group_transformation.add(&group_scene_control);
+
     // Ajouter un élément 
+   
     addElementButton.setup("Ajouter Element");
     addElementButton.addListener(this, &Application::addElementPressed);
     group_scene_control.add(&addElementButton);
+
     // Supprimer un élément 
+    
     removeElementButton.setup("Supprimer Element");
     removeElementButton.addListener(this, &Application::removeElementPressed);
     group_scene_control.add(&removeElementButton);
-<<<<<<< HEAD
 
     
     // sélection multiple (3.2)
 
-=======
-    // Sélectionner un élément 
-    selectElementButton.setup("Selectionner Element");
-    selectElementButton.addListener(this, &Application::selectElementPressed);
-    group_scene_control.add(&selectElementButton);
-    // Selection multiple (3.2)
->>>>>>> d8025615b1b1c766f70f792c7ef96f1dab613fd1
     groupe_selection_multiple.setup("Selection multiples");
     group_transformation.add(&groupe_selection_multiple);
     selectionButton.addListener(this, &Application::selection_multiple); 
     groupe_selection_multiple.add(&selectionButton); 
     selectionButton.setup("Selection Multiple", false);
-    // Transformations interactives (3.3)
+
+
+    //transformations interactives (3.3)
     groupe_transforamtion_interactive.setup ("Transformations \ninterectives");
     group_transformation.add(&groupe_transforamtion_interactive);
     noneTransformationButton.setup("Aucune");
@@ -147,7 +151,8 @@ void Application::setup()
     groupe_transforamtion_interactive.add(&translateButton);
     groupe_transforamtion_interactive.add(&rotateButton);
     groupe_transforamtion_interactive.add(&scaleButton);
-    // Historique de transformation (3.4)
+
+    //Ajouter 3.4 ici vv
     historique_group.setup("Historique\n Undo/Redo");
     undo_button.setup("Undo");
     redo_button.setup("Redo");
@@ -160,49 +165,57 @@ void Application::setup()
     group_transformation.minimize();
     gui.add(&group_transformation);
 
-    // Groupe du critere 4 Geometrie
+    //Ajouter Geometrie ici vv
     groupe_geometrie.setup("Geometrie");
-
-    // Boîte de délimitation (4.1)
     groupe_geometrie.add(drawBoundingBoxButton.setup("Dessiner arrete", false));
-    // Primitives géométriques (4.2)
+
+    // Configuration du groupe pour "Primitives Géométriques"
     groupe_primitive_geometrie.setup("Primitives \nGeometriques");
     groupe_geometrie.add(&groupe_primitive_geometrie);
-    // Primitive Cube 3D
+
+    // Configuration et ajout du toggle "Cube"
     cubeButton.setup("Cube", false);
     groupe_primitive_geometrie.add(&cubeButton);
     cubeButton.addListener(this, &Application::cubeButtonPressed);
-    // Primitive Sphere 3D
+    // Configuration et ajout du toggle "Sphere"
     sphereButton.setup("Sphere", false);
     groupe_primitive_geometrie.add(&sphereButton);
     sphereButton.addListener(this, &Application::sphereButtonPressed);
-    // Modele 3D (4.3)
+
+
+    //4.3
+    
     none_model_button.setup("Mode : Aucun");
     import_model_button.setup("Importer modele");
     predef1_model_button.setup("Modele 1");
     predef2_model_button.setup("Modele 2");
     predef3_model_button.setup("Modele 3");
+
     remove_last_model_button.setup("Retirer dernier\n modele");
     none_model_button.addListener(this, &Application::non_model_button_pressed);
     import_model_button.addListener(this, &Application::import_model_button_pressed);
     predef1_model_button.addListener(this, &Application::predef1_model_button_pressed);
     predef2_model_button.addListener(this, &Application::predef2_model_button_pressed);
     predef3_model_button.addListener(this, &Application::predef3_model_button_pressed);
+
     remove_last_model_button.addListener(this,&Application::remove_last_model_button_pressed);
     groupe_geometrie.add(&none_model_button);
     groupe_geometrie.add(&import_model_button);
     groupe_geometrie.add(&predef1_model_button);
     groupe_geometrie.add(&predef2_model_button);
     groupe_geometrie.add(&predef3_model_button);
+
     groupe_geometrie.add(&remove_last_model_button);
-    // Animation (4.4)
+ 
+    //4.4 Animation
     geometrie_animation.setup("Animation");
     animation_button.setup("Activer animation");
     animation_button.addListener(this, &Application::animation_button_pressed);
     animation_svg_object_active = false;
     geometrie_animation.add(&animation_button);
     groupe_geometrie.add(&geometrie_animation);
-    // Instanciation (4.5)
+
+    //4.5 instanciation
     instanciation_button.setup("Instanciation\n du cube");
     instanciation_button.addListener(this, &Application::instanciation_button_pressed);
     animation_svg_object_active = false;
@@ -216,13 +229,60 @@ void Application::setup()
     gui.add(&groupe_geometrie);
 
 
-    // Groupe du critere 5 Camera
+    // Camera SECTION 5
     groupe_camera.setup("Camera");
 
-    // Caméra interactive (5.1)
+    // 5.1 Caméra interactive
     camera_interactive.setup("Camera interactive");
     groupe_camera.add(&camera_interactive);
     camera_interactive.addListener(this, &Application::toggleCameraInteractive);
+
+
+
+
+
+
+    // 5.2 Mode de projection
+    mode_projection.setup("Mode de projection");
+    groupe_camera.add(&mode_projection);
+
+    
+    perspectiveButton.setup("Perspective \n Key P", false);
+    mode_projection.add(&perspectiveButton);
+    perspectiveButton.addListener(this, &Application::perspectiveButtonPressed);
+    orthogonaleButton.setup("Orthogonale", false);
+    mode_projection.add(&orthogonaleButton);
+    orthogonaleButton.addListener(this, &Application::orthogonaleButtonPressed);
+
+    
+    mode_projection.minimize();
+
+    //5.3 Point de vue multiple
+    mode_dessincam_button.setup("Mode dessin");
+    mode_1cam_button.setup("Mode 1 camera");
+    mode_2cam_button.setup("Mode 2 cameras");
+    mode_dessincam_button.addListener(this, &Application::mode_dessin_pressed);
+    mode_1cam_button.addListener(this, &Application::mode_1cam_pressed);
+    mode_2cam_button.addListener(this, &Application::mode_2cam_pressed);
+    groupe_camera.add(&mode_dessincam_button);
+    groupe_camera.add(&mode_1cam_button);
+    groupe_camera.add(&mode_2cam_button);
+    //5.4 Occlusion
+    meshfilled_button.setup("Mode meshfilled");
+    wireframe_button.setup("Mode wireframe");
+    meshfilled_button.addListener(this, &Application::meshfilled_button_pressed);
+    wireframe_button.addListener(this, &Application::wireframe_button_pressed);
+    groupe_camera.add(&meshfilled_button);
+    groupe_camera.add(&wireframe_button);
+
+    groupe_camera.minimize();
+
+    
+    gui.add(&groupe_camera);
+
+
+    //5
+    //5.1
     is_key_press_up = false;
     is_key_press_down = false;
     is_key_press_left = false;
@@ -233,42 +293,11 @@ void Application::setup()
     is_key_del = false;
     is_key_pgup = false;
     is_key_pgdown = false;
-    // Modes de projection (5.2)
-    mode_projection.setup("Mode de projection");
-    groupe_camera.add(&mode_projection);
-    perspectiveButton.setup("Perspective", false);
-    mode_projection.add(&perspectiveButton);
-    perspectiveButton.addListener(this, &Application::perspectiveButtonPressed);
-    orthogonaleButton.setup("Orthogonale", false);
-    mode_projection.add(&orthogonaleButton);
-    orthogonaleButton.addListener(this, &Application::orthogonaleButtonPressed);
-    mode_projection.minimize();
-    // Point de vue multiple (5.3)
-    mode_dessincam_button.setup("Mode dessin");
-    mode_1cam_button.setup("Mode 1 camera");
-    mode_2cam_button.setup("Mode 2 cameras");
-    mode_dessincam_button.addListener(this, &Application::mode_dessin_pressed);
-    mode_1cam_button.addListener(this, &Application::mode_1cam_pressed);
-    mode_2cam_button.addListener(this, &Application::mode_2cam_pressed);
-    groupe_camera.add(&mode_dessincam_button);
-    groupe_camera.add(&mode_1cam_button);
-    groupe_camera.add(&mode_2cam_button);
-    // Occlusion (5.4)
-    meshfilled_button.setup("Mode meshfilled");
-    wireframe_button.setup("Mode wireframe");
-    meshfilled_button.addListener(this, &Application::meshfilled_button_pressed);
-    wireframe_button.addListener(this, &Application::wireframe_button_pressed);
-    groupe_camera.add(&meshfilled_button);
-    groupe_camera.add(&wireframe_button);
-
-    groupe_camera.minimize();
-    gui.add(&groupe_camera);
+    //5.2
+    
     
 }
 
-/*
- * brief: Dessine les éléments graphiques de l'application.
- */
 
 void Application::draw()
 {
@@ -278,23 +307,23 @@ void Application::draw()
 
     drawCursor();
 
+    // Dessiner l'image importée si elle est chargée
+    //if (importedImage.isAllocated()) {
+        //importedImage.draw(0, 0); // Ajustez la position et la taille selon vos besoins
+    //}
     renderer.draw();
 }
 
 
-/*
- * brief: Met à jour l'état de l'application.
- */
+
 
 void Application::update()
 {
-
-    // Couleur de fond
     renderer.background_color1 = color_picker_background;
     renderer.background_color2 = color_picker_background_HSB;
 
 
-    // Temps
+
     time_current = ofGetElapsedTimef();
     time_elapsed = time_current - time_last;
     time_last = time_current;
@@ -317,10 +346,10 @@ void Application::update()
 
     }
 
+
         if (is_key_press_left)
         {
-
-            if(isTranslationActive){ // Translation
+            if(isTranslationActive){
                 if(renderer.draw_mode != VectorPrimitiveType::none)
                 {
                     renderer.translateLastShape(-(renderer.delta_x * time_elapsed), 0);
@@ -330,32 +359,32 @@ void Application::update()
                     renderer.translateLastModel(-(renderer.delta_x * time_elapsed), 0, 0);
                 }
             }
-            else if(isRotatingActive) // Rotation
+            else if(isRotatingActive)
             {
                 renderer.rotatePrimitive(renderer.speed_delta/2.0 * time_elapsed);
             } 
         }
         if (is_key_press_right)
         {
-            if(isTranslationActive){ // Primitives
+            if(isTranslationActive){
                 if(renderer.draw_mode != VectorPrimitiveType::none) 
                 {
                     renderer.translateLastShape(renderer.delta_x * time_elapsed, 0);
                 }
                 
-                if(renderer.draw_mode_models != VectorModelType::none) // Modeles
+                if(renderer.draw_mode_models != VectorModelType::none)
                 {
                     renderer.translateLastModel(renderer.delta_x * time_elapsed, 0, 0);
                 }
             }
-            else if(isRotatingActive) // Rotation
+            else if(isRotatingActive)
             {
                 renderer.rotatePrimitive(-renderer.speed_delta/2.0 * time_elapsed);
             }
         }
         if (is_key_press_up)
         {
-            if(isTranslationActive){ //Primitives
+            if(isTranslationActive){
                 if(renderer.draw_mode != VectorPrimitiveType::none) {
                     renderer.translateLastShape(0, -renderer.delta_y * time_elapsed);
                 }
@@ -364,14 +393,14 @@ void Application::update()
                     renderer.translateLastModel(0, -renderer.delta_y * time_elapsed, 0);
                 }
             }
-            if(isScalingActive){ // Scale
+            if(isScalingActive){
                 float scaleFactor = 1.01;
                 renderer.scalePrimitive(scaleFactor);
             }
         }
         if (is_key_press_down)
         {
-            if(isTranslationActive){ // Translation 
+            if(isTranslationActive){
                 
                 if(renderer.draw_mode != VectorPrimitiveType::none) {
                     
@@ -382,21 +411,21 @@ void Application::update()
                     renderer.translateLastModel(0, renderer.delta_y * time_elapsed, 0);
                 }
             }
-            if(isScalingActive){ // Scale
+            if(isScalingActive){
                 float scaleFactor = 0.99;
                 renderer.scalePrimitive(scaleFactor);
             }
         }
 
-    if (isExporting && exportCount < 5) { // Exportation
+    if (isExporting && exportCount < 5) {
         float currentTime = ofGetElapsedTimef();
-        if (currentTime - lastExportTime >= 2) { // Delai de 2 secondes
+        if (currentTime - lastExportTime >= 2) { // 2 secondes
             ofImage image;
             image.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
             string fileName = "Exportation" + ofToString(exportCount) + ".png";
             image.save(fileName);
             exportCount++;
-            lastExportTime = currentTime;
+            lastExportTime = currentTime; // Mise a jour du temps pour la prochaine exportation
 
             if (exportCount >= 5) {
                 isExporting = false; // Arret de l'exportation après 5 images
@@ -404,26 +433,17 @@ void Application::update()
         }
     }
 
-    // Mise à jour des propriétés graphiques
     renderer.lineThickness = lineThickness; // Epaisseur
-    renderer.lineColor = lineColor; // Ligne de contour
-    renderer.fillColor = fillColor; // Couleur de remplissage
+    renderer.lineColor = lineColor; // Contour
+    renderer.fillColor = fillColor; // Remplissage
 
     renderer.update();
 
 }
 
-/*
- * brief: Importe une image dans le rendu.
- */
-
 void Application::importImage() {
     renderer.import_image();
 }
-
-/*
- * brief: Déclenche le début de l'exportation d'images.
- */
 
 void Application::exportation_button_pressed() {
     isExporting = true;
@@ -431,13 +451,9 @@ void Application::exportation_button_pressed() {
     lastExportTime = ofGetElapsedTimef();
 }
 
-
-/*
- * brief: Gère l'activation/désactivation du mode de capture d'écran.
- */
-
 void Application::screenshot_button_pressed(bool& value)
 {
+    // Activer/désactiver le mode de capture d'écran
     captureMode = value;
     if (captureMode)
     {
@@ -449,12 +465,9 @@ void Application::screenshot_button_pressed(bool& value)
     }
 }
 
-/*
- * brief: Bascule le mode de capture d'écran surprise.
- */
-
 void Application::screenshot_funny_button_pressed(bool& value)
 {
+    // Activer/désactiver le mode de capture d'écran
     captureMode_funny = value;
     if (captureMode_funny)
     {
@@ -468,32 +481,23 @@ void Application::screenshot_funny_button_pressed(bool& value)
     }
 }
 
-/*
- * brief: Définit le mode de couleur de fond sur RGB.
- */
-
 void Application::background_rgb_button_pressed()
 {
     renderer.color_mode = BackgroundColorType::rgb;
 }
-
-/*
- * brief: Définit le mode de couleur de fond sur HSB.
- */
 
 void Application::background_hsb_button_pressed()
 {
     renderer.color_mode = BackgroundColorType::hsb;
 }
 
-/*
- * brief: Active ou désactive l'affichage de l'histogramme.
- */
-
 void Application::histogramme_button_pressed()
 {
     renderer.is_active_histogram = !renderer.is_active_histogram;
-   
+    //renderer.histogram = renderer.histogram.load(0,0,ofGetWidth(), ofGetHeight());
+    // Convert to grayscale
+    //renderer.histogram.setFromColorImage(renderer.histogram);
+    
 }
 
 /* 
@@ -504,10 +508,6 @@ void Application::mouseMoved(int x, int y)
     renderer.mouse_current_x = x;
     renderer.mouse_current_y = y;
 }
-
-/*
- * brief: Met à jour la position de la souris dans le rendu.
- */
 
 void Application::mousePressed(int x, int y, int button)
 {
@@ -548,9 +548,6 @@ void Application::mousePressed(int x, int y, int button)
     }
 }
 
-/*
- * brief: Gère l'événement de glisser de la souris.
- */
 
 void Application::mouseDragged(int x, int y, int button) {
     if (isSelectionModeActive) {
@@ -569,25 +566,21 @@ void Application::mouseDragged(int x, int y, int button) {
     renderer.mouse_current_y = y;
 }
 
-/*
- * brief: Gère l'événement de relâchement du bouton de la souris.
- */
-
 void Application::mouseReleased(int x, int y, int button)
 {
     selection_start.set(renderer.mouse_press_x, renderer.mouse_press_y);
     selection_end.set(renderer.mouse_current_x, renderer.mouse_current_y);
     renderer.is_mouse_button_pressed = false;
 
-    if (captureMode) // Mode capture
+    if (captureMode)
     {
         screenshot(x, y, false);
     }
-    else if (captureMode_funny) // Mode funny
+    else if (captureMode_funny)
     {
         screenshot(x, y, true);
     }
-    else if (!isSelectionModeActive) // Selection Active
+    else if (!isSelectionModeActive) // ELEVER LAJOUT DE FORME SI SELECTION MULTIPLE EST ACTIVÉ
     {
         if (renderer.draw_mode != VectorPrimitiveType::none)
         {
@@ -604,30 +597,26 @@ void Application::mouseReleased(int x, int y, int button)
     }
 }
 
-/*
- * brief: Capture d'écran de la zone sélectionnée.
- */
-
 void Application::screenshot(int x, int y, bool z)
 {
-    // Preparation du nom du fichier sur une timestamp
+    // Générer un timestamp unique pour créer un nom de fichier différent à chaque capture
     std::string timestamp = ofGetTimestampString("-%Y%m%d-%H%M%S");
     std::string filename = "screenshot" + timestamp + ".png";
     std::string folderPath = ofToDataPath("screenshot/");
 
-    // Creation du dossier
+    // Construire le chemin complet du fichier dans le répertoire du binaire
     std::string filePath = ofFilePath::join(ofFilePath::getCurrentExeDir(), folderPath + filename);
 
-    // Assurer la creation
+    // Assurez-vous que le dossier existe
     ofDirectory::createDirectory(folderPath, true, true);
 
-    // Zone de capture
+    // Effectuer la capture d'écran de la zone sélectionnée
     int x1 = min(selection_start.x, selection_end.x);
     int y1 = min(selection_start.y, selection_end.y);
     int x2 = max(selection_start.x, selection_end.x);
     int y2 = max(selection_start.y, selection_end.y);
 
-    // Capture de la zone selectionnee
+    // Créer une image temporaire pour stocker la zone sélectionnée
     ofImage tempImage;
     tempImage.grabScreen(x1, y1, x2 - x1, y2 - y1);
 
@@ -640,6 +629,8 @@ void Application::screenshot(int x, int y, bool z)
     {
         for (int j = 0; j < sampledImage.getHeight(); ++j)
         {
+            // Algorithme d'échantillonnage ici
+            // Exemple : simplement copier la couleur
             if (!z) //Screenshot normal
             {
                 ofColor pixelColor = tempImage.getColor(i, j);
@@ -670,17 +661,13 @@ void Application::screenshot(int x, int y, bool z)
 
 }
 
-/*
- * brief: Initialise et ajoute les boutons de formes et d'options de dessin au GUI.
- */
-
 void Application::ajout_boutons_formes()
 {
     group_dessin_vectoriel_formes.add(none_shape_button.setup("None", ofParameter<bool>(false)));
     group_dessin_vectoriel_formes.add(pixel_shape_button.setup("Pixel", ofParameter<bool>(false)));
     group_dessin_vectoriel_formes.add(point_shape_button.setup("Point", ofParameter<bool>(false)));
     group_dessin_vectoriel_formes.add(line_shape_button.setup("Ligne", ofParameter<bool>(false)));
-    group_dessin_vectoriel_formes.setDefaultHeight(36);
+    group_dessin_vectoriel_formes.setDefaultHeight(36); //Changer le grosseur du gui pour le text des boutons
     group_dessin_vectoriel_formes.add(&group_dessin_algo_ligne);
     group_dessin_algo_ligne.add(algo_of_button.setup("Rasterisation par\n openFrameworks", ofParameter<bool>(false)));
     group_dessin_algo_ligne.add(algo_dda_button.setup("Rasterisation par\n DDA", ofParameter<bool>(false)));
@@ -717,10 +704,6 @@ void Application::ajout_boutons_formes()
 
 }
 
-/*
- * brief: Retire les écouteurs des boutons lors de la suppression des formes.
- */
-
 void Application::retirer_boutons_formes() {
     none_shape_button.removeListener(this, &Application::button_none_pressed);
     pixel_shape_button.removeListener(this, &Application::button_pixel_pressed);
@@ -740,10 +723,6 @@ void Application::retirer_boutons_formes() {
     animation_button.removeListener(this, &Application::animation_button_pressed);
     instanciation_button.removeListener(this, &Application::instanciation_button_pressed);
 }
-
-/*
- * brief: Gestionnaire pour le bouton "None"
- */
 
 void Application::button_none_pressed(bool& pressed)
 {
@@ -765,10 +744,6 @@ void Application::button_none_pressed(bool& pressed)
     }
 }
 
-/*
- * brief: Gestionnaire pour le bouton "Pixel"
- */
-
 void Application::button_pixel_pressed(bool& pressed)
 {
     if (pressed) {
@@ -787,10 +762,6 @@ void Application::button_pixel_pressed(bool& pressed)
     }
 }
 
-/*
- * brief: Gestionnaire pour le bouton "Point"
- */
-
 void Application::button_point_pressed(bool& pressed)
 {
     if (pressed) {
@@ -808,10 +779,6 @@ void Application::button_point_pressed(bool& pressed)
         face_shape_button = false;
     }
 }
-
-/*
- * brief: Gestionnaire pour le bouton "Ligne"
- */
 
 void Application::button_line_pressed(bool& pressed)
 {
@@ -833,10 +800,6 @@ void Application::button_line_pressed(bool& pressed)
     }
 }
 
-/*
- * brief: Gestionnaire pour le bouton "Algo"
- */
-
 void Application::button_algo_of_pressed(bool& pressed) {
     if (pressed) {
         renderer.draw_mode = VectorPrimitiveType::line;
@@ -856,10 +819,6 @@ void Application::button_algo_of_pressed(bool& pressed) {
     }
 
 }
-
-/*
- * brief: Gestionnaire pour le bouton "Algo DDA"
- */
 
 void Application::button_algo_dda_pressed(bool& pressed)
 {
@@ -881,10 +840,6 @@ void Application::button_algo_dda_pressed(bool& pressed)
     }
 }
 
-/*
- * brief: Gestionnaire pour le bouton "Pixel"
- */
-
 void Application::button_algo_bressenham_pressed(bool& pressed)
 {
     if (pressed) {
@@ -905,10 +860,6 @@ void Application::button_algo_bressenham_pressed(bool& pressed)
     }
 }
 
-/*
- * brief: Gestionnaire pour le bouton "Carre"
- */
-
 void Application::button_square_pressed(bool& pressed)
 {
     if (pressed) {
@@ -927,10 +878,6 @@ void Application::button_square_pressed(bool& pressed)
         face_shape_button = false;
     }
 }
-
-/*
- * brief: Gestionnaire pour le bouton "Rectangle"
- */
 
 void Application::button_rectangle_pressed(bool& pressed)
 {
@@ -951,10 +898,6 @@ void Application::button_rectangle_pressed(bool& pressed)
     }
 }
 
-/*
- * brief: Gestionnaire pour le bouton "Cercle"
- */
-
 void Application::button_circle_pressed(bool& pressed)
 {
     if (pressed) {
@@ -973,10 +916,6 @@ void Application::button_circle_pressed(bool& pressed)
         face_shape_button = false;
     }
 }
-
-/*
- * brief: Gestionnaire pour le bouton "Ellipse"
- */
 
 void Application::button_ellipse_pressed(bool& pressed)
 {
@@ -997,10 +936,6 @@ void Application::button_ellipse_pressed(bool& pressed)
     }
 }
 
-/*
- * brief: Gestionnaire pour le bouton "Triangle"
- */
-
 void Application::button_triangle_pressed(bool& pressed)
 {
     if (pressed) {
@@ -1019,10 +954,6 @@ void Application::button_triangle_pressed(bool& pressed)
         face_shape_button = false;
     }
 }
-
-/*
- * brief: Gestionnaire pour le bouton "Face"
- */
 
 void Application::button_face_pressed(bool& pressed)
 {
@@ -1044,10 +975,6 @@ void Application::button_face_pressed(bool& pressed)
 
 }
 
-/*
- * brief: Gestionnaire pour le bouton "Maison"
- */
-
 void Application::button_maison_pressed(bool& pressed)
 {
     if (pressed) {
@@ -1067,9 +994,7 @@ void Application::button_maison_pressed(bool& pressed)
     }
 }
 
-/*
- * brief: Gestionnaire pour le bouton "Selection multiple"
- */
+// Sélection multiple 3.2 a revoir
 
 void Application::selection_multiple(bool& pressed) {
     isSelectionModeActive = pressed;
@@ -1090,45 +1015,41 @@ void Application::selection_multiple(bool& pressed) {
     sphereButton = false;
 }
 
-/*
- * brief: Vérifie si un point est à l'intérieur d'une forme vectorielle donnée.
- */
-
 bool Application::isInside(int x, int y, const VectorPrimitive& shape) {
-    if (shape.type == VectorPrimitiveType::square) { // Carre
+    if (shape.type == VectorPrimitiveType::square) {
         float squareX = std::min(shape.position1[0], shape.position2[0]);
         float squareY = std::min(shape.position1[1], shape.position2[1]);
         float squareSize = std::min(abs(shape.position2[0] - shape.position1[0]), abs(shape.position2[1] - shape.position1[1]));
         return x >= squareX && x <= squareX + squareSize && y >= squareY && y <= squareY + squareSize;
     }
-    else if (shape.type == VectorPrimitiveType::rectangle) { // Rectangle
+    else if (shape.type == VectorPrimitiveType::rectangle) {
         float left = std::min(shape.position1[0], shape.position2[0]);
         float right = std::max(shape.position1[0], shape.position2[0]);
         float top = std::min(shape.position1[1], shape.position2[1]);
         float bottom = std::max(shape.position1[1], shape.position2[1]);
         return x >= left && x <= right && y >= top && y <= bottom;
     }
-    else if (shape.type == VectorPrimitiveType::circle) { // Cercle
+    else if (shape.type == VectorPrimitiveType::circle) {
         float centerX = (shape.position1[0] + shape.position2[0]) / 2;
         float centerY = (shape.position1[1] + shape.position2[1]) / 2;
         float radius = ofDist(shape.position1[0], shape.position1[1], shape.position2[0], shape.position2[1]) / 2;
         return (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY) <= radius * radius;
     }
-    else if (shape.type == VectorPrimitiveType::ellipse) { // Ellipse
+    else if (shape.type == VectorPrimitiveType::ellipse) {
         float centerX = (shape.position1[0] + shape.position2[0]) / 2;
         float centerY = (shape.position1[1] + shape.position2[1]) / 2;
         float radiusX = abs(shape.position2[0] - shape.position1[0]) / 2;
         float radiusY = abs(shape.position2[1] - shape.position1[1]) / 2;
         return (pow(x - centerX, 2) / pow(radiusX, 2)) + (pow(y - centerY, 2) / pow(radiusY, 2)) <= 1;
     }
-    else if (shape.type == VectorPrimitiveType::face) { // Face
+    else if (shape.type == VectorPrimitiveType::face) {
      
         float centerX = (shape.position1[0] + shape.position2[0]) / 2;
         float centerY = (shape.position1[1] + shape.position2[1]) / 2;
         float radius = ofDist(shape.position1[0], shape.position1[1], shape.position2[0], shape.position2[1]) / 2;
         return (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY) <= radius * radius;
     }
-    else if (shape.type == VectorPrimitiveType::maison) { // Maison
+    else if (shape.type == VectorPrimitiveType::maison) {
       
         float rectLeft = shape.position1[0];
         float rectTop = shape.position1[1] + (shape.position2[1] - shape.position1[1]) / 3;
@@ -1149,7 +1070,7 @@ bool Application::isInside(int x, int y, const VectorPrimitive& shape) {
         bool inTriangle = areaTotal == area1 + area2 + area3;
         return inRectangle || inTriangle;
     }
-    else if (shape.type == VectorPrimitiveType::cube) { // Cube
+    else if (shape.type == VectorPrimitiveType::cube) {
         
         float rectLeft = shape.position1[0] - 50;
         float rectTop = shape.position1[1] - 50;
@@ -1158,7 +1079,7 @@ bool Application::isInside(int x, int y, const VectorPrimitive& shape) {
 
         return x >= rectLeft && x <= rectRight && y >= rectTop && y <= rectBottom;
     }
-    else if (shape.type == VectorPrimitiveType::sphere) { // Sphere
+    else if (shape.type == VectorPrimitiveType::sphere) {
         
         float centerX = shape.position1[0];
         float centerY = shape.position1[1];
@@ -1170,9 +1091,6 @@ bool Application::isInside(int x, int y, const VectorPrimitive& shape) {
     return false;
 }
 
-/*
- * brief: Désactive tous les modes de transformation
- */
 
 void Application::noneTransformationButtonPressed(){
     isTranslationActive = false;
@@ -1180,10 +1098,6 @@ void Application::noneTransformationButtonPressed(){
     isScalingActive = false;
     ofLog() << "<mode: transformation : none>" << isTranslationActive;
 }
-
-/*
- * brief: Active ou désactive le mode de translation
- */
 
 void Application::translateButtonPressed() 
 {
@@ -1194,10 +1108,6 @@ void Application::translateButtonPressed()
         ofLog() << "<mode: translation>" << isTranslationActive;
 }
 
-/*
- * brief: Active ou désactive le mode de rotation
- */
-
 void Application::rotateButtonPressed() 
 {
         isTranslationActive = false;
@@ -1205,10 +1115,6 @@ void Application::rotateButtonPressed()
         isScalingActive = false;
         ofLog() << "<mode: rotation>" << isRotatingActive ;
 }
-
-/*
- * brief: Active ou désactive le mode Scale
- */
 
 void Application::scaleButtonPressed() 
 {
@@ -1218,28 +1124,18 @@ void Application::scaleButtonPressed()
         ofLog() << "<mode: scale>" << isScalingActive;
 }
 
-/*
- * brief: Annule la dernière action effectuée.
- */
-
+//3.4
 void Application::undo_button_pressed()
 {
     renderer.undo();
 }
-
-/*
- * brief: Rétablit l'action précédemment annulée.
- */
 
 void Application::redo_button_pressed()
 {
     renderer.redo();
 }
 
-/*
- * brief: Gestionnaire pour le bouton "Cube"
- */
-
+//4.2 Primitive geometriques
 void Application::cubeButtonPressed(bool& pressed) {
     {
         if (pressed) {
@@ -1259,10 +1155,6 @@ void Application::cubeButtonPressed(bool& pressed) {
         }
     }
 }
-
-/*
- * brief: Gestionnaire pour le bouton "Sphere"
- */
 
 void Application::sphereButtonPressed(bool& pressed) {
     {
@@ -1284,45 +1176,25 @@ void Application::sphereButtonPressed(bool& pressed) {
     }
 }
 
-/*
- * brief: Activation de l'animation d'objet SVG.
- */
-
 void Application::animation_button_pressed()
 {
     renderer.animation_svg_object_active = !(renderer.animation_svg_object_active);
 }
-
-/*
- * brief: Activation de l'instanciation.
- */
 
 void Application::instanciation_button_pressed()
 {
     renderer.instanciation_active = !(renderer.instanciation_active);
 }
 
-/*
- * brief: Activation mode de camera en perspective.
- */
-
 void Application::perspectiveButtonPressed() {
     renderer.is_camera_perspective = true;
     renderer.setup_camera();
 }
 
-/*
- * brief: Activation mode de camera orthogonale.
- */
-
 void Application::orthogonaleButtonPressed() {
     renderer.is_camera_perspective = false;
     renderer.setup_camera();
 }
-
-/*
- * brief: Interactivité de la caméra.
- */
 
 void Application::toggleCameraInteractive() {
     renderer.is_camera_interactive = !renderer.is_camera_interactive;
@@ -1331,14 +1203,13 @@ void Application::toggleCameraInteractive() {
 
 }
 
-/*
- * brief: Curseur personnalise en fonction de l'etat du curseur
- */
+
+
 
 void Application::drawCursor() {
-  
-    int mouseX = ofGetMouseX(); // Position en X
-    int mouseY = ofGetMouseY(); // Position en Y
+    // Obtenir la position actuelle de la souris
+    int mouseX = ofGetMouseX();
+    int mouseY = ofGetMouseY();
 
     switch (currentCursorState) {
     case CURSOR_DEFAULT:
@@ -1373,71 +1244,46 @@ void Application::drawCursor() {
     }
 }
 
-/*
- * brief: Desactive les modes de dessin de formes et de modeles
- */
-
 void Application::non_model_button_pressed(){
     renderer.draw_mode = VectorPrimitiveType::none;
     renderer.draw_mode_models = VectorModelType::none;
 }
 
-/*
- * brief: Ouvre un dialogue pour selectionner un modèle et l'importer
- */
-
 void Application::import_model_button_pressed(){
     ofFileDialogResult result = ofSystemLoadDialog("Select a folder", true);
     ofLogNotice() << "Dialog result: " << result.bSuccess;
     if (result.bSuccess)
-    { 
-        string folderPath = result.filePath;  
+    {
+        // Retrieve the selected folder path
+        string folderPath = result.filePath;
+
+        // Use the selected folder path as needed
         ofLogNotice() << "Selected folder: " << folderPath;
     }
     else
     {
+        // User canceled the dialog
         ofLogNotice() << "Dialog canceled by the user";
     }
 }
-
-/*
- * brief: Active le dessin du modèle prédéfini 1
- */
-
 void Application::predef1_model_button_pressed(){
         renderer.draw_mode = VectorPrimitiveType::none;
         renderer.draw_mode_models = VectorModelType::predef1;
 }
-
-/*
- * brief: Active le dessin du modèle prédéfini 2
- */
-
 void Application::predef2_model_button_pressed(){
         renderer.draw_mode = VectorPrimitiveType::none;
         renderer.draw_mode_models = VectorModelType::predef2;
 }
-
-/*
- * brief: Active le dessin du modèle prédéfini 3
- */
-
 void Application::predef3_model_button_pressed(){
 
         renderer.draw_mode = VectorPrimitiveType::none;
         renderer.draw_mode_models = VectorModelType::predef3;
 }
 
-/*
- * brief: Retire le dernier modele affiche
- */
 
+//Fonction pour retirer le dernier modele affiche
 void Application::remove_last_model_button_pressed(){
 }
-
-/*
- * brief: Actions a realiser lorsqu'une touche est pressee
- */
 
 void Application::keyPressed(int key)
 {
@@ -1485,106 +1331,109 @@ void Application::keyReleased(int key)
 {
     switch (key)
     {
-    case 117: // Key U
+    case 117: //key u
         checkbox = !checkbox;
         ofLog() << "<toggle ui: " << checkbox << ">";
         break;
-    case 114: // Key R
+    case 114: // key r
         renderer.reset();
         break;
-    case OF_KEY_LEFT: // Key ←
+    case OF_KEY_LEFT: // key ←
         is_key_press_left = false;
         renderer.is_camera_move_left = false;
       break;
 
-    case OF_KEY_UP: // Key ↑
+    case OF_KEY_UP: // key ↑
         is_key_press_up = false;
         renderer.is_camera_move_forward = false;
       break;
 
-    case OF_KEY_RIGHT: // Key →
+    case OF_KEY_RIGHT: // key →
         is_key_press_right = false;
         renderer.is_camera_move_right = false;
       break;
 
-    case OF_KEY_DOWN: // Key ↓
+    case OF_KEY_DOWN: // key ↓
         is_key_press_down = false;
         renderer.is_camera_move_backward = false;
       break;
-    case 57362: // Cam up (home)
+    case 57362: //Cam up (home)
         is_key_home = false;
         renderer.is_camera_move_up = false;
         break;
-    case 57363: // Cam down (end)
+    case 57363: //Cam down (end)
         is_key_end = false;
         renderer.is_camera_move_down = false;
         break;
-    case 127: // Pan left (ins)
+    case 127: //Pan left (ins)
         is_key_del = false;
         renderer.is_camera_pan_left = false;
         break;
-    case 57361: // Pan right (pgdown)
+    case 57361: //Pan right (pgdown)
         is_key_pgdown = false;
         renderer.is_camera_pan_right = false;
         break;
-    case 57360: // Tilt up (pgup)
+    case 57360: //Tilt up (pgup)
         is_key_pgup = false;
         renderer.is_camera_tilt_up = false;
         break;
-    case 57364: // Tilt down (ins)
+    case 57364: //Tilt down (ins)
         is_key_ins = false;
         renderer.is_camera_tilt_down = false;
         break;
 
-    case 49: // Key 1
+
+
+
+    case 49: //Key numpad1
         renderer.camera_active = Camera::devant;
         renderer.setup_camera();
         ofLog() << "<app::Cam Devant";
     break;
 
-    case 50: // Key 2
+    case 50: //Key numpad2
         renderer.camera_active = Camera::derriere;
         renderer.setup_camera();
         ofLog() << "<app::Cam Derriere>";
     break;
 
-    case 51: // Key 3
+    case 51: //Key numpad2
         renderer.camera_active = Camera::gauche;
         renderer.setup_camera();
         ofLog() << "<app::Cam Gauche>";
     break;
 
-    case 52: // Key 4
+    case 52: //Key numpad4
         renderer.camera_active = Camera::droite;
         renderer.setup_camera();
         ofLog() << "<app::cam Droite>";
     break;
 
-    case 53: // Key 5
+    case 53: //Key numpad5
         renderer.camera_active = Camera::dessus;
         renderer.setup_camera();
         ofLog() << "<app::cam Dessus>";
     break;
 
-    case 54: // Key 6
+    case 54: //Key numpad6
         renderer.camera_active = Camera::dessous;
         renderer.setup_camera();
         ofLog() << "<app::cam Dessous>";
     break;
 
-    case 'p': // Key P
+    case 'p': // key p 
         renderer.is_camera_perspective = true;
         renderer.setup_camera();
         ofLog() << "<perpective projection>";
         break;
 
-    case 'o': // Key O
+    case 'o': // key o
         renderer.is_camera_perspective = false;
         renderer.setup_camera();
         ofLog() << "<orthographic projection>";
         break;
 
-    case 102: // Key F
+    case 102: //key f
         renderer.is_flip_axis_y = !renderer.is_flip_axis_y;
         ofLog() << "Flip y axe";
         break;
@@ -1595,9 +1444,7 @@ void Application::keyReleased(int key)
     }
 }
 
-/*
- * brief: Etat du curseur sur par défaut
- */
+
 
 void Application::cursorDefaultButtonPressed() {
     
@@ -1605,19 +1452,12 @@ void Application::cursorDefaultButtonPressed() {
     
 }
 
-/*
- * brief: Etat du curseur pour dessiner des lignes
- */
-
 void Application::cursorDrawLineButtonPressed() {
     
         currentCursorState = CURSOR_DRAW_LINE;
     
 }
 
-/*
- * brief: Etat du curseur pour dessiner des cercles
- */
 
 void Application::cursorDrawCircleButtonPressed() {
    
@@ -1625,19 +1465,11 @@ void Application::cursorDrawCircleButtonPressed() {
     
 }
 
-/*
- * brief: Etat du curseur pour la selection
- */
-
 void Application::cursorSelectButtonPressed() {
     
         currentCursorState = CURSOR_SELECT;
     
 }
-
-/*
- * brief: Définit l'état du curseur pour la translation
- */
 
 void Application::cursorTranslateButtonPressed() {
    
@@ -1645,91 +1477,57 @@ void Application::cursorTranslateButtonPressed() {
     
 }
 
-/*
- * brief: Définit l'état du curseur pour la rotation
- */
-
 void Application::cursorRotateButtonPressed() {
     
         currentCursorState = CURSOR_ROTATE;
     
 }
 
-/*
- * brief: Ajoute nouvel element dans la scene
- */
-
 void Application::addElementPressed() {
 
 }
 
-/*
- * brief: Supprime element selectionne de la scene
- */
+
+
 
 
 void Application::removeElementPressed() {
 }
 
-/*
- * brief: Parcourir element de la selection
- */
 
 
 
-/*
- * brief: Mode de dessin en 2D
- */
+
 
 void Application::mode_dessin_pressed()
 {
     renderer.mode_vue = Mode_Vue::dessin;
 }
 
-/*
- * brief: Mode de la caméra a une seule camera 3D
- */
-
 void Application::mode_1cam_pressed()
 {
     renderer.mode_vue = Mode_Vue::camera_3d;
-
+    //renderer.mode_cam = false;
 }
-
-/*
- * brief: Mode de la camera a deux camras 3D.
- */
-
 void Application::mode_2cam_pressed()
 {
     renderer.mode_vue = Mode_Vue::double_cam;
     //renderer.mode_cam = true;
 }
 
-/*
- * brief: Mode d'affichage Mesh
- */
-
 void Application::meshfilled_button_pressed()
 {
     renderer.occlusion = Occlusion::meshfiled;
 }
-
-/*
- * brief: Mode affichage Wire
- */
 
 void Application::wireframe_button_pressed()
 {
     renderer.occlusion = Occlusion::wireframe;
 }
 
-/*
- * brief: Nettoyer, supprimer, fermeture de l'application
- */
-
 void Application::exit()
 {
+    // Remove the listener for toggle button valueChanged event
     screenshot_button.removeListener(this, &Application::screenshot_button_pressed);
     screenshot_button_funny.removeListener(this, &Application::screenshot_funny_button_pressed);
     background_rgb_button.removeListener(this, &Application::background_rgb_button_pressed);
