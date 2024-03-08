@@ -57,7 +57,7 @@ void Renderer::setup()
     animationPosition = 0;
     bAnimate = true;
 
-    is_camera_perspective = false;
+    is_camera_perspective = true;
 
     //Init cam
     camera_position = {0.0f, 0.0f, 0.0f};
@@ -81,7 +81,7 @@ void Renderer::setup()
     is_camera_fov_narrow = false;
     is_camera_fov_wide = false;
     is_camera_interactive = false;
-    is_flip_axis_y = false;
+    is_flip_axis_y = true;
     offset_x = 0;
     offset_z = 0;
 
@@ -139,12 +139,12 @@ void Renderer::draw()
     
     case Mode_Vue::camera_3d:
         camera->begin();
-        
+        is_camera_interactive = true;
         ofScale(1.0f, is_flip_axis_y ? -1.0f : 1.0f);
         ofFill();
-        //ofTranslate((frame_buffer_width/2) + offset_x, is_flip_axis_y ? - (frame_buffer_heigth/2) : (frame_buffer_heigth/2), offset_z);
         ofTranslate(camera_target);
         ofSetColor(127);
+        ofDrawGrid(50, 50, false, true, true, false);
         node.setPosition(0,0,-30);
         node.draw();
         
@@ -1113,20 +1113,32 @@ void Renderer::histogram()
     int y = ofGetHeight();
     histogram_im.allocate(x, y, OF_IMAGE_COLOR);
     histogram_im.grabScreen(0,0,x,y);
-    screenGrayscale = histogram_im;
-    contourFinders.findContours(screenGrayscale, 10, ofGetWidth() * ofGetHeight(), 1, false);
-    for (int i = 0; i < contourFinders.nBlobs; ++i)
-    {
-        float bar_x = ofMap(i, 0, contourFinders.nBlobs, 0, ofGetWidth());
-        float height = ofMap(contourFinders.blobs[i].area, 0, ofGetWidth() * ofGetHeight(), 0, ofGetHeight());
 
-        // Adjust the drawing of rectangles
-        ofPushMatrix();
-        ofTranslate(0, 0); // Translate to the top-left corner
-        ofScale(0.7);
-        ofDrawRectangle(bar_x, y, ofGetWidth() * 0.7 / contourFinders.nBlobs, -height);
-        ofPopMatrix();
+    ofImage grayImage;
+    grayImage = histogram_im;
+    grayImage.setImageType(OF_IMAGE_GRAYSCALE);
+
+    vector<int> histogram(256, 0);
+
+    // Calculate the histogram
+    for (std::vector<int>::size_type y = 0; y < grayImage.getHeight(); y++) {
+        for (std::vector<int>::size_type x = 0; x < grayImage.getWidth(); x++) 
+        {
+            ofColor color = grayImage.getColor(x, y);
+            histogram[color.r]++;  // color.r, color.g and color.b are the same in a grayscale image
+        }
     }
+    ofPushMatrix();
+    ofPushStyle();
+    ofSetColor(ofColor::red);
+    ofScale(0.4);
+    ofTranslate(ofGetWidth() * 2.0,0);
+    for (std::vector<int>::size_type i = 0; i < histogram.size(); i++) 
+    {
+        ofDrawRectangle(i * 2, ofGetHeight(), 2, -histogram[i] / 100.0);  // Scale down the histogram values for better visibility
+    }
+    ofPopStyle();
+    ofPopMatrix();
 }
 
 
@@ -1186,9 +1198,9 @@ void Renderer::init_buffer_model(){
 //
 void Renderer::loadModels(){
     buffer_model_count = 100;
-	model1.loadModel("Bender/Bender.gltf");
-	model2.loadModel("Obama/Obama.fbx");
-	model3.loadModel("Shinji/Shinji.obj");
+	model1.load("Bender/Bender.gltf");
+	model2.load("Obama/Obama.fbx");
+	model3.load("Shinji/Shinji.obj");
     ofSetVerticalSync(true);
     svg.load("cube.svg");
     for (ofPath p : svg.getPaths()) {
@@ -1491,7 +1503,7 @@ void Renderer::zoomOut() {
 }
 
 void Renderer::rotateAround(float angle, ofVec3f axis) {
-    camera->rotateAround(angle, axis, camera_target);
+    camera->rotateAroundDeg(angle, axis, camera_target);
 }
 
 void Renderer::changeView(Camera newView) {

@@ -3,7 +3,7 @@
 #include "ofxAssimpModelLoader.h"
 #include <algorithm>
 #include "ofxSvg.h"
-#include "ofxOpenCv.h"
+
 
 // Énumération Occlusion
 enum class Occlusion {none, wireframe, meshfiled};
@@ -126,8 +126,6 @@ public:
     // Histogramme
     bool is_active_histogram;
     ofImage histogram_im;
-    ofxCvGrayscaleImage screenGrayscale;
-    ofxCvContourFinder contourFinders;
     void histogram();
 
     // Sélection Multiples
