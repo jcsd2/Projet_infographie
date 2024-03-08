@@ -26,7 +26,7 @@ public:
 
     Renderer renderer;
   
-    ofxPanel gui;
+ 
     ofParameter<bool> checkbox; // Parametre GUI 
 
     // Importation d'images 1.1
@@ -90,6 +90,9 @@ public:
     // Formes Vectorielles 2.4
     ofxToggle maison_shape_button;
     ofxToggle face_shape_button;
+
+    // Interface 2.5
+    ofxPanel gui;
 
     // Ajout/suppression formes
     void ajout_boutons_formes();
@@ -207,16 +210,19 @@ public:
     // Modes POV multiple 5.3
     ofxButton mode_dessincam_button;
     ofxButton mode_1cam_button;
-    ofxButton mode_2cam_button;
     void mode_dessin_pressed();
     void mode_1cam_pressed();
-    void mode_2cam_pressed();
 
     // Occlusion 5.4
     ofxButton meshfilled_button;
     ofxButton wireframe_button;
     void meshfilled_button_pressed();
     void wireframe_button_pressed();
+
+    // Portail 5.5
+    ofxButton mode_2cam_button;
+    void mode_2cam_pressed();
+
 
     // Méthodes associées aux boutons
     void noneTransformationButtonPressed();
