@@ -249,6 +249,12 @@ public:
     bool is_key_press_down;
     bool is_key_press_left;
     bool is_key_press_right;
+    bool is_key_home;
+    bool is_key_end;
+    bool is_key_ins;
+    bool is_key_del;
+    bool is_key_pgup;
+    bool is_key_pgdown;
 
     void setup();
     void update();

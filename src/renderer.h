@@ -283,6 +283,7 @@ public:
     bool is_camera_roll_left;
     bool is_camera_roll_right;
     bool mode_cam;
+    bool is_flip_axis_y;
     void setup_camera();
     Mode_Vue mode_vue;
 

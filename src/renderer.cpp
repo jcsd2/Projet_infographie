@@ -59,12 +59,41 @@ void Renderer::setup()
 
     is_camera_perspective = false;
 
+    //Init cam
+    camera_position = {0.0f, 0.0f, 0.0f};
+    camera_target = {0.0f, 0.0f, 0.0f};
+    camera_near = 3.0f;
+    camera_far = 1750.0f;
+    camera_fov = 60.0f;
+    camera_fov_delta = 16.0f;
+    is_camera_move_left = false;
+    is_camera_move_right = false;
+    is_camera_move_up = false;
+    is_camera_move_down = false;
+    is_camera_move_forward = false;
+    is_camera_move_backward = false;
+    is_camera_tilt_up = false;
+    is_camera_tilt_down = false;
+    is_camera_pan_left = false;
+    is_camera_pan_right = false;
+    is_camera_roll_left = false;
+    is_camera_roll_right = false;
+    is_camera_fov_narrow = false;
+    is_camera_fov_wide = false;
+    is_camera_interactive = false;
+    is_flip_axis_y = false;
+    offset_x = 0;
+    offset_z = 0;
+
     //Mode de vue dessin ou 3d
     mode_vue = Mode_Vue::dessin;
 
     loadModels();
     init_buffer_model();
+
+
     setup_camera();
+    
 
     occlusion = Occlusion::meshfiled;
 
@@ -105,13 +134,25 @@ void Renderer::draw()
             drawCubeSVG();
             ofPopMatrix();
         }
-
+        ofPushMatrix();
         draw_primitives();
         drawModels();
+        ofPopMatrix();
         break;
     
     case Mode_Vue::camera_3d:
         camera->begin();
+        
+        
+        ofPushMatrix();
+        ofScale(1.0f, is_flip_axis_y ? -1.0f : 1.0f);
+        ofFill();
+        ofTranslate(camera_target);
+        ofSetColor(127);
+        ofScale(1.0f, is_flip_axis_y ? -1.0f : 1.0f);
+        node.setPosition(0,0,-30);
+        node.draw();
+        ofPopMatrix();
         if (is_visible_camera)
         {
             if (camera_active != Camera::devant)
@@ -137,7 +178,7 @@ void Renderer::draw()
         }
         if(instanciation_active)
         {
-            dispatch_random_models(buffer_model_count, min(ofGetWidth() * 0.6f, ofGetHeight() * 0.6f));
+            dispatch_random_models(10, min(ofGetWidth() * 0.6f, ofGetHeight() * 0.6f));
             ofLog() << "<Dispatch done>";
             instanciation_active = false;
         }
@@ -1047,39 +1088,7 @@ void Renderer::update()
             camera->setFov(camera_fov);
         }
     }
-    if (is_camera_interactive) {
-        if (is_moving_forward) {
-            camera_position += camera->getLookAtDir() * speed_translation * time_elapsed;
-            camera->setPosition(camera_position);
-        }
 
-        if (is_rotating_left) {
-            ofQuaternion rotation;
-            rotation.makeRotate(speed_rotation * time_elapsed, ofVec3f(0, 1, 0)); 
-            camera_orientation *= rotation;
-            camera->setOrientation(camera_orientation);
-        }
-
-        if (is_moving_backward) {
-            camera_position -= camera->getLookAtDir() * speed_translation * time_elapsed;
-            camera->setPosition(camera_position);
-        }
-
-        if (is_rotating_right) {
-            ofQuaternion rotation;
-            rotation.makeRotate(-speed_rotation * time_elapsed, ofVec3f(0, 1, 0));
-            camera_orientation *= rotation;
-            camera->setOrientation(camera_orientation);
-        }
-    }
-
-
-
-
-
-
-    //camera_fov = std::max(camera_fov -= camera_fov_delta * time_elapsed, 0.0f);
-    camera->setFov(camera_fov);
 
     //4.3
     step += 0.001;
@@ -1222,24 +1231,51 @@ void Renderer::loadModel(string filename){
 
 void Renderer::add_vector_models(VectorModelType type)
 {
-    models[buffer_model_head].type = type;
 
-    models[buffer_model_head].position1[0] = 0;
-    models[buffer_model_head].position1[1] = 0;
-    models[buffer_model_head].position1[2] = 0;
+    switch (mode_vue)
+    {
+    case Mode_Vue::dessin:
+        models[buffer_model_head].type = type;
+        models[buffer_model_head].position1[0] = mouse_press_x;
+        models[buffer_model_head].position1[1] = mouse_press_y;
+        models[buffer_model_head].position1[2] = 0;
+        models[buffer_model_head].stroke_color[0] = 0;
+        models[buffer_model_head].stroke_color[1] = 0;
+        models[buffer_model_head].stroke_color[2] = 0;
+        models[buffer_model_head].stroke_color[3] = 255;
+        models[buffer_model_head].fill_color[0] = 0;
+        models[buffer_model_head].fill_color[1] = 0;
+        models[buffer_model_head].fill_color[2] = 0;
+        models[buffer_model_head].fill_color[3] = 255;
+        ofLog() << "<new model at index: " << buffer_model_head << ">";
+        buffer_model_head = ++buffer_model_head >= buffer_model_count ? 0 : buffer_model_head;
+        break;
+    
+    case Mode_Vue::camera_3d:
+        models[buffer_model_head].type = type;
+        models[buffer_model_head].position1[0] = 0;
+        models[buffer_model_head].position1[1] = 0;
+        models[buffer_model_head].position1[2] = 0;
+        models[buffer_model_head].stroke_color[0] = 0;
+        models[buffer_model_head].stroke_color[1] = 0;
+        models[buffer_model_head].stroke_color[2] = 0;
+        models[buffer_model_head].stroke_color[3] = 255;
+        models[buffer_model_head].fill_color[0] = 0;
+        models[buffer_model_head].fill_color[1] = 0;
+        models[buffer_model_head].fill_color[2] = 0;
+        models[buffer_model_head].fill_color[3] = 255;
+        ofPushMatrix();
+        ofScale(0.4);
+        ofPopMatrix();
+        ofLog() << "<new model at index: " << buffer_model_head << ">";
+        buffer_model_head = ++buffer_model_head >= buffer_model_count ? 0 : buffer_model_head;
+    break;
 
-    models[buffer_model_head].stroke_color[0] = 0;
-    models[buffer_model_head].stroke_color[1] = 0;
-    models[buffer_model_head].stroke_color[2] = 0;
-    models[buffer_model_head].stroke_color[3] = 255;
+    default:
+        break;
+    }
 
-    models[buffer_model_head].fill_color[0] = 0;
-    models[buffer_model_head].fill_color[1] = 0;
-    models[buffer_model_head].fill_color[2] = 0;
-    models[buffer_model_head].fill_color[3] = 255;
 
-    ofLog() << "<new model at index: " << buffer_model_head << ">";
-    buffer_model_head = ++buffer_model_head >= buffer_model_count ? 0 : buffer_model_head; // boucler sur le tableau si plein
 }
 
 void Renderer::drawModels()
@@ -1247,22 +1283,26 @@ void Renderer::drawModels()
 for (index = 0; index < buffer_model_count; ++index)
     {
         ofPushMatrix();
-        ofPushStyle();
+
+
         switch (models[index].type)
         {
         case VectorModelType::none:
             break;
 
         case VectorModelType::predef1:
-            ofScale(0.1,0.1, 1.0);
-            ofTranslate(models[index].position1[0],
-                        models[index].position1[1],
-                        models[index].position1[2] - 150);
+            ofPushMatrix();
+            ofScale(0.1);
+            ofPopMatrix();
+
+            model1.setPosition( models[index].position1[0],
+                                models[index].position1[1],
+                                models[index].position1[2]);
             switch (occlusion)
             {
             case Occlusion::meshfiled:
                 model1.draw(OF_MESH_FILL);
-                    break;
+                break;
 
             case Occlusion::wireframe:
                 model1.drawWireframe();
@@ -1271,12 +1311,12 @@ for (index = 0; index < buffer_model_count; ++index)
             default:
                 break;
             }
+        break;
 
         case VectorModelType::predef2:
-            ofScale(0.1,0.1, 1.0);
-            ofTranslate(models[index].position1[0],
-                        models[index].position1[1],
-                        models[index].position1[2]);
+            model2.setPosition( models[index].position1[0],
+                                models[index].position1[1],
+                                models[index].position1[2]);
             switch (occlusion)
             {
             case Occlusion::meshfiled:
@@ -1290,12 +1330,11 @@ for (index = 0; index < buffer_model_count; ++index)
             default:
                 break;
             }
-
+        break;
         case VectorModelType::predef3:
-            ofScale(0.1,0.1, 1.0);
-            ofTranslate(models[index].position1[0],
-                        models[index].position1[1],
-                        models[index].position1[2]);
+            model3.setPosition( models[index].position1[0],
+                                models[index].position1[1],
+                                models[index].position1[2]);
             switch (occlusion)
             {
             case Occlusion::meshfiled:
@@ -1309,12 +1348,11 @@ for (index = 0; index < buffer_model_count; ++index)
             default:
                 break;
             }
-
+        break;
         case VectorModelType::import:
             break;
         }
-        ofPopMatrix();
-        ofPopStyle();
+ 
     }
 }
 
@@ -1351,29 +1389,6 @@ void Renderer::drawBoundingBox() {
 //Fonction de configuration très inspiré des exmples du cours
 void Renderer::setup_camera()
 {
-    camera_position = {0.0f, 0.0f, 0.0f};
-    camera_target = {0.0f, 0.0f, 0.0f};
-    camera_near_clipping = 5.0f;
-    camera_far_clipping = 1750.0f;
-    camera_fov = 60.0f;
-    camera_fov_delta = 16.0f;
-    speed_delta = 250.0f;
-
-    is_visible_axes = false;
-    is_visible_camera = false;
-    is_camera_move_left = false;
-    is_camera_move_right = false;
-    is_camera_move_up = false;
-    is_camera_move_down = false;
-    is_camera_move_forward = false;
-    is_camera_move_backward = false;
-    is_camera_tilt_up = false;
-    is_camera_tilt_down = false;
-    is_camera_pan_left = false;
-    is_camera_pan_right = false;
-    is_camera_roll_left = false;
-    is_camera_roll_right = false;
-    mode_cam = false;
 
     switch (camera_active)
     {
@@ -1408,7 +1423,7 @@ void Renderer::setup_camera()
     camera_orientation = camera->getOrientationQuat();
 
     // mode de projection de la caméra
-    if (is_camera_perspective)
+    if (!is_camera_perspective)
     {
         camera->disableOrtho();
         camera->setupPerspective(false, camera_fov, camera_near, camera_far, ofVec2f(0, 0));

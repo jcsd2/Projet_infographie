@@ -225,6 +225,10 @@ void Application::setup()
     instanciation_button.addListener(this, &Application::instanciation_button_pressed);
     animation_svg_object_active = false;
     groupe_geometrie.add(&instanciation_button);
+    is_key_press_up = false;
+    is_key_press_down = false;
+    is_key_press_left = false;
+    is_key_press_right = false;
 
     groupe_geometrie.minimize();
     gui.add(&groupe_geometrie);
@@ -288,6 +292,12 @@ void Application::setup()
     is_key_press_down = false;
     is_key_press_left = false;
     is_key_press_right = false;
+    is_key_home = false;
+    is_key_end = false;
+    is_key_ins = false;
+    is_key_del = false;
+    is_key_pgup = false;
+    is_key_pgdown = false;
     //5.2
     
     
@@ -323,6 +333,25 @@ void Application::update()
     time_elapsed = time_current - time_last;
     time_last = time_current;
 
+    if(renderer.is_camera_interactive)
+    {
+        renderer.is_camera_move_forward = is_key_press_up;
+        renderer.is_camera_move_backward = is_key_press_down;
+        renderer.is_camera_move_left = is_key_press_left;
+        renderer.is_camera_move_right = is_key_press_right;
+
+        renderer.is_camera_move_up = is_key_home;
+        renderer.is_camera_move_down = is_key_end;
+
+        renderer.is_camera_pan_left = is_key_del;
+        renderer.is_camera_pan_right = is_key_pgdown;
+
+        renderer.is_camera_tilt_up = is_key_pgup;
+        renderer.is_camera_tilt_down = is_key_ins;
+
+    }
+
+
         if (is_key_press_left)
         {
             if(isTranslationActive){
@@ -338,7 +367,7 @@ void Application::update()
             else if(isRotatingActive)
             {
                 renderer.rotatePrimitive(renderer.speed_delta/2.0 * time_elapsed);
-            }
+            } 
         }
         if (is_key_press_right)
         {
@@ -1171,8 +1200,10 @@ void Application::orthogonaleButtonPressed() {
 }
 
 void Application::toggleCameraInteractive() {
-    renderer.is_camera_interactive = false;
+    renderer.is_camera_interactive = !renderer.is_camera_interactive;
     renderer.setup_camera();
+    ofLogNotice() << "mode cam active" << renderer.is_camera_interactive;
+
 }
 
 
@@ -1257,40 +1288,6 @@ void Application::predef3_model_button_pressed(){
 void Application::remove_last_model_button_pressed(){
 }
 
-/*void Application::keyPressed(int key)
-{
-  switch (key)
-  {
-    case OF_KEY_LEFT: // key ←
-      is_key_press_left = true;
-      break;
-
-    case OF_KEY_UP: // key ↑
-      is_key_press_up = true;
-      break;
-
-    case OF_KEY_RIGHT: // key →
-      is_key_press_right = true;
-      break;
-
-    case OF_KEY_DOWN: // key ↓
-      is_key_press_down = true;
-      break;
-
-    case 'z':
-        //position_.undo();
-        break;
-
-    case 'x':
-        //position_.redo();
-        break;
-
-    default:
-      break;
-  }
-}*/
-
-
 void Application::keyPressed(int key)
 {
     switch (key)
@@ -1299,30 +1296,35 @@ void Application::keyPressed(int key)
         is_key_press_left = true;
         break;
     case OF_KEY_UP: // Zoom avant
-        renderer.zoomIn();
+        is_key_press_up = true;
         break;
     case OF_KEY_RIGHT: // Déplacer la caméra ou l'objet vers la droite
         is_key_press_right = true;
         break;
     case OF_KEY_DOWN: // Zoom arrière
-        renderer.zoomOut();
+        is_key_press_down = true;
         break;
-    case 'a': // Rotation vers la gauche
-        renderer.rotateAround(-5, ofVec3f(0, 1, 0));
+    case 57362: //Cam up (home)
+        is_key_home = true;
         break;
-    case 'd': // Rotation vers la droite
-        renderer.rotateAround(5, ofVec3f(0, 1, 0));
+    case 57363: //Cam down (end)
+        is_key_end = true;
         break;
-
-    case 'z':
-        //position_.undo();
+    case 127: //Pan left (ins)
+        is_key_del = true;
         break;
-
-    case 'x':
-        //position_.redo();
+    case 57361: //Pan right (pgdown)
+        is_key_pgdown = true;
+        break;
+    case 57360: //Tilt up (pgup)
+        is_key_pgup = true;
+        break;
+    case 57364: //Tilt down (ins)
+        is_key_ins = true;
         break;
 
     default:
+    ofLog() << key;
         break;
     }
 }
@@ -1341,51 +1343,85 @@ void Application::keyReleased(int key)
         break;
     case OF_KEY_LEFT: // key ←
         is_key_press_left = false;
-      
+        renderer.is_camera_move_left = false;
       break;
 
     case OF_KEY_UP: // key ↑
         is_key_press_up = false;
+        renderer.is_camera_move_forward = false;
       break;
 
     case OF_KEY_RIGHT: // key →
         is_key_press_right = false;
+        renderer.is_camera_move_right = false;
       break;
 
     case OF_KEY_DOWN: // key ↓
         is_key_press_down = false;
+        renderer.is_camera_move_backward = false;
       break;
+    case 57362: //Cam up (home)
+        is_key_home = false;
+        renderer.is_camera_move_up = false;
+        break;
+    case 57363: //Cam down (end)
+        is_key_end = false;
+        renderer.is_camera_move_down = false;
+        break;
+    case 127: //Pan left (ins)
+        is_key_del = false;
+        renderer.is_camera_pan_left = false;
+        break;
+    case 57361: //Pan right (pgdown)
+        is_key_pgdown = false;
+        renderer.is_camera_pan_right = false;
+        break;
+    case 57360: //Tilt up (pgup)
+        is_key_pgup = false;
+        renderer.is_camera_tilt_up = false;
+        break;
+    case 57364: //Tilt down (ins)
+        is_key_ins = false;
+        renderer.is_camera_tilt_down = false;
+        break;
+
+
+
 
     case 49: //Key numpad1
         renderer.camera_active = Camera::devant;
         renderer.setup_camera();
-        ofLog() << "<app::cam 1";
+        ofLog() << "<app::Cam Devant";
     break;
 
     case 50: //Key numpad2
         renderer.camera_active = Camera::derriere;
         renderer.setup_camera();
-        ofLog() << "<app::cam 2>";
+        ofLog() << "<app::Cam Derriere>";
     break;
 
     case 51: //Key numpad2
         renderer.camera_active = Camera::gauche;
         renderer.setup_camera();
+        ofLog() << "<app::Cam Gauche>";
     break;
 
     case 52: //Key numpad4
         renderer.camera_active = Camera::droite;
         renderer.setup_camera();
+        ofLog() << "<app::cam Droite>";
     break;
 
     case 53: //Key numpad5
         renderer.camera_active = Camera::dessus;
         renderer.setup_camera();
+        ofLog() << "<app::cam Dessus>";
     break;
 
-    case 54: //Key numpad5
+    case 54: //Key numpad6
         renderer.camera_active = Camera::dessous;
         renderer.setup_camera();
+        ofLog() << "<app::cam Dessous>";
     break;
 
     case 'p': // key p 
@@ -1400,6 +1436,10 @@ void Application::keyReleased(int key)
         ofLog() << "<orthographic projection>";
         break;
 
+    case 102: //key f
+        renderer.is_flip_axis_y = !renderer.is_flip_axis_y;
+        ofLog() << "Flip y axe";
+        break;
 
     default:
         ofLog() << "<app::key num>" << key;
