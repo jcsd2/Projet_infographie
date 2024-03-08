@@ -281,7 +281,7 @@ public:
     void setup_camera();
 
 
-    // Mode affichage actuel
+    // Mode d'affichage actuel
     Mode_Vue mode_vue;
 
     // Occlusion

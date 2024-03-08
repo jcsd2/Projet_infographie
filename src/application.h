@@ -27,16 +27,7 @@ public:
     Renderer renderer;
   
     ofxPanel gui;
-    ofParameter<bool> checkbox; // Parametre GUI
-   
-    ofxToggle drawBoundingBoxButton;
-    std::vector<VectorPrimitive> elements;
-    int selectedElementIndex = -1;
-    void addElementPressed();
-    void removeElementPressed();
-    void selectElementPressed();
-    int selectedShapeIndex = -1;
-    int selectedModelIndex = -1;
+    ofParameter<bool> checkbox; // Parametre GUI 
 
     // Importation d'images 1.1
     ofxButton importImageButton;
@@ -124,6 +115,13 @@ public:
     ofxGuiGroup groupe_transforamtion_interactive;
 
     // Graphe de scene 3.1
+  
+    std::vector<VectorPrimitive> elements;
+    int selectedElementIndex = -1;
+    void addElementPressed();
+    void removeElementPressed();
+    int selectedShapeIndex = -1;
+    int selectedModelIndex = -1;
     ofxGuiGroup group_scene_control;
     ofxButton addElementButton;
     ofxButton removeElementButton;
@@ -151,6 +149,10 @@ public:
 
     // Section 4 Geometrie
     ofxGuiGroup groupe_geometrie;
+
+
+    // Boîte de délimitation 4.1
+    ofxToggle drawBoundingBoxButton;
 
     // Primitives geometriques 4.2
     ofxGuiGroup groupe_primitive_geometrie;
