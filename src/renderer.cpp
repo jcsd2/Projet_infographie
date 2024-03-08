@@ -129,10 +129,7 @@ void Renderer::draw()
         }
         if (animation_svg_object_active)
         {
-            ofPushMatrix();
-            ofRotateDeg(ofGetFrameNum() * 0.6f, 0.0f, 0.0f, 1.0f);
             drawCubeSVG();
-            ofPopMatrix();
         }
         ofPushMatrix();
         draw_primitives();
@@ -791,8 +788,9 @@ void Renderer::drawCubeSVG() {
 
     ofDrawBitmapString(ofToString(ofGetFrameRate()), 20, 20);
     ofPushMatrix();
+    ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2, 0);
     ofScale(0.2);
-    ofTranslate(ofGetWidth(), 0);
+    ofRotateDeg(deg, 0, 0, deg);
     if (ofGetMousePressed()) {
         ofNoFill();
         for (ofPolyline& line : outlines) {
@@ -1074,20 +1072,9 @@ void Renderer::update()
         camera->rollDeg(-speed_rotation);
     if (is_camera_roll_right)
         camera->rollDeg(speed_rotation);
-    if (is_camera_perspective) // camera perspective
-    {
-        if (is_camera_fov_narrow)
-        {
-            camera_fov = std::max(camera_fov -= camera_fov_delta * time_elapsed, 0.0f);
-            camera->setFov(camera_fov);
-        }
 
-        if (is_camera_fov_wide)
-        {
-            camera_fov = std::min(camera_fov += camera_fov_delta * time_elapsed, 180.0f);
-            camera->setFov(camera_fov);
-        }
-    }
+    //camera_fov = std::max(camera_fov -= camera_fov_delta * time_elapsed, 0.0f);
+    camera->setFov(camera_fov);
 
 
     //4.3
