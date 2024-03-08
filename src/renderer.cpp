@@ -140,16 +140,14 @@ void Renderer::draw()
     case Mode_Vue::camera_3d:
         camera->begin();
         
-        
-        ofPushMatrix();
         ofScale(1.0f, is_flip_axis_y ? -1.0f : 1.0f);
         ofFill();
+        //ofTranslate((frame_buffer_width/2) + offset_x, is_flip_axis_y ? - (frame_buffer_heigth/2) : (frame_buffer_heigth/2), offset_z);
         ofTranslate(camera_target);
         ofSetColor(127);
-        ofScale(1.0f, is_flip_axis_y ? -1.0f : 1.0f);
         node.setPosition(0,0,-30);
         node.draw();
-        ofPopMatrix();
+        
         if (is_visible_camera)
         {
             if (camera_active != Camera::devant)
@@ -181,6 +179,7 @@ void Renderer::draw()
         }
         draw_primitives();
         drawModels();
+
         camera->end();
         break;
 
@@ -838,7 +837,7 @@ void Renderer::dispatch_random_models(int count, float range)
     vector_proportion.y = scale;
     vector_proportion.z = scale;
 
-    shapes[index].position1[0] = vector_position.x;
+    models[index].position1[0] = vector_position.x;
     models[index].position1[1] = vector_position.y;
     models[index].position1[2] = vector_position.z;
 
@@ -1218,6 +1217,16 @@ void Renderer::loadModel(string filename){
 
 void Renderer::add_vector_models(VectorModelType type)
 {
+    vector_position.x = 0.0f;
+    vector_position.y = 0.0f;
+    vector_position.z = 0.0f;
+
+    vector_rotation.x = 0.0f;
+    vector_rotation.y = 0.0f;
+    vector_rotation.z = 0.0f;
+    vector_proportion.x = 0.0f;
+    vector_proportion.y = 0.0f;
+    vector_proportion.z = 0.0f;
 
     switch (mode_vue)
     {
@@ -1226,31 +1235,29 @@ void Renderer::add_vector_models(VectorModelType type)
         models[buffer_model_head].position1[0] = mouse_press_x;
         models[buffer_model_head].position1[1] = mouse_press_y;
         models[buffer_model_head].position1[2] = 0;
-        models[buffer_model_head].stroke_color[0] = 0;
-        models[buffer_model_head].stroke_color[1] = 0;
-        models[buffer_model_head].stroke_color[2] = 0;
-        models[buffer_model_head].stroke_color[3] = 255;
-        models[buffer_model_head].fill_color[0] = 0;
-        models[buffer_model_head].fill_color[1] = 0;
-        models[buffer_model_head].fill_color[2] = 0;
-        models[buffer_model_head].fill_color[3] = 255;
+        models[buffer_model_head].rotation[0] = vector_rotation.x;
+        models[buffer_model_head].rotation[1] = vector_rotation.y;
+        models[buffer_model_head].rotation[2] = vector_rotation.z;
+        models[buffer_model_head].proportion[0] = vector_proportion.x;
+        models[buffer_model_head].proportion[1] = vector_proportion.y;
+        models[buffer_model_head].proportion[2] = vector_proportion.z;
+
         ofLog() << "<new model at index: " << buffer_model_head << ">";
         buffer_model_head = ++buffer_model_head >= buffer_model_count ? 0 : buffer_model_head;
         break;
     
     case Mode_Vue::camera_3d:
         models[buffer_model_head].type = type;
-        models[buffer_model_head].position1[0] = 0;
-        models[buffer_model_head].position1[1] = 0;
-        models[buffer_model_head].position1[2] = 0;
-        models[buffer_model_head].stroke_color[0] = 0;
-        models[buffer_model_head].stroke_color[1] = 0;
-        models[buffer_model_head].stroke_color[2] = 0;
-        models[buffer_model_head].stroke_color[3] = 255;
-        models[buffer_model_head].fill_color[0] = 0;
-        models[buffer_model_head].fill_color[1] = 0;
-        models[buffer_model_head].fill_color[2] = 0;
-        models[buffer_model_head].fill_color[3] = 255;
+        models[buffer_model_head].position1[0] = vector_position.x;
+        models[buffer_model_head].position1[1] = vector_position.y;
+        models[buffer_model_head].position1[2] = vector_position.z;
+        models[buffer_model_head].rotation[0] = vector_rotation.x;
+        models[buffer_model_head].rotation[1] = vector_rotation.y;
+        models[buffer_model_head].rotation[2] = vector_rotation.z;
+        models[buffer_model_head].proportion[0] = vector_proportion.x;
+        models[buffer_model_head].proportion[1] = vector_proportion.y;
+        models[buffer_model_head].proportion[2] = vector_proportion.z;
+
         ofPushMatrix();
         ofScale(0.4);
         ofPopMatrix();
@@ -1269,9 +1276,6 @@ void Renderer::drawModels()
 {
 for (index = 0; index < buffer_model_count; ++index)
     {
-        ofPushMatrix();
-
-
         switch (models[index].type)
         {
         case VectorModelType::none:

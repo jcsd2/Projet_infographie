@@ -34,7 +34,7 @@ public:
     ofxGuiGroup group_scene_control;
     ofxButton addElementButton;
     ofxButton removeElementButton;
-    ofxButton selectElementButton;
+    
     void toggleCameraInteractive();
    
     ofxToggle drawBoundingBoxButton;

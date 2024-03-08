@@ -123,11 +123,6 @@ void Application::setup()
     removeElementButton.addListener(this, &Application::removeElementPressed);
     group_scene_control.add(&removeElementButton);
 
-    // Sélectionner un élément 
-   
-    selectElementButton.setup("Selectionner Element");
-    selectElementButton.addListener(this, &Application::selectElementPressed);
-    group_scene_control.add(&selectElementButton);
     
     // sélection multiple (3.2)
 
@@ -505,7 +500,9 @@ void Application::histogramme_button_pressed()
     
 }
 
-
+/* 
+ 
+brief: Position de la souris dans le rendu.*/
 void Application::mouseMoved(int x, int y)
 {
     renderer.mouse_current_x = x;
@@ -1488,46 +1485,17 @@ void Application::cursorRotateButtonPressed() {
 
 void Application::addElementPressed() {
 
-    renderer.add_vector_shape(VectorPrimitiveType::line);
-
-    renderer.add_vector_models(VectorModelType::predef1);
 }
+
 
 
 
 
 void Application::removeElementPressed() {
-
-    if (selectedShapeIndex != -1) {
-        renderer.remove_vector_shape(selectedShapeIndex);
-        selectedShapeIndex = -1;
-    }
-
-    if (selectedModelIndex != -1) {
-        renderer.remove_vector_model(selectedModelIndex);
-        selectedModelIndex = -1;
-    }
 }
 
 
-void Application::selectElementPressed() {
 
-    static bool selectPrimitiveNext = true;
-
-    if (selectPrimitiveNext) {
-        selectedShapeIndex = (selectedShapeIndex + 1) % renderer.getBufferHead();
-        renderer.select_vector_shape(selectedShapeIndex);
-        ofLog() << "Primitive sélectionnée à l'index: " << selectedShapeIndex;
-    }
-    else {
-
-        selectedModelIndex = (selectedModelIndex + 1) % renderer.getBufferModelHead();
-        renderer.select_vector_model(selectedModelIndex);
-        ofLog() << "Modèle sélectionné à l'index: " << selectedModelIndex;
-    }
-
-    selectPrimitiveNext = !selectPrimitiveNext;
-}
 
 
 
@@ -1592,7 +1560,7 @@ void Application::exit()
 
     addElementButton.removeListener(this, &Application::addElementPressed);
     removeElementButton.removeListener(this, &Application::removeElementPressed);
-    selectElementButton.removeListener(this, &Application::selectElementPressed);
+
 
     mode_dessincam_button.removeListener(this, &Application::mode_dessin_pressed);
     mode_1cam_button.removeListener(this, &Application::mode_1cam_pressed);
