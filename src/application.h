@@ -6,14 +6,7 @@
 #include "ofxAssimpModelLoader.h"
 #include <iostream>
 
-
-
-class Application : public ofBaseApp
-{
-public:
-
-
-    enum CursorState {
+enum CursorState {
         CURSOR_DEFAULT,
         CURSOR_DRAW_LINE,
         CURSOR_DRAW_CIRCLE,
@@ -22,51 +15,69 @@ public:
         CURSOR_ROTATE
     };
 
-    CursorState currentCursorState = CURSOR_DEFAULT;
+class Application : public ofBaseApp
+{
+public:
 
     Renderer renderer;
-  
- 
-    ofParameter<bool> checkbox; // Parametre GUI 
+    
+
+    
+
+    //Section 1
+    ofxGuiGroup group_image;
 
     // Importation d'images 1.1
     ofxButton importImageButton;
+    void importImage();
 
     // Exportation d'images 2.2
     ofxButton exportation_button;
     void exportation_button_pressed();
     bool isExporting;
-    float lastExportTime;
     int exportCount;
+    float lastExportTime;
 
     // Échantillonnage d'images 1.3
-    ofxGuiGroup group_image;
     ofxToggle screenshot_button;
     ofxToggle screenshot_button_funny;
+    void screenshot_button_pressed(bool& value);
+    void screenshot_funny_button_pressed(bool& value);
+    void screenshot(int x, int y, bool z);
 
     // Espace de couleur RGB HSB 1.4
     ofxButton background_rgb_button;
     ofxButton background_hsb_button;
-    ofParameter<ofColor> color_picker_background; 
-    ofParameter<ofColor> color_picker_background_HSB;
     void background_rgb_button_pressed();
     void background_hsb_button_pressed();
+    ofParameter<ofColor> color_picker_background; 
+    ofParameter<ofColor> color_picker_background_HSB;
 
     // Histogramme 1.5
     ofxButton histogramme_button;
     void histogramme_button_pressed();
 
+    //Section 2
     ofxGuiGroup group_dessin_vectoriel;
-    ofxGuiGroup group_dessin_vectoriel_formes;
-    ofxGuiGroup group_dessin_algo_ligne;
-
+    
     // Curseur dynamique 2.1
+    ofxGuiGroup group_curseurs;
+    CursorState cursor;
     ofxButton cursorDefaultButton;
     ofxButton cursorDrawLineButton;
     ofxButton cursorDrawCircleButton;
     ofxButton cursorSelectButton;
     ofxButton cursorTranslateButton;
     ofxButton cursorRotateButton;
+    ofPoint selection_start;// Position start/end du curseur
+    ofPoint selection_end;
+    void cursorDefaultButtonPressed();
+    void cursorDrawLineButtonPressed();
+    void cursorDrawCircleButtonPressed();
+    void cursorSelectButtonPressed();
+    void cursorTranslateButtonPressed();
+    void cursorRotateButtonPressed();
+    void drawCursor();
 
     // Outils de dessin 2.2
     ofxGuiGroup group_outils_dessin; 
@@ -74,6 +85,8 @@ public:
     ofxColorSlider lineColor, fillColor;
 
     // Primitives Vectorielles 2.3
+    ofxGuiGroup group_dessin_vectoriel_formes;
+    ofxGuiGroup group_dessin_algo_ligne;
     ofxToggle none_shape_button;
     ofxToggle pixel_shape_button;
     ofxToggle point_shape_button;
@@ -86,16 +99,6 @@ public:
     ofxToggle circle_shape_button;
     ofxToggle ellipse_shape_button;
     ofxToggle triangle_shape_button;
-
-    // Formes Vectorielles 2.4
-    ofxToggle maison_shape_button;
-    ofxToggle face_shape_button;
-
-    // Interface 2.5
-    ofxPanel gui;
-
-    // Ajout/suppression formes
-    void ajout_boutons_formes();
     void retirer_boutons_formes();
     void button_none_pressed(bool& pressed);
     void button_pixel_pressed(bool& pressed);
@@ -109,26 +112,30 @@ public:
     void button_circle_pressed(bool& pressed);
     void button_ellipse_pressed(bool& pressed);
     void button_triangle_pressed(bool& pressed);
+    // Formes Vectorielles 2.4
+    ofxToggle maison_shape_button;
+    ofxToggle face_shape_button;
     void button_maison_pressed(bool& pressed);
     void button_face_pressed(bool& pressed);
-    void importImage();
+    void ajout_boutons_formes(); //Ajoute boutons 2.3 et 2.4
+    
+    // Interface 2.5
+    ofxPanel gui;
+    ofParameter<bool> checkbox; // Parametre GUI
+
 
     // Section Transformation 3.0
     ofxGuiGroup group_transformation;
-    ofxGuiGroup groupe_transforamtion_interactive;
 
     // Graphe de scene 3.1
-  
-    std::vector<VectorPrimitive> elements;
-    int selectedElementIndex = -1;
-    void addElementPressed();
-    void removeElementPressed();
-    int selectedShapeIndex = -1;
-    int selectedModelIndex = -1;
     ofxGuiGroup group_scene_control;
     ofxButton addElementButton;
     ofxButton removeElementButton;
-
+    int selectedShapeIndex;
+    int selectedModelIndex;
+    void addElementPressed();
+    void removeElementPressed();
+    
     // Selection multiple 3.2
     ofxGuiGroup groupe_selection_multiple;
     ofxToggle selectionButton;
@@ -138,12 +145,20 @@ public:
     bool shapeSelected;
 
     // Transformation interactives 3.3
+    ofxGuiGroup groupe_transforamtion_interactive;
     ofxButton noneTransformationButton;
     ofxButton translateButton;
     ofxButton rotateButton;
     ofxButton scaleButton;
+    void noneTransformationButtonPressed();
+    void translateButtonPressed();
+    void rotateButtonPressed();
+    void scaleButtonPressed();
+    bool isTranslationActive;
+    bool isRotatingActive;
+    bool isScalingActive;
 
-    // Historique de transformation Undo/Redo 3.4
+    // Historique de transformation 3.4
     ofxGuiGroup historique_group;
     ofxButton undo_button;
     ofxButton redo_button;
@@ -153,9 +168,7 @@ public:
     // Section 4 Geometrie
     ofxGuiGroup groupe_geometrie;
 
-
     // Boîte de délimitation 4.1
-    ofxToggle drawBoundingBoxButton;
 
     // Primitives geometriques 4.2
     ofxGuiGroup groupe_primitive_geometrie;
@@ -171,7 +184,6 @@ public:
     ofxButton predef2_model_button;
     ofxButton predef3_model_button;
     ofxButton remove_last_model_button;
-    bool bShowModel;
     void non_model_button_pressed();
     void import_model_button_pressed();
     void predef1_model_button_pressed();
@@ -192,16 +204,12 @@ public:
     // Section 5 Caméra
     ofxGuiGroup groupe_camera;
 
-    // Modes de projection
-    ofVec3f camera_position;
-    ofVec3f camera_target;
-    ofxGuiGroup mode_projection;
-
     // Camera interactive 5.1
-    ofxButton camera_interactive;
+    ofxButton camera_interactive_button;
     void toggleCameraInteractive();
 
     // Modes de projection 5.2
+    ofxGuiGroup mode_projection;
     ofxButton perspectiveButton;
     ofxButton orthogonaleButton;
     void perspectiveButtonPressed();
@@ -223,29 +231,16 @@ public:
     ofxButton mode_2cam_button;
     void mode_2cam_pressed();
 
+    //Section 6 commence ici
 
-    // Méthodes associées aux boutons
-    void noneTransformationButtonPressed();
-    void translateButtonPressed();
-    void rotateButtonPressed();
-    void scaleButtonPressed();
-    void drawCursor();
 
-    void cursorDefaultButtonPressed();
-    void cursorDrawLineButtonPressed();
-    void cursorDrawCircleButtonPressed();
-    void cursorSelectButtonPressed();
-    void cursorTranslateButtonPressed();
-    void cursorRotateButtonPressed();
 
-    bool isTranslationActive;
-    bool isRotatingActive;
-    bool isScalingActive;
 
-    // Position start/end du curseur
-    ofPoint selection_start;
-    ofPoint selection_end;
 
+
+
+
+    //Section declaration global
     // Temps
     float time_current;
     float time_last;
@@ -262,23 +257,17 @@ public:
     bool is_key_del;
     bool is_key_pgup;
     bool is_key_pgdown;
-
-    void setup();
-    void update();
-    void draw();
-
-    void exit();
-
-    void screenshot_button_pressed(bool& value);
-    void screenshot_funny_button_pressed(bool& value);
-    void screenshot(int x, int y, bool z);
-
     void keyPressed(int key);
     void keyReleased(int key);
     void mouseMoved(int x, int y);
     void mousePressed(int x, int y, int button) override;
     void mouseDragged(int x, int y, int button) override;
     void mouseReleased(int x, int y, int button) override;
+
+    void setup();
+    void update();
+    void draw();
+    void exit();
 
 private:
     bool captureMode; 

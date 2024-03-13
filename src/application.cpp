@@ -54,7 +54,7 @@ void Application::setup()
     histogramme_button.setup("Afficher histogramme");
     histogramme_button.addListener(this, &Application::histogramme_button_pressed);
     group_image.add(&histogramme_button);
-
+    //Gui
     group_image.minimize();
     gui.add(&group_image);
 
@@ -63,24 +63,28 @@ void Application::setup()
     group_dessin_vectoriel.setup("Dessin Vectoriel");
 
     // Curseur dynamique (2.1)
+    group_curseurs.setup("Curseurs");
     cursorDefaultButton.setup("Curseur par defaut");
     cursorDefaultButton.addListener(this, &Application::cursorDefaultButtonPressed);
-    group_dessin_vectoriel.add(&cursorDefaultButton);
+    group_curseurs.add(&cursorDefaultButton);
     cursorDrawLineButton.setup("Curseur de ligne");
     cursorDrawLineButton.addListener(this, &Application::cursorDrawLineButtonPressed);
-    group_dessin_vectoriel.add(&cursorDrawLineButton);
+    group_curseurs.add(&cursorDrawLineButton);
     cursorDrawCircleButton.setup("Curseur de cercle ");
     cursorDrawCircleButton.addListener(this, &Application::cursorDrawCircleButtonPressed);
-    group_dessin_vectoriel.add(&cursorDrawCircleButton);
+    group_curseurs.add(&cursorDrawCircleButton);
     cursorSelectButton.setup("Curseur de selection");
     cursorSelectButton.addListener(this, &Application::cursorSelectButtonPressed);
-    group_dessin_vectoriel.add(&cursorSelectButton);
+    group_curseurs.add(&cursorSelectButton);
     cursorTranslateButton.setup("Curseur de deplacement");
     cursorTranslateButton.addListener(this, &Application::cursorTranslateButtonPressed);
-    group_dessin_vectoriel.add(&cursorTranslateButton);
+    group_curseurs.add(&cursorTranslateButton);
     cursorRotateButton.setup("Curseur de rotation");
     cursorRotateButton.addListener(this, &Application::cursorRotateButtonPressed);
-    group_dessin_vectoriel.add(&cursorRotateButton);
+    group_curseurs.add(&cursorRotateButton);
+    cursor = CursorState::CURSOR_DEFAULT;
+    group_dessin_vectoriel.add(&group_curseurs);
+    
     // Outil de dessin (2.2)
     group_outils_dessin.setup("Outils Dessin");
     group_outils_dessin.add(lineThickness.setup("Epaisseur", 1.0, 0.1, 10.0));
@@ -93,10 +97,10 @@ void Application::setup()
     group_dessin_algo_ligne.setup("Algorithme \nde rasterisation");
     // Formes vectorielles (2.4) (Sous-groupe) 
     ajout_boutons_formes();
-
+    group_dessin_vectoriel.minimizeAll();
     group_dessin_vectoriel.minimize();
+    //2.5
     gui.add(&group_dessin_vectoriel);
-
 
     //Groupe du critere 3 Transformation
     group_transformation.setup("Transformation");
@@ -112,12 +116,16 @@ void Application::setup()
     removeElementButton.setup("Supprimer Element");
     removeElementButton.addListener(this, &Application::removeElementPressed);
     group_scene_control.add(&removeElementButton);
+    selectedShapeIndex = -1;
+    selectedModelIndex = -1;
+
     // Selection multiple (3.2)
     groupe_selection_multiple.setup("Selection multiples");
     group_transformation.add(&groupe_selection_multiple);
     selectionButton.addListener(this, &Application::selection_multiple);
     groupe_selection_multiple.add(&selectionButton);
     selectionButton.setup("Selection Multiple", false);
+
     // Transformations interactives (3.3)
     groupe_transforamtion_interactive.setup("Transformations \ninterectives");
     group_transformation.add(&groupe_transforamtion_interactive);
@@ -136,6 +144,7 @@ void Application::setup()
     groupe_transforamtion_interactive.add(&translateButton);
     groupe_transforamtion_interactive.add(&rotateButton);
     groupe_transforamtion_interactive.add(&scaleButton);
+
     // Historique de transformation (3.4)
     historique_group.setup("Historique\n Undo/Redo");
     undo_button.setup("Undo");
@@ -146,6 +155,9 @@ void Application::setup()
     historique_group.add(&redo_button);
     group_transformation.add(&historique_group);
 
+    //Systeme de coordonnees 3.5
+
+    //Gui Section 3
     group_transformation.minimize();
     gui.add(&group_transformation);
 
@@ -153,7 +165,8 @@ void Application::setup()
     groupe_geometrie.setup("Geometrie");
 
     // Boîte de délimitation (4.1)
-    groupe_geometrie.add(drawBoundingBoxButton.setup("Dessiner arrete", false));
+    //DrawZone in renderer
+
     // Primitives géométriques (4.2)
     groupe_primitive_geometrie.setup("Primitives \nGeometriques");
     groupe_geometrie.add(&groupe_primitive_geometrie);
@@ -165,6 +178,7 @@ void Application::setup()
     sphereButton.setup("Sphere", false);
     groupe_primitive_geometrie.add(&sphereButton);
     sphereButton.addListener(this, &Application::sphereButtonPressed);
+
     // Modele 3D (4.3)
     none_model_button.setup("Mode : Aucun");
     import_model_button.setup("Importer modele");
@@ -194,24 +208,18 @@ void Application::setup()
     // Instanciation (4.5)
     instanciation_button.setup("Instanciation\n du cube");
     instanciation_button.addListener(this, &Application::instanciation_button_pressed);
-    animation_svg_object_active = false;
     groupe_geometrie.add(&instanciation_button);
-    is_key_press_up = false;
-    is_key_press_down = false;
-    is_key_press_left = false;
-    is_key_press_right = false;
-
+    //Gui section 4
     groupe_geometrie.minimize();
     gui.add(&groupe_geometrie);
-
 
     // Groupe du critere 5 Camera
     groupe_camera.setup("Camera");
 
     // Caméra interactive (5.1)
-    camera_interactive.setup("Camera interactive");
-    groupe_camera.add(&camera_interactive);
-    camera_interactive.addListener(this, &Application::toggleCameraInteractive);
+    camera_interactive_button.setup("Camera interactive");
+    groupe_camera.add(&camera_interactive_button);
+    camera_interactive_button.addListener(this, &Application::toggleCameraInteractive);
     is_key_press_up = false;
     is_key_press_down = false;
     is_key_press_left = false;
@@ -231,8 +239,8 @@ void Application::setup()
     orthogonaleButton.setup("Orthogonale", false);
     mode_projection.add(&orthogonaleButton);
     orthogonaleButton.addListener(this, &Application::orthogonaleButtonPressed);
-    mode_projection.minimize();
-    // Point de vue multiple (5.3)
+    mode_projection.minimizeAll();
+    // Point de vue multiple (5.3) et 5.5
     mode_dessincam_button.setup("Mode dessin");
     mode_1cam_button.setup("Mode 1 camera");
     mode_2cam_button.setup("Mode 2 cameras");
@@ -249,9 +257,12 @@ void Application::setup()
     wireframe_button.addListener(this, &Application::wireframe_button_pressed);
     groupe_camera.add(&meshfilled_button);
     groupe_camera.add(&wireframe_button);
-
+    //Gui 5
     groupe_camera.minimize();
     gui.add(&groupe_camera);
+
+    //Section 6 commence ici
+
 
 }
 
@@ -665,6 +676,7 @@ void Application::screenshot(int x, int y, bool z)
 
 void Application::ajout_boutons_formes()
 {
+    //Boutons pour section 2.3
     group_dessin_vectoriel_formes.add(none_shape_button.setup("None", ofParameter<bool>(false)));
     group_dessin_vectoriel_formes.add(pixel_shape_button.setup("Pixel", ofParameter<bool>(false)));
     group_dessin_vectoriel_formes.add(point_shape_button.setup("Point", ofParameter<bool>(false)));
@@ -679,8 +691,12 @@ void Application::ajout_boutons_formes()
     group_dessin_vectoriel_formes.add(circle_shape_button.setup("Cercle", ofParameter<bool>(false)));
     group_dessin_vectoriel_formes.add(ellipse_shape_button.setup("Ellipse", ofParameter<bool>(false)));
     group_dessin_vectoriel_formes.add(triangle_shape_button.setup("Triangle", ofParameter<bool>(false)));
+
+    //Boutons 2.4
     group_dessin_vectoriel_formes.add(face_shape_button.setup("Face", ofParameter<bool>(false)));
     group_dessin_vectoriel_formes.add(maison_shape_button.setup("Maison", ofParameter<bool>(false)));
+
+    //Boutons ? 4
     groupe_geometrie.add(cubeButton.setup("Cube", ofParameter<bool>(false)));
     groupe_geometrie.add(sphereButton.setup("Sphere", ofParameter<bool>(false)));
     groupe_camera.add(perspectiveButton.setup("Perspective", ofParameter<bool>(false)));
@@ -699,6 +715,7 @@ void Application::ajout_boutons_formes()
     circle_shape_button.addListener(this, &Application::button_circle_pressed);
     ellipse_shape_button.addListener(this, &Application::button_ellipse_pressed);
     triangle_shape_button.addListener(this, &Application::button_triangle_pressed);
+
     face_shape_button.addListener(this, &Application::button_face_pressed);
     maison_shape_button.addListener(this, &Application::button_maison_pressed);
 
@@ -1330,7 +1347,7 @@ void Application::drawCursor() {
     int mouseX = ofGetMouseX(); // Position en X
     int mouseY = ofGetMouseY(); // Position en Y
 
-    switch (currentCursorState) {
+    switch (cursor) {
     case CURSOR_DEFAULT:
         // Dessin du curseur par défaut ou ne rien faire pour utiliser le curseur système
         break;
@@ -1592,7 +1609,7 @@ void Application::keyReleased(int key)
 
 void Application::cursorDefaultButtonPressed() {
 
-    currentCursorState = CURSOR_DEFAULT;
+    cursor = CURSOR_DEFAULT;
 
 }
 
@@ -1602,7 +1619,7 @@ void Application::cursorDefaultButtonPressed() {
 
 void Application::cursorDrawLineButtonPressed() {
 
-    currentCursorState = CURSOR_DRAW_LINE;
+    cursor = CURSOR_DRAW_LINE;
 
 }
 
@@ -1612,7 +1629,7 @@ void Application::cursorDrawLineButtonPressed() {
 
 void Application::cursorDrawCircleButtonPressed() {
 
-    currentCursorState = CURSOR_DRAW_CIRCLE;
+    cursor = CURSOR_DRAW_CIRCLE;
 
 }
 
@@ -1622,7 +1639,7 @@ void Application::cursorDrawCircleButtonPressed() {
 
 void Application::cursorSelectButtonPressed() {
 
-    currentCursorState = CURSOR_SELECT;
+    cursor = CURSOR_SELECT;
 
 }
 
@@ -1632,7 +1649,7 @@ void Application::cursorSelectButtonPressed() {
 
 void Application::cursorTranslateButtonPressed() {
 
-    currentCursorState = CURSOR_TRANSLATE;
+    cursor = CURSOR_TRANSLATE;
 
 }
 
@@ -1642,7 +1659,7 @@ void Application::cursorTranslateButtonPressed() {
 
 void Application::cursorRotateButtonPressed() {
 
-    currentCursorState = CURSOR_ROTATE;
+    cursor = CURSOR_ROTATE;
 
 }
 
@@ -1652,9 +1669,7 @@ void Application::cursorRotateButtonPressed() {
 
 void Application::addElementPressed() {
 
-    renderer.add_vector_shape(VectorPrimitiveType::line);
 
-    renderer.add_vector_models(VectorModelType::predef1);
 }
 
 /*
@@ -1767,7 +1782,7 @@ void Application::exit()
 
     meshfilled_button.removeListener(this, &Application::meshfilled_button_pressed);
     wireframe_button.removeListener(this, &Application::wireframe_button_pressed);
-    camera_interactive.removeListener(this, &Application::toggleCameraInteractive);
+    camera_interactive_button.removeListener(this, &Application::toggleCameraInteractive);
 
 
 
