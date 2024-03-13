@@ -273,13 +273,10 @@ void Application::setup()
 
     void Application::draw()
     {
-
+        renderer.draw();
         if (checkbox)
             gui.draw();
-
         drawCursor();
-
-        renderer.draw();
     }
 
 

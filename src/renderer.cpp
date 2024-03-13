@@ -65,9 +65,9 @@ void Renderer::setup()
     is_camera_perspective = true;
 
     //Initialisation camera
-    camera_position = {0.0f, 0.0f, 0.0f};
+    camera_position = {0.0f, 0.0f, 50.0f};
     camera_target = {0.0f, 0.0f, 0.0f};
-    camera_near = 3.0f;
+    camera_near = 10.0f;
     camera_far = 1750.0f;
     camera_fov = 60.0f;
     camera_fov_delta = 16.0f;
@@ -153,8 +153,12 @@ void Renderer::draw()
         ofFill();
         ofTranslate(camera_target);
         ofSetColor(127);
-        ofDrawGrid(50, 50, false, true, true, false);
-        node.setPosition(0,0,-30);
+        ofPushMatrix();
+        ofRotate(90);
+        ofScale(3);
+        ofDrawGridPlane();
+        ofPopMatrix();
+        node.setPosition(0,0,0);
         node.draw();
         
         if (is_visible_camera)
@@ -1389,14 +1393,14 @@ void Renderer::add_vector_models(VectorModelType type)
 {
     vector_position.x = 0.0f;
     vector_position.y = 0.0f;
-    vector_position.z = 0.0f;
+    vector_position.z = -20.0f;
 
     vector_rotation.x = 0.0f;
     vector_rotation.y = 0.0f;
     vector_rotation.z = 0.0f;
-    vector_proportion.x = 0.0f;
-    vector_proportion.y = 0.0f;
-    vector_proportion.z = 0.0f;
+    vector_proportion.x = 1.0f;
+    vector_proportion.y = 1.0f;
+    vector_proportion.z = 1.0f;
 
     switch (mode_vue)
     {
@@ -1424,9 +1428,9 @@ void Renderer::add_vector_models(VectorModelType type)
         models[buffer_model_head].rotation[0] = vector_rotation.x;
         models[buffer_model_head].rotation[1] = vector_rotation.y;
         models[buffer_model_head].rotation[2] = vector_rotation.z;
-        models[buffer_model_head].proportion[0] = vector_proportion.x;
-        models[buffer_model_head].proportion[1] = vector_proportion.y;
-        models[buffer_model_head].proportion[2] = vector_proportion.z;
+        models[buffer_model_head].proportion[0] = vector_proportion.x * 0.07f;
+        models[buffer_model_head].proportion[1] = vector_proportion.y * 0.07f;
+        models[buffer_model_head].proportion[2] = vector_proportion.z * 0.07f;
 
         ofPushMatrix();
         ofScale(0.4);
@@ -1456,13 +1460,12 @@ for (index = 0; index < buffer_model_count; ++index)
             break;
 
         case VectorModelType::predef1:
-            ofPushMatrix();
-            ofScale(0.1);
-            ofPopMatrix();
-
             model1.setPosition( models[index].position1[0],
                                 models[index].position1[1],
                                 models[index].position1[2]);
+            model1.setScale(models[index].proportion[0],
+                                models[index].proportion[1],
+                                models[index].proportion[2]) ;
             switch (occlusion)
             {
             case Occlusion::meshfiled:
@@ -1482,6 +1485,9 @@ for (index = 0; index < buffer_model_count; ++index)
             model2.setPosition( models[index].position1[0],
                                 models[index].position1[1],
                                 models[index].position1[2]);
+            model2.setScale(models[index].proportion[0],
+                                models[index].proportion[1],
+                                models[index].proportion[2]) ;
             switch (occlusion)
             {
             case Occlusion::meshfiled:
@@ -1500,6 +1506,9 @@ for (index = 0; index < buffer_model_count; ++index)
             model3.setPosition( models[index].position1[0],
                                 models[index].position1[1],
                                 models[index].position1[2]);
+            model3.setScale(models[index].proportion[0],
+                                models[index].proportion[1],
+                                models[index].proportion[2]) ;
             switch (occlusion)
             {
             case Occlusion::meshfiled:
@@ -1598,16 +1607,18 @@ void Renderer::setup_camera()
     camera_orientation = camera->getOrientationQuat();
 
     // Mode de projection
-    if (!is_camera_perspective)
+    if (is_camera_perspective)
     {
         camera->disableOrtho();
         camera->setupPerspective(false, camera_fov, camera_near, camera_far, ofVec2f(0, 0));
         camera_projection = "perspective";
+        ofLog() << "Mode perspective";
     }
     else
     {
         camera->enableOrtho();
         camera_projection = "orthogonale";
+        ofLog() << "Mode ortho";
     }
 
     camera->setPosition(camera_position);
@@ -1615,15 +1626,7 @@ void Renderer::setup_camera()
 
 }
 
-/*
-* brief: Destructeur Renderer
-*/
 
-Renderer::~Renderer()
-{
-    std::free(shapes);
-    std::free(models);
-}
 
 /*
 * brief : Supprime la forme vectorielle a l'index specifie, decale toutes les formes suivantes
@@ -1722,4 +1725,14 @@ void Renderer::rotateAround(float angle, ofVec3f axis) {
 void Renderer::changeView(Camera newView) {
     camera_active = newView;
     setup_camera();
+}
+
+/*
+* brief: Destructeur Renderer
+*/
+
+Renderer::~Renderer()
+{
+    std::free(shapes);
+    std::free(models);
 }
