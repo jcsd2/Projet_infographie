@@ -232,13 +232,22 @@ public:
     void mode_2cam_pressed();
 
     //Section 6 commence ici
+    ofxGuiGroup groupe_texture;
+    //Coordonnees de texture 6.1 ici vv
 
+    //Filtrage 6.2 ici vv
 
+    //Mappage tonal 6.3 vv
+    ofxGuiGroup groupe_mappage_tonal;
+    ofxButton reset_slider_button;
+    ofParameter<float> slider_exposure;
+    ofParameter<float> slider_gamma;
+    ofxButton default_mapping_button;
+    ofParameter<bool> toggle_tone_mapping;
+    void reset_mapping_slidder();
+    void default_mapping();
 
-
-
-
-
+    //Cubemap 6.4 ici vv
 
     //Section declaration global
     // Temps

@@ -262,8 +262,33 @@ void Application::setup()
     gui.add(&groupe_camera);
 
     //Section 6 commence ici
+    groupe_texture.setup("Texture");
+    groupe_texture.setBorderColor(ofColor::cornflowerBlue);
+    //Coordonnes de texture 6.1
 
+    //Filtrage 6.2
 
+    //Mappage 6.3
+    groupe_mappage_tonal.setup("Mappage tonal");
+    groupe_mappage_tonal.setBorderColor(ofColor::chartreuse);
+    reset_slider_button.setup("Reset sliders");
+    reset_slider_button.addListener(this, &Application::reset_mapping_slidder);
+    slider_exposure.set("Exposition",renderer.tone_mapping_exposure,0.0f, 5.0f);
+    slider_gamma.set("Gamma", renderer.tone_mapping_gamma, 0.0f, 5.0f);
+    default_mapping_button.setup("Default mapping");
+    default_mapping_button.addListener(this, &Application::default_mapping);
+    if(renderer.tone_mapping_toggle)
+    {toggle_tone_mapping.set("ACES", true);} 
+    else {toggle_tone_mapping.set("Reinhard", false);}
+    groupe_mappage_tonal.add(&reset_slider_button);
+    groupe_mappage_tonal.add(slider_exposure);
+    groupe_mappage_tonal.add(slider_gamma);
+    groupe_mappage_tonal.add(&default_mapping_button);
+    groupe_mappage_tonal.add(toggle_tone_mapping);
+
+    groupe_texture.add(&groupe_mappage_tonal);
+
+    gui.add(&groupe_texture);
 }
 
 
@@ -291,6 +316,13 @@ void Application::setup()
         renderer.background_color1 = color_picker_background;
         renderer.background_color2 = color_picker_background_HSB;
 
+        //Mapping
+        renderer.tone_mapping_exposure = slider_exposure;
+        renderer.tone_mapping_gamma = slider_gamma;
+        renderer.tone_mapping_toggle = toggle_tone_mapping;
+        if (renderer.tone_mapping_toggle) {toggle_tone_mapping.set("aces filmic", true);} 
+        else {toggle_tone_mapping.set("reinhard", false);}
+        
 
         // Temps
         time_current = ofGetElapsedTimef();
@@ -1734,6 +1766,14 @@ void Application::wireframe_button_pressed()
     renderer.occlusion = Occlusion::wireframe;
 }
 
+//Section 6.3
+void Application::default_mapping(){}
+
+void Application:: reset_mapping_slidder(){}
+
+
+
+
 /*
  * brief: Nettoyer, supprimer, fermeture de l'application
  */
@@ -1781,8 +1821,9 @@ void Application::exit()
     wireframe_button.removeListener(this, &Application::wireframe_button_pressed);
     camera_interactive_button.removeListener(this, &Application::toggleCameraInteractive);
 
-
-
+    //Enlever boutons 6.3
+    reset_slider_button.removeListener(this, &Application::reset_mapping_slidder);
+    default_mapping_button.removeListener(this, &Application::default_mapping);
     ofLog() << "<app::exit>";
 
 }

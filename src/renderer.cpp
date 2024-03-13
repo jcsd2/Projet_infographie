@@ -96,11 +96,15 @@ void Renderer::setup()
     loadModels();
     init_buffer_model();
 
-
+    //Section cam interactive 5.1
     setup_camera();
-    
-
+    //Section cam occlu 5.4
     occlusion = Occlusion::meshfiled;
+
+    //Section mapping 6.3
+    tone_mapping_exposure = 1.0f;
+    tone_mapping_gamma = 2.2f;
+    tone_mapping_toggle = true;
 
 }
 

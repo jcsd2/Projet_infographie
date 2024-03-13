@@ -283,13 +283,18 @@ public:
     // Occlusion
     Occlusion occlusion;
 
-    void setup();
+    //Section 6.3
+    ofImage screen_capture_mapping;
+    ofShader shader_mapping;
+    float tone_mapping_exposure;
+    float tone_mapping_gamma;
+    bool tone_mapping_toggle;
 
     // Temps
     float time_current;
     float time_last;
     float time_elapsed;
-
+    void setup();
     void update();
     void draw();
     void reset();
