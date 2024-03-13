@@ -154,7 +154,7 @@ void Renderer::draw()
         ofTranslate(camera_target);
         ofSetColor(127);
         ofPushMatrix();
-        ofRotate(90);
+        ofRotateDeg(90);
         ofScale(3);
         ofDrawGridPlane();
         ofPopMatrix();
