@@ -258,8 +258,10 @@ void Application::setup()
     groupe_camera.add(&meshfilled_button);
     groupe_camera.add(&wireframe_button);
     //Gui 5
+ 
     groupe_camera.minimize();
     gui.add(&groupe_camera);
+   
 
     //Section 6 commence ici
     groupe_texture.setup("Texture");
@@ -267,6 +269,24 @@ void Application::setup()
     //Coordonnes de texture 6.1
 
     //Filtrage 6.2
+    groupe_filtrage.setup("Filtrage");
+    groupe_filtrage.setBorderColor(ofColor(255, 165, 0));
+    groupe_texture.add(&groupe_filtrage);
+    filtrage_bilineaire_button.setup("Bilineraire");
+    filtrage_bilineaire_button.addListener(this, &Application::bileneaireButtonPressed);
+    groupe_filtrage.add(&filtrage_bilineaire_button);
+    filtrage_trilineaire_button.setup("Trilineaire");
+    filtrage_trilineaire_button.addListener(this, &Application::trilineaireButtonPressed);
+    groupe_filtrage.add(&filtrage_trilineaire_button);
+    filtrage_convulation_button.setup("Convulation");
+    filtrage_convulation_button.addListener(this, &Application::convulationButtonPressed);
+    groupe_filtrage.add(&filtrage_convulation_button);
+    
+    gui.add(&groupe_texture);
+
+
+
+    
 
     //Mappage 6.3
     groupe_mappage_tonal.setup("Mappage tonal");
@@ -1750,9 +1770,36 @@ void Application::mode_2cam_pressed()
     //renderer.mode_cam = true;
 }
 
+
+
+/*
+ * brief: Algorithme de filtrage bileneaire
+ */
+
+void Application::bileneaireButtonPressed() {
+
+}
+
+/*
+ * brief: Algorithme de filtrage trilineaire
+ */
+
+void Application::trilineaireButtonPressed() {
+
+}
+
+/*
+ * brief: Algorithme de filtrage convulation
+ */
+
+void Application::convulationButtonPressed() {
+
+}
+
 /*
  * brief: Mode d'affichage Mesh
  */
+
 
 void Application::meshfilled_button_pressed()
 {

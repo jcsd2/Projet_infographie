@@ -236,6 +236,14 @@ public:
     //Coordonnees de texture 6.1 ici vv
 
     //Filtrage 6.2 ici vv
+    ofxGuiGroup groupe_filtrage;
+    ofxButton filtrage_bilineaire_button;
+    ofxButton filtrage_trilineaire_button;
+    ofxButton filtrage_convulation_button;
+    void bileneaireButtonPressed();
+    void trilineaireButtonPressed();
+    void convulationButtonPressed();
+
 
     //Mappage tonal 6.3 vv
     ofxGuiGroup groupe_mappage_tonal;
