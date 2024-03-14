@@ -244,6 +244,7 @@ public:
     ofParameter<float> slider_gamma;
     ofxButton default_mapping_button;
     ofParameter<bool> toggle_tone_mapping;
+    bool mapping_Active;
     void reset_mapping_slidder();
     void default_mapping();
 

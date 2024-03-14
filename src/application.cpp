@@ -277,6 +277,7 @@ void Application::setup()
     slider_gamma.set("Gamma", renderer.tone_mapping_gamma, 0.0f, 5.0f);
     default_mapping_button.setup("Default mapping");
     default_mapping_button.addListener(this, &Application::default_mapping);
+    mapping_Active = false;
     if(renderer.tone_mapping_toggle)
     {toggle_tone_mapping.set("ACES", true);} 
     else {toggle_tone_mapping.set("Reinhard", false);}
@@ -285,8 +286,10 @@ void Application::setup()
     groupe_mappage_tonal.add(slider_gamma);
     groupe_mappage_tonal.add(&default_mapping_button);
     groupe_mappage_tonal.add(toggle_tone_mapping);
-
+    groupe_mappage_tonal.minimize();
     groupe_texture.add(&groupe_mappage_tonal);
+
+    //Section 6.4
 
     gui.add(&groupe_texture);
 }
@@ -1766,7 +1769,13 @@ void Application::wireframe_button_pressed()
 }
 
 //Section 6.3
-void Application::default_mapping(){}
+void Application::default_mapping()
+{
+    renderer.tone_mapping_activated = mapping_Active;
+    ofLog() << "Tone mapping" << mapping_Active;
+    mapping_Active = !mapping_Active;
+    
+}
 
 void Application:: reset_mapping_slidder()
 {

@@ -6,7 +6,7 @@ uniform mat4 modelViewProjectionMatrix;
 //Attribut de position 3D
 in vec4 position;
 //Attribut de pos de texture 2D
-in vec texcoord;
+in vec2 texcoord;
 
 //Sortie passer au shader de fragment
 out vec2 surface_texture_coord;

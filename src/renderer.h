@@ -289,6 +289,8 @@ public:
     float tone_mapping_exposure;
     float tone_mapping_gamma;
     bool tone_mapping_toggle;
+    bool tone_mapping_activated;
+    void apply_tone_mapping();
 
     // Temps
     float time_current;

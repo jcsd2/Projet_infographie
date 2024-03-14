@@ -105,7 +105,7 @@ void Renderer::setup()
     tone_mapping_exposure = 1.0f;
     tone_mapping_gamma = 2.2f;
     tone_mapping_toggle = true;
-    //shader_mapping.load("tone_mapping_vs.glsl", "tone_mapping_fs.glsl");
+    shader_mapping.load("Tone_mapping_shader/tone_mapping_vs.glsl", "Tone_mapping_shader/tone_mapping_fs.glsl");
 
 }
 
@@ -149,6 +149,10 @@ void Renderer::draw()
         draw_primitives();
         drawModels();
         ofPopMatrix();
+        if(tone_mapping_activated)
+        {
+            apply_tone_mapping();
+        }
         break;
     
     case Mode_Vue::camera_3d:
@@ -1732,6 +1736,27 @@ void Renderer::changeView(Camera newView) {
     setup_camera();
 }
 
+//Section 6.3
+void Renderer::apply_tone_mapping()
+{
+    
+    screen_capture_mapping.grabScreen(0,0, ofGetWidth(),ofGetHeight());
+    shader_mapping.begin();
+    shader_mapping.setUniformTexture("image", screen_capture_mapping.getTexture(), 1);
+    shader_mapping.setUniform1f("tone_mapping_exposure", tone_mapping_exposure);
+    shader_mapping.setUniform1f("tone_mapping_gamma", tone_mapping_gamma);
+    shader_mapping.setUniform1f("tone_mapping_toggle", tone_mapping_toggle);
+    screen_capture_mapping.update();
+    screen_capture_mapping.draw(0,screen_capture_mapping.getWidth(), screen_capture_mapping.getHeight());
+    ofLog() << "Drawn with shaders mapping";
+    ofLog() << "exposure" << tone_mapping_exposure;
+    ofLog() << "gamme" << tone_mapping_gamma;
+    ofLog() << "toggle" << tone_mapping_toggle;
+    shader_mapping.end();
+}
+
+
+
 /*
 * brief: Destructeur Renderer
 */
@@ -1740,4 +1765,5 @@ Renderer::~Renderer()
 {
     std::free(shapes);
     std::free(models);
+    shader_mapping.unload();
 }
