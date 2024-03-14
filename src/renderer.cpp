@@ -105,6 +105,7 @@ void Renderer::setup()
     tone_mapping_exposure = 1.0f;
     tone_mapping_gamma = 2.2f;
     tone_mapping_toggle = true;
+    //shader_mapping.load("tone_mapping_vs.glsl", "tone_mapping_fs.glsl");
 
 }
 
@@ -235,7 +236,7 @@ void Renderer::draw()
 
     if (is_visible_axes)
         ofDrawRotationAxes(64);
-}
+    }
 }
 
 /*

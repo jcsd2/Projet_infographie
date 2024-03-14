@@ -323,7 +323,6 @@ void Application::setup()
         if (renderer.tone_mapping_toggle) {toggle_tone_mapping.set("aces filmic", true);} 
         else {toggle_tone_mapping.set("reinhard", false);}
         
-
         // Temps
         time_current = ofGetElapsedTimef();
         time_elapsed = time_current - time_last;
@@ -1769,7 +1768,11 @@ void Application::wireframe_button_pressed()
 //Section 6.3
 void Application::default_mapping(){}
 
-void Application:: reset_mapping_slidder(){}
+void Application:: reset_mapping_slidder()
+{
+  slider_exposure = 1.0f;
+  slider_gamma = 2.2f;
+}
 
 
 
