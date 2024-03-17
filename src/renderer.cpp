@@ -101,6 +101,12 @@ void Renderer::setup()
     //Section cam occlu 5.4
     occlusion = Occlusion::meshfiled;
 
+    // Section filtrage 6.2
+
+    is_bilineaire = false;
+    is_trilineaire = false;
+    is_anisotropique = false;
+
     //Section mapping 6.3
     tone_mapping_exposure = 1.0f;
     tone_mapping_gamma = 2.2f;
@@ -240,6 +246,16 @@ void Renderer::draw()
 
     if (is_visible_axes)
         ofDrawRotationAxes(64);
+    }
+
+    if (is_bilineaire) {
+        bilineaire_application();
+    }
+    else if (is_trilineaire) {
+        trilineaire_application();
+    }
+    else if (is_anisotropique) {
+        anisotropique_application();
     }
 }
 
@@ -1735,6 +1751,50 @@ void Renderer::changeView(Camera newView) {
     camera_active = newView;
     setup_camera();
 }
+
+
+// Section 6.2 Filtrage
+
+
+/*
+* brief : Filtrage bilineaire
+*/
+
+void Renderer::bilineaire_application() {
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  
+}
+
+/*
+* brief : Filtrage trilineaire
+*/
+
+void Renderer::trilineaire_application() {
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    
+}
+
+/*
+* brief : Filtrage anisotropique
+*/
+
+void Renderer::anisotropique_application() {
+    GLfloat largest_supported_anisotropy;
+    glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &largest_supported_anisotropy);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, largest_supported_anisotropy);
+
+
+
+}
+
 
 //Section 6.3
 void Renderer::apply_tone_mapping()

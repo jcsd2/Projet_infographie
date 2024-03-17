@@ -239,10 +239,11 @@ public:
     ofxGuiGroup groupe_filtrage;
     ofxButton filtrage_bilineaire_button;
     ofxButton filtrage_trilineaire_button;
-    ofxButton filtrage_convulation_button;
-    void bileneaireButtonPressed();
+    ofxButton filtrage_anisotropique_button;
+
+    void bilineaireButtonPressed();
     void trilineaireButtonPressed();
-    void convulationButtonPressed();
+    void anisotropiqueButtonPressed();
 
 
     //Mappage tonal 6.3 vv

@@ -271,22 +271,25 @@ void Application::setup()
     //Filtrage 6.2
     groupe_filtrage.setup("Filtrage");
     groupe_filtrage.setBorderColor(ofColor(255, 165, 0));
-    groupe_texture.add(&groupe_filtrage);
-    filtrage_bilineaire_button.setup("Bilineraire");
-    filtrage_bilineaire_button.addListener(this, &Application::bileneaireButtonPressed);
+
+  
+    filtrage_bilineaire_button.setup("Bilinéaire");
+    filtrage_bilineaire_button.addListener(this, &Application::bilineaireButtonPressed);
     groupe_filtrage.add(&filtrage_bilineaire_button);
-    filtrage_trilineaire_button.setup("Trilineaire");
+
+
+    filtrage_trilineaire_button.setup("Trilinéaire");
     filtrage_trilineaire_button.addListener(this, &Application::trilineaireButtonPressed);
     groupe_filtrage.add(&filtrage_trilineaire_button);
-    filtrage_convulation_button.setup("Convulation");
-    filtrage_convulation_button.addListener(this, &Application::convulationButtonPressed);
-    groupe_filtrage.add(&filtrage_convulation_button);
+
+  
+    filtrage_anisotropique_button.setup("Anisotropique");
+    filtrage_anisotropique_button.addListener(this, &Application::anisotropiqueButtonPressed);
+    groupe_filtrage.add(&filtrage_anisotropique_button);
+
+    groupe_texture.add(&groupe_filtrage);
     
-    gui.add(&groupe_texture);
 
-
-
-    
 
     //Mappage 6.3
     groupe_mappage_tonal.setup("Mappage tonal");
@@ -1776,7 +1779,9 @@ void Application::mode_2cam_pressed()
  * brief: Algorithme de filtrage bileneaire
  */
 
-void Application::bileneaireButtonPressed() {
+void Application::bilineaireButtonPressed() {
+    ofLog() << "<Bilineaire>";
+    renderer.bilineaire_application();
 
 }
 
@@ -1785,6 +1790,8 @@ void Application::bileneaireButtonPressed() {
  */
 
 void Application::trilineaireButtonPressed() {
+    ofLog() << "<Trilineaire>";
+    renderer.trilineaire_application();
 
 }
 
@@ -1792,7 +1799,10 @@ void Application::trilineaireButtonPressed() {
  * brief: Algorithme de filtrage convulation
  */
 
-void Application::convulationButtonPressed() {
+void Application::anisotropiqueButtonPressed() {
+    ofLog() << "<Anisotropique>";
+   
+    renderer.anisotropique_application();
 
 }
 

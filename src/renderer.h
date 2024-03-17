@@ -283,6 +283,17 @@ public:
     // Occlusion
     Occlusion occlusion;
 
+    // Section 6.2 Filtrage
+    GLuint texture_id;
+    void bilineaire_application();
+    void trilineaire_application();
+    void anisotropique_application();
+    bool is_bilineaire;
+    bool is_trilineaire;
+    bool is_anisotropique;
+ 
+   
+
     //Section 6.3
     ofImage screen_capture_mapping;
     ofShader shader_mapping;
