@@ -330,6 +330,53 @@ void Application::setup()
 
     gui.add(&groupe_illumination_cl);
 
+    //Section 8 commence ici
+
+    groupe_topologie.setup("Topologie");
+    groupe_topologie.setBorderColor(ofColor::red);
+
+    //Courbe parametrique 8.1
+
+    //Surface parametrique 8.2
+
+    //Shader de tesselation 8.3
+
+    //Triangulation 8.4
+
+    gui.add(&groupe_topologie);
+
+    //Section 9 commence ici
+
+    groupe_rayon.setup("Rayon");
+    groupe_rayon.setBorderColor(ofColor::papayaWhip);
+
+    //Intersection 9.1
+
+    //Reflexion 9.2
+
+    //Refraction 9.3
+
+    //Ombrage 9.4
+
+    gui.add(&groupe_rayon);
+
+    //Section 10 commence ici
+
+    groupe_illumination_moderne.setup("Illumination Moderne");
+    groupe_illumination_moderne.setBorderColor(ofColor::blue);
+
+    //HDR 10.1
+
+    //Eclairage environnemental 10.2
+
+    //Metallicite 10.3
+
+    //Microfacettes 10.4
+
+    gui.add(&groupe_illumination_moderne);
+
+    
+
 
 }
 

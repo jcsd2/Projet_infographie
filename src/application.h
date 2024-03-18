@@ -270,6 +270,40 @@ public:
 
     //Lumiere multiples ici vv
 
+
+    // Section 8
+    ofxGuiGroup  groupe_topologie;
+
+    //Courbe parametrique 8.1 ici vv
+
+    //Surface parametrique 8.2 ici vv
+
+    //Shader de tesselation 8.3 ici vv
+
+    //Triangulation 8.4 ici vv
+
+    // Section 9
+    ofxGuiGroup  groupe_rayon;
+
+    //Intersection 9.1 ici vv
+
+    //Reflexion 9.2 ici vv
+
+    //Refraction 9.3 ici vv
+
+    //Ombrage 9.4 ici vv
+
+    // Section 10
+    ofxGuiGroup  groupe_illumination_moderne;
+
+    //HDR 10.1 ici vv
+
+    //Eclairage environnemental 10.2 ici vv
+
+    //Metallicite 10.3 ici vv
+
+    //Microfacettes 10.4 ici vv
+
     //Section declaration global
     // Temps
     float time_current;
