@@ -290,7 +290,6 @@ void Application::setup()
     groupe_texture.add(&groupe_filtrage);
     
 
-
     //Mappage 6.3
     groupe_mappage_tonal.setup("Mappage tonal");
     groupe_mappage_tonal.setBorderColor(ofColor::chartreuse);
@@ -315,6 +314,23 @@ void Application::setup()
     //Section 6.4
 
     gui.add(&groupe_texture);
+
+    //Section 7 commence ici
+
+    groupe_illumination_cl.setup("Illumination Classic");
+    groupe_illumination_cl.setBorderColor(ofColor::purple);
+
+    //Modele d'illumination 7,1
+
+    //Materiaux 7.2
+
+    //Types de lumiere 7.3
+
+    //Lumiere multiples 7.4
+
+    gui.add(&groupe_illumination_cl);
+
+
 }
 
 

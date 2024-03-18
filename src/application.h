@@ -259,6 +259,17 @@ public:
 
     //Cubemap 6.4 ici vv
 
+    // Section 7
+    ofxGuiGroup  groupe_illumination_cl;
+
+    //Modele illumination 7.1 ici vv
+
+    //Materiaux 7.2 ici vv
+
+    //Types de lumieres 7.3 ici vv
+
+    //Lumiere multiples ici vv
+
     //Section declaration global
     // Temps
     float time_current;
