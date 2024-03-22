@@ -286,7 +286,7 @@ void Application::setup()
     filtrage_anisotropique_button.setup("Anisotropique");
     filtrage_anisotropique_button.addListener(this, &Application::anisotropiqueButtonPressed);
     groupe_filtrage.add(&filtrage_anisotropique_button);
-
+    groupe_filtrage.minimize();
     groupe_texture.add(&groupe_filtrage);
     
 
@@ -313,6 +313,7 @@ void Application::setup()
 
     //Section 6.4
 
+    groupe_texture.minimize();
     gui.add(&groupe_texture);
 
     //Section 7 commence ici
@@ -325,6 +326,24 @@ void Application::setup()
     //Materiaux 7.2
 
     //Types de lumiere 7.3
+    groupe_lumiere.setup("Types de lumiere");
+    groupe_lumiere.setBorderColor(ofColor::darkOrange);
+    color_picker_constante.set("Constante de couleur", ofColor(60), ofColor(0, 0), ofColor(255, 255));
+    lumiere_ambiante_button.setup("Lumiere ambiante");
+    lumiere_ambiante_button.addListener(this, &Application::lumiere_ambiante_button_pressed);
+    lumiere_directionnelle_button.setup("Lumiere directionnelle");
+    lumiere_directionnelle_button.addListener(this, &Application::lumiere_directionnelle_button_pressed);
+    lumiere_ponctuelle_button.setup("Lumiere ponctuelle");
+    lumiere_ponctuelle_button.addListener(this, &Application::lumiere_ponctuelle_button_pressed);
+    lumiere_spot_button.setup("Lumiere spot");
+    lumiere_spot_button.addListener(this, &Application::lumiere_spot_button_pressed);
+    groupe_lumiere.add(color_picker_constante);
+    groupe_lumiere.add(&lumiere_ambiante_button);
+    groupe_lumiere.add(&lumiere_directionnelle_button);
+    groupe_lumiere.add(&lumiere_ponctuelle_button);
+    groupe_lumiere.add(&lumiere_spot_button);
+    groupe_lumiere.minimize();
+    groupe_illumination_cl.add(&groupe_lumiere);
 
     //Lumiere multiples 7.4
 
@@ -387,10 +406,12 @@ void Application::setup()
 
     void Application::draw()
     {
+
         renderer.draw();
-        if (checkbox)
-            gui.draw();
+
+        if (checkbox){gui.draw();}
         drawCursor();
+
     }
 
 
@@ -400,7 +421,7 @@ void Application::setup()
 
     void Application::update()
     {
-
+        
         // Couleur de fond
         renderer.background_color1 = color_picker_background;
         renderer.background_color2 = color_picker_background_HSB;
@@ -411,6 +432,9 @@ void Application::setup()
         renderer.tone_mapping_toggle = toggle_tone_mapping;
         if (renderer.tone_mapping_toggle) {toggle_tone_mapping.set("aces filmic", true);} 
         else {toggle_tone_mapping.set("reinhard", false);}
+
+        //Couleur de constante 7.3
+        renderer.constant_color = color_picker_constante;
         
         // Temps
         time_current = ofGetElapsedTimef();
@@ -1897,14 +1921,34 @@ void Application::default_mapping()
     
 }
 
-void Application:: reset_mapping_slidder()
+void Application::reset_mapping_slidder()
 {
   slider_exposure = 1.0f;
   slider_gamma = 2.2f;
 }
 
+//section 7
 
+//section 7.3
+void Application::lumiere_ambiante_button_pressed()
+{
+    renderer.lumiere_active = 0;
+}
 
+void Application::lumiere_directionnelle_button_pressed()
+{
+    renderer.lumiere_active = 1;
+}
+
+void Application::lumiere_ponctuelle_button_pressed()
+{
+    renderer.lumiere_active = 2;
+}
+
+void Application::lumiere_spot_button_pressed()
+{
+    renderer.lumiere_active = 3;
+}
 
 /*
  * brief: Nettoyer, supprimer, fermeture de l'application
@@ -1956,6 +2000,12 @@ void Application::exit()
     //Enlever boutons 6.3
     reset_slider_button.removeListener(this, &Application::reset_mapping_slidder);
     default_mapping_button.removeListener(this, &Application::default_mapping);
+
+    //Enlever boutons 7.3
+    lumiere_ambiante_button.removeListener(this, &Application::lumiere_ambiante_button_pressed);
+    lumiere_directionnelle_button.removeListener(this, &Application::lumiere_directionnelle_button_pressed);
+    lumiere_ponctuelle_button.removeListener(this, &Application::lumiere_ponctuelle_button_pressed);
+    lumiere_spot_button.removeListener(this, &Application::lumiere_spot_button_pressed);
     ofLog() << "<app::exit>";
 
 }

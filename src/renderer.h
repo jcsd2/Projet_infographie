@@ -51,6 +51,19 @@ struct VectorModel {
 };
 
 
+
+//Struture de lumiere
+struct VectorLumiere
+{
+    int type;
+    float color[3];
+    float position[3];
+    float attenuation;
+    float linearAttenuation;
+    float quadraticAttenuation;
+};
+
+
 class Renderer
 {
 public:
@@ -302,6 +315,23 @@ public:
     bool tone_mapping_toggle;
     bool tone_mapping_activated;
     void apply_tone_mapping();
+
+
+    //Section 7
+
+    //Section 7.3
+    ofColor constant_color;
+    ofShader shader_lumiere;
+    int lumiere_active;
+    VectorLumiere* lumiere;
+    int buffer_lumieres_count;
+    int buffer_lumieres_head;
+    int buffer_lumieres_stride;
+    int buffer_lumieres_size;
+    void init_buffer_lumiere();
+    void add_lumiere();
+    void update_lumiere();
+
 
     // Temps
     float time_current;

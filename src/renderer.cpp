@@ -113,6 +113,10 @@ void Renderer::setup()
     tone_mapping_toggle = true;
     shader_mapping.load("Tone_mapping_shader/tone_mapping_vs.glsl", "Tone_mapping_shader/tone_mapping_fs.glsl");
 
+    //Section 7.3
+    shader_lumiere.load("light_shader/light_330_vs.glsl", "light_shader/light_330_fs.glsl");
+    init_buffer_lumiere();
+    add_lumiere();
 }
 
 /*
@@ -124,7 +128,9 @@ void Renderer::draw()
     switch (mode_vue)
     {
     case Mode_Vue::dessin:
-
+        
+        //Endroit pour activer/desactiver la lumiere
+        //update_lumiere();
         switch (color_mode)
         {
         case BackgroundColorType::rgb:
@@ -160,7 +166,9 @@ void Renderer::draw()
             apply_tone_mapping();
         }
         break;
-    
+
+        
+        
     case Mode_Vue::camera_3d:
         camera->begin();
         is_camera_interactive = true;
@@ -1815,6 +1823,76 @@ void Renderer::apply_tone_mapping()
     shader_mapping.end();
 }
 
+void Renderer::init_buffer_lumiere()
+{
+    buffer_lumieres_count = 4;
+    buffer_lumieres_head = 0;
+    buffer_lumieres_stride = sizeof(VectorLumiere);
+    buffer_lumieres_size = buffer_lumieres_count * buffer_lumieres_stride;
+    lumiere = (VectorLumiere*)std::malloc(buffer_lumieres_size);
+    
+}
+
+//ajout des lumieres
+void Renderer::add_lumiere()
+{
+    for (int index = 0; index < buffer_lumieres_count; ++index)
+    {
+        lumiere[buffer_lumieres_head].type = buffer_lumieres_head;
+        lumiere[buffer_lumieres_head].color[0] = constant_color.r;
+        lumiere[buffer_lumieres_head].color[1] = constant_color.g;
+        lumiere[buffer_lumieres_head].color[2] = constant_color.b;
+        lumiere[buffer_lumieres_head].position[0] = 0.0f;
+        lumiere[buffer_lumieres_head].position[1] = 0.0f;
+        lumiere[buffer_lumieres_head].position[2] = 0.0f;
+        lumiere[buffer_lumieres_head].attenuation = 1.0f;
+        lumiere[buffer_lumieres_head].linearAttenuation = 1.0f;
+        lumiere[buffer_lumieres_head].quadraticAttenuation = 1.0f;
+        buffer_lumieres_head++;
+        ofLog() << "<new lumiere at index: " << buffer_lumieres_head << ">";
+    }
+}
+
+void Renderer::update_lumiere()
+{
+    // Activez le shader
+    shader_lumiere.begin();
+
+    // Passez les lumières au shader
+    for (int i = 0; i < buffer_lumieres_count; ++i) {
+        // Mettez à jour la couleur de la lumière avec constant_color
+        lumiere[i].color[0] = constant_color.r;
+        lumiere[i].color[1] = constant_color.g;
+        lumiere[i].color[2] = constant_color.b;
+
+        lumiere[i].position[0] = ofMap(ofGetMouseX()/ (float) ofGetWidth(), 0.0f, 1.0f, -ofGetWidth() / 2.0f, ofGetWidth() / 2.0f);
+        lumiere[i].position[1] = ofMap(ofGetMouseY()/ (float) ofGetHeight(), 0.0f, 1.0f, -ofGetHeight() / 2.0f, ofGetHeight() / 2.0f);
+        lumiere[i].position[2] = 0.0f;
+
+        // Créez des chaînes pour les noms des uniformes
+        std::string prefix = "lumiere[" + std::to_string(i) + "].";
+        std::string typeUniform = prefix + "type";
+        std::string colorUniform = prefix + "color";
+        std::string positionUniform = prefix + "position";
+        std::string attenuationUniform = prefix + "attenuation";
+        std::string linearAttenuationUniform = prefix + "linearAttenuation";
+        std::string quadraticAttenuationUniform = prefix + "quadraticAttenuation";
+
+        // Passez les attributs de chaque lumière au shader
+        shader_lumiere.setUniform1i(typeUniform.c_str(), lumiere[i].type);
+        shader_lumiere.setUniform3f(colorUniform.c_str(), lumiere[i].color[0], lumiere[i].color[1], lumiere[i].color[2]);
+        shader_lumiere.setUniform3f(positionUniform.c_str(), lumiere[i].position[0], lumiere[i].position[1], lumiere[i].position[2]);
+        shader_lumiere.setUniform1f(attenuationUniform.c_str(), lumiere[i].attenuation);
+        shader_lumiere.setUniform1f(linearAttenuationUniform.c_str(), lumiere[i].linearAttenuation);
+        shader_lumiere.setUniform1f(quadraticAttenuationUniform.c_str(), lumiere[i].quadraticAttenuation);
+        ofLog() << "Lumiere " << i << " : " << lumiere[i].color[0] << " " << lumiere[i].color[1] << " " << lumiere[i].color[2];
+        ofLog() << "Lumiere " << i << " : " << lumiere[i].position[0] << " " << lumiere[i].position[1] << " " << lumiere[i].position[2];
+    }
+
+    // Désactivez le shader
+    shader_lumiere.end();
+
+}
 
 
 /*
@@ -1826,4 +1904,7 @@ Renderer::~Renderer()
     std::free(shapes);
     std::free(models);
     shader_mapping.unload();
+    shader_lumiere.unload();
+    std::free(lumiere);
+
 }

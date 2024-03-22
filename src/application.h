@@ -267,7 +267,16 @@ public:
     //Materiaux 7.2 ici vv
 
     //Types de lumieres 7.3 ici vv
-
+    ofxGuiGroup groupe_lumiere;
+    ofParameter<ofColor> color_picker_constante;
+    ofxButton lumiere_ambiante_button;
+    ofxButton lumiere_directionnelle_button;
+    ofxButton lumiere_ponctuelle_button;
+    ofxButton lumiere_spot_button;
+    void lumiere_ambiante_button_pressed();
+    void lumiere_directionnelle_button_pressed();
+    void lumiere_ponctuelle_button_pressed();
+    void lumiere_spot_button_pressed();
     //Lumiere multiples ici vv
 
 
