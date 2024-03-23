@@ -1894,6 +1894,87 @@ void Renderer::update_lumiere()
 
 }
 
+int Renderer::get_nbre_lumiere_total()
+{
+    return buffer_lumieres_count;
+}
+
+int Renderer::get_nbre_lumiere_directionnelle()
+{
+    int nbre_lumiere_directionnelle = 0;
+    for (int i = 0; i < buffer_lumieres_count; ++i) {
+        if (lumiere[i].type == 0) {
+            nbre_lumiere_directionnelle++;
+        }
+    }
+    return nbre_lumiere_directionnelle;
+}
+
+int Renderer::get_position_lumiere_x(int index)
+{
+    
+    return lumiere[index].position[0];
+}
+
+int Renderer::get_position_lumiere_y(int index)
+{
+    return lumiere[index].position[1];
+}
+
+int Renderer::get_derniere_lumiere_directionnelle()
+{
+    int derniere_lumiere_directionnelle = -1;
+    for (int i = 0; i < buffer_lumieres_count; ++i) {
+        if (lumiere[i].type == 0) {
+            derniere_lumiere_directionnelle = i;
+        }
+    }
+    return derniere_lumiere_directionnelle;
+}
+
+int Renderer::get_nbre_lumiere_ponctuelle()
+{
+    int nbre_lumiere_ponctuelle = 0;
+    for (int i = 0; i < buffer_lumieres_count; ++i) {
+        if (lumiere[i].type == 1) {
+            nbre_lumiere_ponctuelle++;
+        }
+    }
+    return nbre_lumiere_ponctuelle;
+}
+
+int Renderer::get_derniere_lumiere_ponctuelle()
+{
+    int derniere_lumiere_ponctuelle = -1;
+    for (int i = 0; i < buffer_lumieres_count; ++i) {
+        if (lumiere[i].type == 1) {
+            derniere_lumiere_ponctuelle = i;
+        }
+    }
+    return derniere_lumiere_ponctuelle;
+}
+
+int Renderer::get_nb_lumiere_projecteur()
+{
+    int nb_lumiere_projecteur = 0;
+    for (int i = 0; i < buffer_lumieres_count; ++i) {
+        if (lumiere[i].type == 2) {
+            nb_lumiere_projecteur++;
+        }
+    }
+    return nb_lumiere_projecteur;
+}
+
+int Renderer::get_derniere_lumiere_projecteur()
+{
+    int derniere_lumiere_projecteur = -1;
+    for (int i = 0; i < buffer_lumieres_count; ++i) {
+        if (lumiere[i].type == 2) {
+            derniere_lumiere_projecteur = i;
+        }
+    }
+    return derniere_lumiere_projecteur;
+}
 
 /*
 * brief: Destructeur Renderer

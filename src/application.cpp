@@ -329,19 +329,27 @@ void Application::setup()
     groupe_lumiere.setup("Types de lumiere");
     groupe_lumiere.setBorderColor(ofColor::darkOrange);
     color_picker_constante.set("Constante de couleur", ofColor(60), ofColor(0, 0), ofColor(255, 255));
-    lumiere_ambiante_button.setup("Lumiere ambiante");
-    lumiere_ambiante_button.addListener(this, &Application::lumiere_ambiante_button_pressed);
-    lumiere_directionnelle_button.setup("Lumiere directionnelle");
-    lumiere_directionnelle_button.addListener(this, &Application::lumiere_directionnelle_button_pressed);
-    lumiere_ponctuelle_button.setup("Lumiere ponctuelle");
-    lumiere_ponctuelle_button.addListener(this, &Application::lumiere_ponctuelle_button_pressed);
-    lumiere_spot_button.setup("Lumiere spot");
-    lumiere_spot_button.addListener(this, &Application::lumiere_spot_button_pressed);
+    nbre_lumiere_total_label.set("Nombre de lumieres total", renderer.get_nbre_lumiere_total(), renderer.get_nbre_lumiere_total(), renderer.get_nbre_lumiere_total());
+    nbre_lumiere_directionnelle_label.set("Nombre de lumieres directionnelles", renderer.get_nbre_lumiere_directionnelle(), renderer.get_nbre_lumiere_directionnelle(), renderer.get_nbre_lumiere_directionnelle());
+    position_x_lumiere__directionnelle_label.set("Position X lumiere directionnelle", renderer.get_position_lumiere_x(renderer.get_derniere_lumiere_directionnelle()), renderer.get_position_lumiere_x(renderer.get_derniere_lumiere_directionnelle()), renderer.get_position_lumiere_x(renderer.get_derniere_lumiere_directionnelle()));
+    position_y_lumiere_directionnelle_label.set("Position Y lumiere directionnelle", renderer.get_position_lumiere_y(renderer.get_derniere_lumiere_directionnelle()), renderer.get_position_lumiere_y(renderer.get_derniere_lumiere_directionnelle()), renderer.get_position_lumiere_y(renderer.get_derniere_lumiere_directionnelle()));
+    nbre_lumiere_ponctuelle_label.set("Nombre de lumieres ponctuelles", renderer.get_nbre_lumiere_ponctuelle(), renderer.get_nbre_lumiere_ponctuelle(), renderer.get_nbre_lumiere_ponctuelle());
+    position_x_lumiere__ponctuelle_label.set("Position X lumiere ponctuelle", renderer.get_position_lumiere_x(renderer.get_derniere_lumiere_ponctuelle()), renderer.get_position_lumiere_x(renderer.get_derniere_lumiere_ponctuelle()), renderer.get_position_lumiere_x(renderer.get_derniere_lumiere_ponctuelle()));
+    position_y_lumiere_ponctuelle_label.set("Position Y lumiere ponctuelle", renderer.get_position_lumiere_y(renderer.get_derniere_lumiere_ponctuelle()), renderer.get_position_lumiere_y(renderer.get_derniere_lumiere_ponctuelle()), renderer.get_position_lumiere_y(renderer.get_derniere_lumiere_ponctuelle()));
+    nbre_lumiere_projecteur_label.set("Nombre de lumieres projecteur", renderer.get_nb_lumiere_projecteur(), renderer.get_nb_lumiere_projecteur(), renderer.get_nb_lumiere_projecteur());
+    position_x_lumiere_projecteur_label.set("Position X lumiere projecteur", renderer.get_position_lumiere_x(renderer.get_derniere_lumiere_projecteur()), renderer.get_position_lumiere_x(renderer.get_derniere_lumiere_projecteur()), renderer.get_position_lumiere_x(renderer.get_derniere_lumiere_projecteur()));
+    position_y_lumiere_projecteur_label.set("Position Y lumiere projecteur", renderer.get_position_lumiere_y(renderer.get_derniere_lumiere_projecteur()), renderer.get_position_lumiere_y(renderer.get_derniere_lumiere_projecteur()), renderer.get_position_lumiere_y(renderer.get_derniere_lumiere_projecteur()));
     groupe_lumiere.add(color_picker_constante);
-    groupe_lumiere.add(&lumiere_ambiante_button);
-    groupe_lumiere.add(&lumiere_directionnelle_button);
-    groupe_lumiere.add(&lumiere_ponctuelle_button);
-    groupe_lumiere.add(&lumiere_spot_button);
+    groupe_lumiere.add(nbre_lumiere_total_label);
+    groupe_lumiere.add(nbre_lumiere_directionnelle_label);
+    groupe_lumiere.add(position_x_lumiere__directionnelle_label);
+    groupe_lumiere.add(position_y_lumiere_directionnelle_label);
+    groupe_lumiere.add(nbre_lumiere_ponctuelle_label);
+    groupe_lumiere.add(position_x_lumiere__ponctuelle_label);
+    groupe_lumiere.add(position_y_lumiere_ponctuelle_label);
+    groupe_lumiere.add(nbre_lumiere_projecteur_label);
+    groupe_lumiere.add(position_x_lumiere_projecteur_label);
+    groupe_lumiere.add(position_y_lumiere_projecteur_label);
     groupe_lumiere.minimize();
     groupe_illumination_cl.add(&groupe_lumiere);
 
@@ -1930,25 +1938,7 @@ void Application::reset_mapping_slidder()
 //section 7
 
 //section 7.3
-void Application::lumiere_ambiante_button_pressed()
-{
-    renderer.lumiere_active = 0;
-}
 
-void Application::lumiere_directionnelle_button_pressed()
-{
-    renderer.lumiere_active = 1;
-}
-
-void Application::lumiere_ponctuelle_button_pressed()
-{
-    renderer.lumiere_active = 2;
-}
-
-void Application::lumiere_spot_button_pressed()
-{
-    renderer.lumiere_active = 3;
-}
 
 /*
  * brief: Nettoyer, supprimer, fermeture de l'application
@@ -2001,11 +1991,7 @@ void Application::exit()
     reset_slider_button.removeListener(this, &Application::reset_mapping_slidder);
     default_mapping_button.removeListener(this, &Application::default_mapping);
 
-    //Enlever boutons 7.3
-    lumiere_ambiante_button.removeListener(this, &Application::lumiere_ambiante_button_pressed);
-    lumiere_directionnelle_button.removeListener(this, &Application::lumiere_directionnelle_button_pressed);
-    lumiere_ponctuelle_button.removeListener(this, &Application::lumiere_ponctuelle_button_pressed);
-    lumiere_spot_button.removeListener(this, &Application::lumiere_spot_button_pressed);
+
     ofLog() << "<app::exit>";
 
 }

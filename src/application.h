@@ -269,14 +269,17 @@ public:
     //Types de lumieres 7.3 ici vv
     ofxGuiGroup groupe_lumiere;
     ofParameter<ofColor> color_picker_constante;
-    ofxButton lumiere_ambiante_button;
-    ofxButton lumiere_directionnelle_button;
-    ofxButton lumiere_ponctuelle_button;
-    ofxButton lumiere_spot_button;
-    void lumiere_ambiante_button_pressed();
-    void lumiere_directionnelle_button_pressed();
-    void lumiere_ponctuelle_button_pressed();
-    void lumiere_spot_button_pressed();
+    ofParameter <int> nbre_lumiere_total_label;
+    ofParameter <int> nbre_lumiere_directionnelle_label;
+    ofParameter <int> position_x_lumiere__directionnelle_label;
+    ofParameter <int> position_y_lumiere_directionnelle_label;
+    ofParameter <int> nbre_lumiere_ponctuelle_label;
+    ofParameter <int> position_x_lumiere__ponctuelle_label;
+    ofParameter <int> position_y_lumiere_ponctuelle_label;
+    ofParameter <int> nbre_lumiere_projecteur_label;
+    ofParameter <int> position_x_lumiere_projecteur_label;
+    ofParameter <int> position_y_lumiere_projecteur_label;
+
     //Lumiere multiples ici vv
 
 

@@ -331,7 +331,15 @@ public:
     void init_buffer_lumiere();
     void add_lumiere();
     void update_lumiere();
-
+    int get_nbre_lumiere_total();
+    int get_nbre_lumiere_directionnelle();
+    int get_position_lumiere_x(int index);
+    int get_position_lumiere_y(int index);
+    int get_derniere_lumiere_directionnelle();
+    int get_nbre_lumiere_ponctuelle();
+    int get_derniere_lumiere_ponctuelle();
+    int get_nb_lumiere_projecteur();
+    int get_derniere_lumiere_projecteur();
 
     // Temps
     float time_current;
