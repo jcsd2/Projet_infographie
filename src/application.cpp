@@ -267,6 +267,10 @@ void Application::setup()
     groupe_texture.setup("Texture");
     groupe_texture.setBorderColor(ofColor::cornflowerBlue);
     //Coordonnes de texture 6.1
+    groupe_coordonnes.setup("Coordonnes");
+    groupe_coordonnes.setBorderColor(ofColor(255, 165, 0));
+    groupe_texture.add(&groupe_coordonnes);
+
 
     //Filtrage 6.2
     groupe_filtrage.setup("Filtrage");

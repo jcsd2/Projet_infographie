@@ -234,6 +234,7 @@ public:
     //Section 6 commence ici
     ofxGuiGroup groupe_texture;
     //Coordonnees de texture 6.1 ici vv
+    ofxGuiGroup groupe_coordonnes;
 
     //Filtrage 6.2 ici vv
     ofxGuiGroup groupe_filtrage;
