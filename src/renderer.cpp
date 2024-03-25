@@ -1890,6 +1890,21 @@ void Renderer::add_lumiere()
         lumiere[buffer_lumieres_head].color[0] = constant_color.r;
         lumiere[buffer_lumieres_head].color[1] = constant_color.g;
         lumiere[buffer_lumieres_head].color[2] = constant_color.b;
+
+        if (buffer_lumieres_head == 1) // Lumière directionnelle
+        {
+            // Ajoutez ici le code pour définir la direction de la lumière
+        }
+        else if (buffer_lumieres_head == 2) // Lumière ponctuelle
+        {
+            // Ajoutez ici le code pour définir la distance entre la position de la lumière et la position de la surface
+        }
+        else if (buffer_lumieres_head == 3) // Lumière de type projecteur
+        {
+            // Ajoutez ici le code pour définir la distance et le target
+        }
+
+
         lumiere[buffer_lumieres_head].position[0] = 0.0f;
         lumiere[buffer_lumieres_head].position[1] = 0.0f;
         lumiere[buffer_lumieres_head].position[2] = 0.0f;
