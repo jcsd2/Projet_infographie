@@ -328,6 +328,23 @@ void Application::setup()
     //Modele d'illumination 7,1
 
     //Materiaux 7.2
+    groupe_materiaux.setup("Materiaux");
+    groupe_materiaux.setBorderColor(ofColor(255, 165, 0));
+
+    cube_materiaux_button.setup("Cube");
+    cube_materiaux_button.addListener(this, &Application::cubeMateriauxButtonPressed);
+    groupe_materiaux.add(&cube_materiaux_button);
+
+    sphere_materiaux_button.setup("Sphere");
+    sphere_materiaux_button.addListener(this, &Application::sphereMateriauxButtonPressed);
+    groupe_materiaux.add(&sphere_materiaux_button);
+
+    prisme_materiaux_button.setup("Prisme");
+    prisme_materiaux_button.addListener(this, &Application::prismeMateriauxButtonPressed);
+    groupe_materiaux.add(&prisme_materiaux_button);
+
+    groupe_illumination_cl.add(&groupe_materiaux);
+
 
     //Types de lumiere 7.3
     groupe_lumiere.setup("Types de lumiere");
@@ -1940,6 +1957,34 @@ void Application::reset_mapping_slidder()
 }
 
 //section 7
+
+/*
+ * brief: Cube avec materiaux
+ */
+void Application::cubeMateriauxButtonPressed() {
+    ofLog() << "<Cube Materiaux>";
+    renderer.is_material_cube = true;
+    renderer.is_material_sphere = false;
+    renderer.is_material_prisme = false;
+}
+
+// Sphere avec Materiaux
+
+void Application::sphereMateriauxButtonPressed() {
+    ofLog() << "<Sphere Materiaux>";
+    renderer.is_material_cube = false;
+    renderer.is_material_sphere = true;
+    renderer.is_material_prisme = false;
+}
+
+// Prisme avec Matériaux
+
+void Application::prismeMateriauxButtonPressed() {
+    ofLog() << "<Prisme Materiaux>";
+    renderer.is_material_cube = false;
+    renderer.is_material_sphere = false;
+    renderer.is_material_prisme = true;
+}
 
 //section 7.3
 

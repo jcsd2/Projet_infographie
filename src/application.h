@@ -266,6 +266,14 @@ public:
     //Modele illumination 7.1 ici vv
 
     //Materiaux 7.2 ici vv
+    ofxGuiGroup groupe_materiaux;
+    ofxButton cube_materiaux_button;
+    ofxButton sphere_materiaux_button;
+    ofxButton prisme_materiaux_button;
+    void cubeMateriauxButtonPressed();
+    void sphereMateriauxButtonPressed();
+    void prismeMateriauxButtonPressed();
+
 
     //Types de lumieres 7.3 ici vv
     ofxGuiGroup groupe_lumiere;

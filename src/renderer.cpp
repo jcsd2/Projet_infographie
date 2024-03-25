@@ -113,6 +113,14 @@ void Renderer::setup()
     tone_mapping_toggle = true;
     shader_mapping.load("Tone_mapping_shader/tone_mapping_vs.glsl", "Tone_mapping_shader/tone_mapping_fs.glsl");
 
+    //Section materiaux 7.2
+    scale_cube = 105.0f;
+    scale_sphere = 90.0f;
+    scale_prisme = 100.0f;
+    bool drawCube = false;
+    bool drawSphere = false;
+    bool drawPrisme = false;
+
     //Section 7.3
     shader_lumiere.load("light_shader/light_330_vs.glsl", "light_shader/light_330_fs.glsl");
     init_buffer_lumiere();
@@ -1821,6 +1829,46 @@ void Renderer::apply_tone_mapping()
     ofLog() << "gamme" << tone_mapping_gamma;
     ofLog() << "toggle" << tone_mapping_toggle;
     shader_mapping.end();
+}
+
+
+/*
+* brief: Cube avec materiaux
+*/
+
+void Renderer::drawCube_mat(float x, float y, float z, float size) {
+    material_cube.begin();
+    ofPushMatrix();
+    ofTranslate(x, y, z);
+    ofDrawBox(scale_cube);
+    ofPopMatrix();
+    material_cube.end();
+}
+
+/*
+* brief: Sphere avec materiaux
+*/
+
+void Renderer::drawSphere_mat(float x, float y, float z, float radius) {
+    material_sphere.begin();
+    ofPushMatrix();
+    ofTranslate(x, y, z);
+    ofDrawSphere(scale_sphere);
+    ofPopMatrix();
+    material_sphere.end();
+}
+
+/*
+* brief: Prisme avec materiaux
+*/
+
+void Renderer::drawPrisme_mat(float x, float y, float z, float width, float height, float depth) {
+    material_prisme.begin();
+    ofPushMatrix();
+    ofTranslate(x, y, z);
+    ofDrawBox(scale_prisme);
+    ofPopMatrix();
+    material_prisme.end();
 }
 
 void Renderer::init_buffer_lumiere()

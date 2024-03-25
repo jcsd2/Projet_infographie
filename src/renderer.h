@@ -319,6 +319,24 @@ public:
 
     //Section 7
 
+    //Section 7.2 Matériaux
+    ofMaterial material_cube;
+    ofMaterial material_sphere;
+    ofMaterial material_prisme;
+
+    bool is_material_cube;
+    bool is_material_sphere;
+    bool is_material_prisme;
+
+    void drawCube_mat(float x, float y, float z, float size);
+    void drawSphere_mat(float x, float y, float z, float radius);
+    void drawPrisme_mat(float x, float y, float z, float width, float height, float depth);
+
+
+    float scale_cube;
+    float scale_sphere;
+    float scale_prisme;
+
     //Section 7.3
     ofColor constant_color;
     ofShader shader_lumiere;
