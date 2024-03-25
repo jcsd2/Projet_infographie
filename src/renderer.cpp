@@ -1894,17 +1894,33 @@ void Renderer::add_lumiere()
         if (buffer_lumieres_head == 1) // Lumière directionnelle
         {
             // Ajoutez ici le code pour définir la direction de la lumière
+            // Je suppose que la direction est constante pour toutes les lumières directionnelles
+            lumiere[buffer_lumieres_head].position[0] = 0.0f;
+            lumiere[buffer_lumieres_head].position[1] = 0.0f;
+            lumiere[buffer_lumieres_head].position[2] = 0.0f;
         }
         else if (buffer_lumieres_head == 2) // Lumière ponctuelle
         {
             // Ajoutez ici le code pour définir la distance entre la position de la lumière et la position de la surface
+            // Je suppose que la distance est constante pour toutes les lumières ponctuelles
+            //float distance = length(light_position - surface_position);
+            //lumiere[buffer_lumieres_head].position[0] = distance;
+            lumiere[buffer_lumieres_head].position[0] = 0.0f;
+            lumiere[buffer_lumieres_head].position[1] = 0.0f; // Vous devez définir cette valeur
+            lumiere[buffer_lumieres_head].position[2] = 0.0f; // Vous devez définir cette valeur
         }
         else if (buffer_lumieres_head == 3) // Lumière de type projecteur
         {
             // Ajoutez ici le code pour définir la distance et le target
+            // Je suppose que la distance et le target sont constante pour toutes les lumières de type projecteur
+            //float distance_to_target = length(light_position - target);
+            //lumiere[buffer_lumieres_head].position[0] = distance_to_target;
+            //lumiere[buffer_lumieres_head].position[1] = target[0];
+            //lumiere[buffer_lumieres_head].position[2] = target[1];
+            lumiere[buffer_lumieres_head].position[0] = 0.0f;
+            lumiere[buffer_lumieres_head].position[1] = 0.0f;
+            lumiere[buffer_lumieres_head].position[2] = 0.0f;
         }
-
-
         lumiere[buffer_lumieres_head].position[0] = 0.0f;
         lumiere[buffer_lumieres_head].position[1] = 0.0f;
         lumiere[buffer_lumieres_head].position[2] = 0.0f;
