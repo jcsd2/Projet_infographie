@@ -58,6 +58,7 @@ struct VectorLumiere
     int type;
     float color[3];
     float position[3];
+    float target[3];
     float attenuation;
     float linearAttenuation;
     float quadraticAttenuation;

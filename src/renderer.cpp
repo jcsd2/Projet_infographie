@@ -1914,12 +1914,12 @@ void Renderer::add_lumiere()
             // Ajoutez ici le code pour définir la distance et le target
             // Je suppose que la distance et le target sont constante pour toutes les lumières de type projecteur
             //float distance_to_target = length(light_position - target);
-            //lumiere[buffer_lumieres_head].position[0] = distance_to_target;
-            //lumiere[buffer_lumieres_head].position[1] = target[0];
-            //lumiere[buffer_lumieres_head].position[2] = target[1];
             lumiere[buffer_lumieres_head].position[0] = 0.0f;
             lumiere[buffer_lumieres_head].position[1] = 0.0f;
             lumiere[buffer_lumieres_head].position[2] = 0.0f;
+            lumiere[buffer_lumieres_head].target[0] = 0.0f;
+            lumiere[buffer_lumieres_head].target[1] = 0.0f;
+            lumiere[buffer_lumieres_head].target[2] = 0.0f;
         }
         lumiere[buffer_lumieres_head].position[0] = 0.0f;
         lumiere[buffer_lumieres_head].position[1] = 0.0f;
@@ -1935,6 +1935,7 @@ void Renderer::add_lumiere()
 void Renderer::update_lumiere()
 {
     // Activez le shader
+    // Activez le shader
     shader_lumiere.begin();
 
     // Passez les lumières au shader
@@ -1944,15 +1945,22 @@ void Renderer::update_lumiere()
         lumiere[i].color[1] = constant_color.g;
         lumiere[i].color[2] = constant_color.b;
 
-        lumiere[i].position[0] = ofMap(ofGetMouseX()/ (float) ofGetWidth(), 0.0f, 1.0f, -ofGetWidth() / 2.0f, ofGetWidth() / 2.0f);
-        lumiere[i].position[1] = ofMap(ofGetMouseY()/ (float) ofGetHeight(), 0.0f, 1.0f, -ofGetHeight() / 2.0f, ofGetHeight() / 2.0f);
+        // Mise à jour de la position de la lumière (ex : suivre la souris)
+        lumiere[i].position[0] = ofMap(ofGetMouseX() / (float) ofGetWidth(), 0.0f, 1.0f, -ofGetWidth() / 2.0f, ofGetWidth() / 2.0f);
+        lumiere[i].position[1] = ofMap(ofGetMouseY() / (float) ofGetHeight(), 0.0f, 1.0f, -ofGetHeight() / 2.0f, ofGetHeight() / 2.0f);
         lumiere[i].position[2] = 0.0f;
+
+        // Mise à jour de la cible de la lumière (si disponible)
+        lumiere[i].target[0] = 0.0f;
+        lumiere[i].target[1] = 0.0f;
+        lumiere[i].target[2] = 0.0f;
 
         // Créez des chaînes pour les noms des uniformes
         std::string prefix = "lumiere[" + std::to_string(i) + "].";
         std::string typeUniform = prefix + "type";
         std::string colorUniform = prefix + "color";
         std::string positionUniform = prefix + "position";
+        std::string targetUniform = prefix + "target"; // Nouvelle variable pour la cible
         std::string attenuationUniform = prefix + "attenuation";
         std::string linearAttenuationUniform = prefix + "linearAttenuation";
         std::string quadraticAttenuationUniform = prefix + "quadraticAttenuation";
@@ -1961,9 +1969,12 @@ void Renderer::update_lumiere()
         shader_lumiere.setUniform1i(typeUniform.c_str(), lumiere[i].type);
         shader_lumiere.setUniform3f(colorUniform.c_str(), lumiere[i].color[0], lumiere[i].color[1], lumiere[i].color[2]);
         shader_lumiere.setUniform3f(positionUniform.c_str(), lumiere[i].position[0], lumiere[i].position[1], lumiere[i].position[2]);
+        shader_lumiere.setUniform3f(targetUniform.c_str(), lumiere[i].target[0], lumiere[i].target[1], lumiere[i].target[2]); // Passer la cible au shader
         shader_lumiere.setUniform1f(attenuationUniform.c_str(), lumiere[i].attenuation);
         shader_lumiere.setUniform1f(linearAttenuationUniform.c_str(), lumiere[i].linearAttenuation);
         shader_lumiere.setUniform1f(quadraticAttenuationUniform.c_str(), lumiere[i].quadraticAttenuation);
+        
+        // Journalisation pour déboguer
         ofLog() << "Lumiere " << i << " : " << lumiere[i].color[0] << " " << lumiere[i].color[1] << " " << lumiere[i].color[2];
         ofLog() << "Lumiere " << i << " : " << lumiere[i].position[0] << " " << lumiere[i].position[1] << " " << lumiere[i].position[2];
     }
