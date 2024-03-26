@@ -321,22 +321,31 @@ public:
     //Section 7
 
     //Section 7.2 Matériaux
+    void drawCube_mat(float x, float y, float z);
+    void drawSphere_mat(float x, float y, float z);
+    void drawPrisme_mat(float x, float y, float z);
+
     ofMaterial material_cube;
     ofMaterial material_sphere;
     ofMaterial material_prisme;
 
+    // Les dimensions par défaut pour chaque forme
+    float default_cube_width;
+    float default_cube_height;
+    float default_cube_depth;
+
+    float default_sphere_radius;
+
+    float default_prisme_width;
+    float default_prisme_height;
+    float default_prisme_depth;
+
+    // Vous pouvez également avoir des booléens pour contrôler l'affichage de chaque forme
     bool is_material_cube;
     bool is_material_sphere;
     bool is_material_prisme;
 
-    void drawCube_mat(float x, float y, float z, float size);
-    void drawSphere_mat(float x, float y, float z, float radius);
-    void drawPrisme_mat(float x, float y, float z, float width, float height, float depth);
 
-
-    float scale_cube;
-    float scale_sphere;
-    float scale_prisme;
 
     //Section 7.3
     ofColor constant_color;

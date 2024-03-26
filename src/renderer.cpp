@@ -114,12 +114,22 @@ void Renderer::setup()
     shader_mapping.load("Tone_mapping_shader/tone_mapping_vs.glsl", "Tone_mapping_shader/tone_mapping_fs.glsl");
 
     //Section materiaux 7.2
-    scale_cube = 105.0f;
-    scale_sphere = 90.0f;
-    scale_prisme = 100.0f;
-    bool drawCube = false;
-    bool drawSphere = false;
-    bool drawPrisme = false;
+  
+    is_material_cube = false;
+    is_material_sphere = false;
+    is_material_prisme = false;
+
+    default_cube_width = 100.0f;
+    default_cube_height = 100.0f;
+    default_cube_depth = 100.0f;
+
+    default_sphere_radius = 50.0f;
+
+    default_prisme_width = 100.0f;
+    default_prisme_height = 200.0f;
+    default_prisme_depth = 100.0f;
+
+
 
     //Section 7.3
     shader_lumiere.load("light_shader/light_330_vs.glsl", "light_shader/light_330_fs.glsl");
@@ -165,6 +175,7 @@ void Renderer::draw()
         {
             drawCubeSVG();
         }
+      
         ofPushMatrix();
         draw_primitives();
         drawModels();
@@ -273,6 +284,21 @@ void Renderer::draw()
     else if (is_anisotropique) {
         anisotropique_application();
     }
+    if (is_material_cube) {
+        // Dessinez un cube à la position du dernier clic.
+        drawCube_mat(mouse_press_x, mouse_press_y, 0); // Z est 0 si vous dessinez en 2D, ajustez si nécessaire.
+    }
+
+    if (is_material_sphere) {
+        // Dessinez une sphère à la position du dernier clic.
+        drawSphere_mat(mouse_press_x, mouse_press_y, 0); // Ajustez Z si nécessaire.
+    }
+
+    if (is_material_prisme) {
+        // Dessinez un prisme à la position du dernier clic.
+        drawPrisme_mat(mouse_press_x, mouse_press_y, 0); // Ajustez Z si nécessaire.
+    }
+
 }
 
 /*
@@ -1836,40 +1862,52 @@ void Renderer::apply_tone_mapping()
 * brief: Cube avec materiaux
 */
 
-void Renderer::drawCube_mat(float x, float y, float z, float size) {
+void Renderer::drawCube_mat(float x, float y, float z) {
     material_cube.begin();
-    ofPushMatrix();
-    ofTranslate(x, y, z);
-    ofDrawBox(scale_cube);
-    ofPopMatrix();
+    ofSetColor(255, 234, 0);
+    material_cube.setAmbientColor(ofColor(128, 0, 128)); // Couleur ambiante mauve
+    material_cube.setDiffuseColor(ofColor(128, 0, 128)); // Couleur diffuse mauve
+    material_cube.setSpecularColor(ofColor(255, 255, 255)); // Couleur spéculaire blanche
+    material_cube.setShininess(0.5); // Brillance
+    ofDrawBox(x, y, z, default_cube_width, default_cube_height, default_cube_depth);
     material_cube.end();
 }
+
+
 
 /*
 * brief: Sphere avec materiaux
 */
 
-void Renderer::drawSphere_mat(float x, float y, float z, float radius) {
+void Renderer::drawSphere_mat(float x, float y, float z) {
     material_sphere.begin();
-    ofPushMatrix();
-    ofTranslate(x, y, z);
-    ofDrawSphere(scale_sphere);
-    ofPopMatrix();
+    ofSetColor(231, 0, 211);
+    material_sphere.setAmbientColor(ofColor(255, 165, 0)); // Couleur ambiante orange
+    material_sphere.setDiffuseColor(ofColor(255, 165, 0)); // Couleur diffuse orange
+    material_sphere.setSpecularColor(ofColor(255, 255, 255)); // Couleur spéculaire blanche
+    material_sphere.setShininess(0.5); // Brillance
+    ofDrawSphere(x, y, z, default_sphere_radius);
     material_sphere.end();
 }
+
+
 
 /*
 * brief: Prisme avec materiaux
 */
 
-void Renderer::drawPrisme_mat(float x, float y, float z, float width, float height, float depth) {
+void Renderer::drawPrisme_mat(float x, float y, float z) {
     material_prisme.begin();
-    ofPushMatrix();
-    ofTranslate(x, y, z);
-    ofDrawBox(scale_prisme);
-    ofPopMatrix();
+    ofSetColor(0, 11, 111);
+    material_prisme.setAmbientColor(ofColor(128, 128, 128)); // Couleur ambiante grise
+    material_prisme.setDiffuseColor(ofColor(128, 128, 128)); // Couleur diffuse grise
+    material_prisme.setSpecularColor(ofColor(255, 255, 255)); // Couleur spéculaire blanche
+    material_prisme.setShininess(0.5); // Brillance
+    ofDrawBox(x, y, z, default_prisme_width, default_prisme_height, default_prisme_depth);
     material_prisme.end();
 }
+
+
 
 void Renderer::init_buffer_lumiere()
 {
