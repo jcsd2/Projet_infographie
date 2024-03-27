@@ -369,6 +369,10 @@ public:
     int get_nb_lumiere_projecteur();
     int get_derniere_lumiere_projecteur();
 
+    ofTexture texture_box;
+    ofBoxPrimitive box;
+    ofPixels pixels_rouge;
+
     // Temps
     float time_current;
     float time_last;

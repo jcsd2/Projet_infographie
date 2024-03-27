@@ -102,7 +102,7 @@ void main()
         } else if (lumiere[i].type == 3) {
             // lumière de type projecteur
             vec3 lightDirection = direction(lumiere[i].position, surface_position);
-            color += lumiere_projecteur(n, lumiere[i].position, surface_position, lumiere[i].color, lumiere[i].attenuation, lumiere[i].linearAttenuation, lumiere[i].quadraticAttenuation, 0.5, 1.0); // vous devrez ajuster les valeurs de cutoff(angle de coupure) et power en fonction de vos besoins
+            color += lumiere_projecteur(n, lumiere[i].position, surface_position, lumiere[i].color, lumiere[i].target, lumiere[i].attenuation, lumiere[i].linearAttenuation, lumiere[i].quadraticAttenuation, 0.5, 1.0); // vous devrez ajuster les valeurs de cutoff(angle de coupure) et power en fonction de vos besoins
         }
     }
 

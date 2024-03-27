@@ -135,6 +135,13 @@ void Renderer::setup()
     shader_lumiere.load("light_shader/light_330_vs.glsl", "light_shader/light_330_fs.glsl");
     init_buffer_lumiere();
     add_lumiere();
+    pixels_rouge.allocate(2, 2, OF_PIXELS_RGB);
+    pixels_rouge.setColor(ofColor(255, 0, 0)); // Rouge pur
+    texture_box.loadData(pixels_rouge);
+    //Initialisation box
+    box.set(50);
+    box.setPosition(0, 0, 0);
+    
 }
 
 /*
@@ -189,6 +196,10 @@ void Renderer::draw()
         
         
     case Mode_Vue::camera_3d:
+
+        //Shader lumiere test1
+        
+
         camera->begin();
         is_camera_interactive = true;
         ofScale(1.0f, is_flip_axis_y ? -1.0f : 1.0f);
@@ -232,10 +243,27 @@ void Renderer::draw()
             ofLog() << "<Dispatch done>";
             instanciation_active = false;
         }
+
+
+        //Endroit pour activer la lumiere
+        update_lumiere();
+
+        //Teste boite rouge avec texture ambiante rouge
+        texture_box.bind();
+        box.draw();
+        texture_box.unbind();
+
+        shader_lumiere.end();
+
+        //ofPopStyle();
         draw_primitives();
         drawModels();
 
         camera->end();
+
+        //Endroit pour desactiver la lumiere
+        
+
         break;
 
     case Mode_Vue::double_cam:
@@ -1922,76 +1950,101 @@ void Renderer::init_buffer_lumiere()
 //ajout des lumieres
 void Renderer::add_lumiere()
 {
-    for (int index = 0; index < buffer_lumieres_count; ++index)
+    for (int buffer_lumieres_head = 0; buffer_lumieres_head < buffer_lumieres_count; ++buffer_lumieres_head)
     {
         lumiere[buffer_lumieres_head].type = buffer_lumieres_head;
-        lumiere[buffer_lumieres_head].color[0] = constant_color.r;
-        lumiere[buffer_lumieres_head].color[1] = constant_color.g;
-        lumiere[buffer_lumieres_head].color[2] = constant_color.b;
 
-        if (buffer_lumieres_head == 1) // Lumière directionnelle
+        if(buffer_lumieres_head == 0) //Luimiere ambiante
         {
-            // Ajoutez ici le code pour définir la direction de la lumière
-            // Je suppose que la direction est constante pour toutes les lumières directionnelles
-            lumiere[buffer_lumieres_head].position[0] = 0.0f;
+            lumiere[buffer_lumieres_head].color[0] = 0.0f; // Couleur blanche
+            lumiere[buffer_lumieres_head].color[1] = 0.0f; // Couleur blanche
+            lumiere[buffer_lumieres_head].color[2] = 0.0f; // Couleur blanche
+        }
+
+        else if (buffer_lumieres_head == 1) // Lumière directionnelle
+        {
+            lumiere[buffer_lumieres_head].color[0] = 0.0f;
+            lumiere[buffer_lumieres_head].color[1] = 0.0f;
+            lumiere[buffer_lumieres_head].color[2] = 0.0f;
+
+            lumiere[buffer_lumieres_head].position[0] = 50.0f;
             lumiere[buffer_lumieres_head].position[1] = 0.0f;
             lumiere[buffer_lumieres_head].position[2] = 0.0f;
         }
         else if (buffer_lumieres_head == 2) // Lumière ponctuelle
         {
-            // Ajoutez ici le code pour définir la distance entre la position de la lumière et la position de la surface
-            // Je suppose que la distance est constante pour toutes les lumières ponctuelles
-            //float distance = length(light_position - surface_position);
-            //lumiere[buffer_lumieres_head].position[0] = distance;
-            lumiere[buffer_lumieres_head].position[0] = 0.0f;
-            lumiere[buffer_lumieres_head].position[1] = 0.0f; // Vous devez définir cette valeur
-            lumiere[buffer_lumieres_head].position[2] = 0.0f; // Vous devez définir cette valeur
+            // Définir la couleur de la lumière
+            lumiere[buffer_lumieres_head].color[0] = 0.0f; // Couleur blanche
+            lumiere[buffer_lumieres_head].color[1] = 0.0f;
+            lumiere[buffer_lumieres_head].color[2] = 0.0f;
+
+            lumiere[buffer_lumieres_head].position[0] = -50.0f;
+            lumiere[buffer_lumieres_head].position[1] = 30.0f;
+            lumiere[buffer_lumieres_head].position[2] = 0.0f;
+            // Définir d'autres attributs de la lumière
+            lumiere[buffer_lumieres_head].attenuation = 1.0f;
+            lumiere[buffer_lumieres_head].linearAttenuation = 0.0f;
+            lumiere[buffer_lumieres_head].quadraticAttenuation = 0.0f;
+
         }
         else if (buffer_lumieres_head == 3) // Lumière de type projecteur
         {
-            // Ajoutez ici le code pour définir la distance et le target
-            // Je suppose que la distance et le target sont constante pour toutes les lumières de type projecteur
-            //float distance_to_target = length(light_position - target);
+
+            lumiere[buffer_lumieres_head].color[0] = 0.0f; // Couleur blanche
+            lumiere[buffer_lumieres_head].color[1] = 0.0f;
+            lumiere[buffer_lumieres_head].color[2] = 0.0f;
             lumiere[buffer_lumieres_head].position[0] = 0.0f;
-            lumiere[buffer_lumieres_head].position[1] = 0.0f;
+            lumiere[buffer_lumieres_head].position[1] = 50.0f;
             lumiere[buffer_lumieres_head].position[2] = 0.0f;
-            lumiere[buffer_lumieres_head].target[0] = 0.0f;
+            // Définir la cible de la lumière
+            lumiere[buffer_lumieres_head].target[0] = 0.0f; // Ajustez ces valeurs en fonction de votre scène
             lumiere[buffer_lumieres_head].target[1] = 0.0f;
             lumiere[buffer_lumieres_head].target[2] = 0.0f;
+
+            // Définir d'autres attributs de la lumière
+            lumiere[buffer_lumieres_head].attenuation = 0.2f;
+            lumiere[buffer_lumieres_head].linearAttenuation = 0.0f;
+            lumiere[buffer_lumieres_head].quadraticAttenuation = 0.0f;
         }
-        lumiere[buffer_lumieres_head].position[0] = 0.0f;
-        lumiere[buffer_lumieres_head].position[1] = 0.0f;
-        lumiere[buffer_lumieres_head].position[2] = 0.0f;
-        lumiere[buffer_lumieres_head].attenuation = 1.0f;
-        lumiere[buffer_lumieres_head].linearAttenuation = 1.0f;
-        lumiere[buffer_lumieres_head].quadraticAttenuation = 1.0f;
-        buffer_lumieres_head++;
+        
         ofLog() << "<new lumiere at index: " << buffer_lumieres_head << ">";
+        ofLog() << "Lumiere " << buffer_lumieres_head << " couleur : " << lumiere[buffer_lumieres_head].color[0] << " " << lumiere[buffer_lumieres_head].color[1] << " " << lumiere[buffer_lumieres_head].color[2];
+        ofLog() << "Lumiere " << buffer_lumieres_head << " position : " << lumiere[buffer_lumieres_head].position[0] << " " << lumiere[buffer_lumieres_head].position[1] << " " << lumiere[buffer_lumieres_head].position[2];
     }
 }
 
 void Renderer::update_lumiere()
 {
-    // Activez le shader
+    //gizmo pour chaque lumiere
+    for (int i = 0; i < buffer_lumieres_count; ++i) {
+        if (lumiere[i].type == 0) {
+            ofSetColor(lumiere[i].color[0], lumiere[i].color[1], lumiere[i].color[2]);
+            ofDrawSphere(lumiere[i].position[0], lumiere[i].position[1], lumiere[i].position[2], 1);
+        }
+        else if (lumiere[i].type == 1) {
+            ofSetColor(255, 255, 255);
+            ofDrawSphere(lumiere[i].position[0], lumiere[i].position[1], lumiere[i].position[2], 1);
+        }
+        else if (lumiere[i].type == 2) {
+            ofSetColor(lumiere[i].color[0], lumiere[i].color[1], lumiere[i].color[2]);
+            ofDrawSphere(lumiere[i].position[0], lumiere[i].position[1], lumiere[i].position[2], 1);
+        }
+        else if (lumiere[i].type == 3) {
+            ofSetColor(lumiere[i].color[0], lumiere[i].color[1], lumiere[i].color[2]);
+            ofDrawSphere(lumiere[i].position[0], lumiere[i].position[1], lumiere[i].position[2], 1);
+        }
+    }
+
     // Activez le shader
     shader_lumiere.begin();
 
     // Passez les lumières au shader
     for (int i = 0; i < buffer_lumieres_count; ++i) {
-        // Mettez à jour la couleur de la lumière avec constant_color
+
+        //Constante de couleur
         lumiere[i].color[0] = constant_color.r;
         lumiere[i].color[1] = constant_color.g;
         lumiere[i].color[2] = constant_color.b;
-
-        // Mise à jour de la position de la lumière (ex : suivre la souris)
-        lumiere[i].position[0] = ofMap(ofGetMouseX() / (float) ofGetWidth(), 0.0f, 1.0f, -ofGetWidth() / 2.0f, ofGetWidth() / 2.0f);
-        lumiere[i].position[1] = ofMap(ofGetMouseY() / (float) ofGetHeight(), 0.0f, 1.0f, -ofGetHeight() / 2.0f, ofGetHeight() / 2.0f);
-        lumiere[i].position[2] = 0.0f;
-
-        // Mise à jour de la cible de la lumière (si disponible)
-        lumiere[i].target[0] = 0.0f;
-        lumiere[i].target[1] = 0.0f;
-        lumiere[i].target[2] = 0.0f;
 
         // Créez des chaînes pour les noms des uniformes
         std::string prefix = "lumiere[" + std::to_string(i) + "].";
@@ -2013,12 +2066,9 @@ void Renderer::update_lumiere()
         shader_lumiere.setUniform1f(quadraticAttenuationUniform.c_str(), lumiere[i].quadraticAttenuation);
         
         // Journalisation pour déboguer
-        ofLog() << "Lumiere " << i << " : " << lumiere[i].color[0] << " " << lumiere[i].color[1] << " " << lumiere[i].color[2];
-        ofLog() << "Lumiere " << i << " : " << lumiere[i].position[0] << " " << lumiere[i].position[1] << " " << lumiere[i].position[2];
+        //ofLog() << "Lumiere " << i << " couleur : " << lumiere[i].color[0] << " " << lumiere[i].color[1] << " " << lumiere[i].color[2];
+        //ofLog() << "Lumiere " << i << " position : " << lumiere[i].position[0] << " " << lumiere[i].position[1] << " " << lumiere[i].position[2];
     }
-
-    // Désactivez le shader
-    shader_lumiere.end();
 
 }
 
