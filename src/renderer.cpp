@@ -132,7 +132,7 @@ void Renderer::setup()
 
 
     //Section 7.3
-    shader_lumiere.load("light_shader/light_330_vs.glsl", "light_shader/light_330_fs.glsl");
+    shader_lighting.load("light_shader/light_330_vs.glsl", "light_shader/light_330_fs.glsl");
     init_buffer_lumiere();
     add_lumiere();
     pixels_rouge.allocate(2, 2, OF_PIXELS_RGB);
@@ -142,7 +142,7 @@ void Renderer::setup()
     box.set(50);
     box.setPosition(0, 0, 0);
 
-    cubemap.loadImages("posx.jpg", "negx.jpg", "posy.jpg", "negy.jpg", "posz.jpg", "negz.jpg");
+    //cubemap.loadImages("posx.jpg", "negx.jpg", "posy.jpg", "negy.jpg", "posz.jpg", "negz.jpg");
     
 }
 
@@ -157,7 +157,6 @@ void Renderer::draw()
     case Mode_Vue::dessin:
         
         //Endroit pour activer/desactiver la lumiere
-        //update_lumiere();
         switch (color_mode)
         {
         case BackgroundColorType::rgb:
@@ -248,14 +247,18 @@ void Renderer::draw()
 
 
         //Endroit pour activer la lumiere
-        update_lumiere();
+        //il faut appeler shader_lighting.begin() avant de dessiner les objets
+        //mettre ajout_lumiere dans setup et ambiantcolor init aussi pour couleur ambiante
+        //dessiner les objets
+        //mettre shader_lighting.end() apres avoir dessiner les objets
+
 
         //Teste boite rouge avec texture ambiante rouge
         texture_box.bind();
         box.draw();
         texture_box.unbind();
 
-        shader_lumiere.end();
+        
 
         //ofPopStyle();
         draw_primitives();
@@ -2159,6 +2162,116 @@ int Renderer::get_derniere_lumiere_projecteur()
         }
     }
     return derniere_lumiere_projecteur;
+}
+
+void Renderer::texture_init()
+{
+    // Créer une texture
+    glGenTextures(1, &texture_id);
+    glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    // Paramètres du material
+    ofImage texture;
+    
+
+    // Charger l'image
+    ofLoadImage(texture, "textures/asu_texure.jpg");
+
+    // Envoyer l'image à la carte graphique
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.getWidth(), texture.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, texture.getPixels().getData());
+
+    // Paramètres de la texture
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    //doit faire dans draw:
+    //glBindTexture(GL_TEXTURE_2D, texture_id);
+
+    // Dessinez l'objet ici
+    // ...
+
+    // Désactivez la texture
+    //glBindTexture(GL_TEXTURE_2D, 0);
+
+}
+
+//initialisation couleur ambiance
+void Renderer::ambiant_color_init()
+{
+    constant_color.r = 0.0f;
+    constant_color.g = 0.0f;
+    constant_color.b = 0.0f;
+
+    //ou sphere_material_ambient.setAmbientColor(picker_color); avec un color picker dans application
+}
+
+//Ajout des lumieres
+void Renderer::ajout_lumiere()
+{
+      // initialisation des lumieres
+  lumieres[0].type = 0; // Lumière ambiante
+  lumieres[0].color = ofVec3f(0.5f, 0.5f, 0.5f); // Couleur ambiante
+
+  //lumieres directionnelles 'a la meme position que le gizmo
+  lumieres[1].type = 1; // Lumière directionnelle
+  lumieres[1].color = ofVec3f(1.0f, 1.0f, 1.0f); // Couleur de la lumière
+  lumieres[1].position = ofVec3f(-200.0f, 0.0f, 0.0f); // Position de la lumière
+  lumieres[1].target = ofVec3f(1.0f, 0.0f, 0.0f); // Cible de la lumière vers l'axe des x positif
+
+  //lumiere ponctuelle 'a 200,200,0
+  lumieres[2].type = 2; // Lumière ponctuelle
+  lumieres[2].color = ofVec3f(1.0f, 1.0f, 1.0f); // Couleur de la lumière
+  lumieres[2].position = ofVec3f(200.0f, 200.0f, 0.0f); // Position de la lumière
+  lumieres[2].target = ofVec3f(0.0f, 0.0f, 0.0f); // Cible de la lumière vers l'origine
+  lumieres[2].attenuation = 6.0f; // Atténuation de la lumière
+  lumieres[2].linearAttenuation = 7.0f; // Atténuation linéaire de la lumière
+  lumieres[2].quadraticAttenuation = 9.0f; // Atténuation quadratique de la lumière
+  
+  //lumiere spot 'a 0,50,200 pointant vers 0,0,0
+  lumieres[3].type = 3; // Lumière spot
+  lumieres[3].color = ofVec3f(1.0f, 1.0f, 1.0f); // Couleur de la lumière
+  lumieres[3].position = ofVec3f(0.0f, 50.0f, 200.0f); // Position de la lumière
+  lumieres[3].target = ofVec3f(0.0f, 0.0f, 0.0f); // Cible de la lumière vers l'origine
+  lumieres[3].attenuation = 6.0f; // Atténuation de la lumière
+  lumieres[3].linearAttenuation = 7.0f; // Atténuation linéaire de la lumière
+  lumieres[3].quadraticAttenuation = 9.0f; // Atténuation quadratique de la lumière
+  lumieres[3].spotExponent = 10.0f; // Exposant du cône de lumière
+  lumieres[3].spotCutoffAngle = 45.0f; // Coupure du cône de lumière
+}
+
+//mise a jour des lumieres
+void Renderer::mise_a_jour_lumiere()
+{
+    ofFloatColor ambient_color = sphere_material_ambient.getAmbientColor();
+  ofLog() << "ambient_color: " << ambient_color;
+  shader_lighting.setUniform3f("material_ambient", ambient_color.r, ambient_color.g, ambient_color.b);
+  shader_lighting.setUniform1i("lumiere[0].type", lumieres[0].type);
+  shader_lighting.setUniform3f("lumiere[0].color", lumieres[0].color);
+
+  shader_lighting.setUniform1i("lumiere[1].type", lumieres[1].type);
+  shader_lighting.setUniform3f("lumiere[1].color", lumieres[1].color);
+  shader_lighting.setUniform3f("lumiere[1].position", lumieres[1].position);
+  shader_lighting.setUniform3f("lumiere[1].target", lumieres[1].target);
+  
+  //Lumiere ponctuelle
+  shader_lighting.setUniform1i("lumiere[2].type", lumieres[2].type);
+  shader_lighting.setUniform3f("lumiere[2].color", lumieres[2].color);
+  shader_lighting.setUniform3f("lumiere[2].position", lumieres[2].position);
+  shader_lighting.setUniform3f("lumiere[2].target", lumieres[2].target);
+  shader_lighting.setUniform1f("lumiere[2].attenuation", lumieres[2].attenuation);
+  shader_lighting.setUniform1f("lumiere[2].linearAttenuation", lumieres[2].linearAttenuation);
+  shader_lighting.setUniform1f("lumiere[2].quadraticAttenuation", lumieres[2].quadraticAttenuation);
+
+  //Lumiere spot
+  shader_lighting.setUniform1i("lumiere[3].type", lumieres[3].type);
+  shader_lighting.setUniform3f("lumiere[3].color", lumieres[3].color);
+  shader_lighting.setUniform3f("lumiere[3].position", lumieres[3].position);
+  shader_lighting.setUniform3f("lumiere[3].target", lumieres[3].target);
+  shader_lighting.setUniform1f("lumiere[3].attenuation", lumieres[3].attenuation);
+  shader_lighting.setUniform1f("lumiere[3].linearAttenuation", lumieres[3].linearAttenuation);
+  shader_lighting.setUniform1f("lumiere[3].quadraticAttenuation", lumieres[3].quadraticAttenuation);
+  shader_lighting.setUniform1f("lumiere[3].spotExponent", lumieres[3].spotExponent);
+  shader_lighting.setUniform1f("lumiere[3].spotCutoffAngle", lumieres[3].spotCutoffAngle);
 }
 
 /*

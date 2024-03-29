@@ -65,6 +65,17 @@ struct VectorLumiere
     float quadraticAttenuation;
 };
 
+struct Light {
+    int type;
+    ofVec3f color;
+    ofVec3f position;
+    ofVec3f target;
+    float attenuation;
+    float linearAttenuation;
+    float quadraticAttenuation;
+    float spotExponent;
+    float spotCutoffAngle;
+};
 
 class Renderer
 {
@@ -376,6 +387,18 @@ public:
     int get_derniere_lumiere_ponctuelle();
     int get_nb_lumiere_projecteur();
     int get_derniere_lumiere_projecteur();
+    //Autre methode pour lumiere
+    ofMaterial sphere_material_ambient;
+    static const int MAX_LIGHTS = 4;
+    Light lumieres[MAX_LIGHTS];
+    ofShader shader_lighting;
+    void update_lights();
+    void texture_init();
+    void ambiant_color_init();
+    void ajout_lumiere();
+    void mise_a_jour_lumiere();
+    
+
 
     ofTexture texture_box;
     ofBoxPrimitive box;

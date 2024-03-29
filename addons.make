@@ -1,5 +1,7 @@
 ofxAssimpModelLoader
 ofxAssimpModelLoader
+ofxCubeMap__fixed_up
+ofxCubeMap__fixed_up
 ofxGui
 ofxGui
 ofxOpenCv
