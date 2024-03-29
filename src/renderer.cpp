@@ -141,6 +141,8 @@ void Renderer::setup()
     //Initialisation box
     box.set(50);
     box.setPosition(0, 0, 0);
+
+    cubemap.loadImages("posx.jpg", "negx.jpg", "posy.jpg", "negy.jpg", "posz.jpg", "negz.jpg");
     
 }
 
@@ -326,6 +328,11 @@ void Renderer::draw()
         // Dessinez un prisme à la position du dernier clic.
         drawPrisme_mat(mouse_press_x, mouse_press_y, 0); // Ajustez Z si nécessaire.
     }
+
+
+    cubemap.bind();
+    
+    cubemap.unbind();
 
 }
 
@@ -2167,3 +2174,8 @@ Renderer::~Renderer()
     std::free(lumiere);
 
 }
+
+
+
+
+

@@ -3,6 +3,7 @@
 #include "ofxAssimpModelLoader.h"
 #include <algorithm>
 #include "ofxSvg.h"
+#include "ofxCubeMap.h"
 
 
 // Énumération Occlusion
@@ -87,6 +88,7 @@ public:
     bool is_rotating_left;
     bool is_moving_backward;
     bool is_rotating_right;
+    ofxCubeMap cubemap;
    
 
     
@@ -319,6 +321,12 @@ public:
 
 
     //Section 7
+
+    //section 7.1 modeles illumination
+    void applyLambert(const ofVec3f& lightPos, const ofVec3f& normal, const ofVec3f& diffuseColor);
+    void applyPhong(const ofVec3f& viewPos, const ofVec3f& lightPos, const ofVec3f& normal, const ofVec3f& diffuseColor, const ofVec3f& specularColor, float shininess);
+    void applyBlinnPhong(const ofVec3f& viewPos, const ofVec3f& lightPos, const ofVec3f& normal, const ofVec3f& diffuseColor, const ofVec3f& specularColor, float shininess);
+
 
     //Section 7.2 Matériaux
     void drawCube_mat(float x, float y, float z);
