@@ -346,6 +346,24 @@ void Application::setup()
     groupe_illumination_cl.setBorderColor(ofColor::purple);
 
     //Modele d'illumination 7,1
+    groupe_modele_illumination.setup("Modele d'illumination");
+    groupe_modele_illumination.setBorderColor(ofColor::darkOrange);
+    color_fill_illumination_button.setup("Modele de remplissage");
+    color_fill_illumination_button.addListener(this, &Application::colorFillIlluminationButtonPressed);
+    groupe_modele_illumination.add(&color_fill_illumination_button);
+    lambert_illumination_button.setup("Modele de Lambert");
+    lambert_illumination_button.addListener(this, &Application::lambertIlluminationButtonPressed);
+    groupe_modele_illumination.add(&lambert_illumination_button);
+    gouraud_illumination_button.setup("Modele de Gouraud");
+    gouraud_illumination_button.addListener(this, &Application::gouraudIlluminationButtonPressed);
+    groupe_modele_illumination.add(&gouraud_illumination_button);
+    phong_illumination_button.setup("Modele de Phong");
+    phong_illumination_button.addListener(this, &Application::phongIlluminationButtonPressed);
+    groupe_modele_illumination.add(&phong_illumination_button);
+    blinnPhong_illumination_button.setup("Modele de Blinn-Phong");
+    blinnPhong_illumination_button.addListener(this, &Application::blinnPhongIlluminationButtonPressed);
+    groupe_modele_illumination.add(&blinnPhong_illumination_button);
+    groupe_illumination_cl.add(&groupe_modele_illumination);
 
     //Materiaux 7.2
     groupe_materiaux.setup("Materiaux");
@@ -1996,6 +2014,35 @@ void Application::reset_mapping_slidder()
 }*/
 
 //section 7
+
+//Section 7.1
+
+//Bouton modele illumination
+void Application::colorFillIlluminationButtonPressed() {
+    ofLog() << "<Color Fill Illumination>";
+    renderer.shader__illumination_active = ShaderType::color_fill;
+}
+
+void Application::lambertIlluminationButtonPressed() {
+    ofLog() << "<Lambert Illumination>";
+    renderer.shader__illumination_active = ShaderType::lambert;
+}
+
+void Application::gouraudIlluminationButtonPressed() {
+    ofLog() << "<Gouraud Illumination>";
+    renderer.shader__illumination_active = ShaderType::gouraud;
+}
+
+void Application::phongIlluminationButtonPressed() {
+    ofLog() << "<Phong Illumination>";
+    renderer.shader__illumination_active = ShaderType::phong;
+}
+
+void Application::blinnPhongIlluminationButtonPressed() {
+    ofLog() << "<Blinn Phong Illumination>";
+    renderer.shader__illumination_active = ShaderType::blinn_phong;
+}
+
 
 /*
  * brief: Cube avec materiaux

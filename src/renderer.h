@@ -358,7 +358,8 @@ public:
     float shininess;
     ofMaterial material_global;
     void update_material();
-
+    //box pour tester sshader
+    ofBoxPrimitive box_shader;
 
     //Section 7.2 Matériaux
     void drawCube_mat(float x, float y, float z);

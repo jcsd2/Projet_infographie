@@ -271,6 +271,17 @@ public:
     ofxGuiGroup  groupe_illumination_cl;
 
     //Modele illumination 7.1 ici vv
+    ofxGuiGroup groupe_modele_illumination;
+    ofxButton color_fill_illumination_button;
+    ofxButton lambert_illumination_button;
+    ofxButton gouraud_illumination_button;
+    ofxButton phong_illumination_button;
+    ofxButton blinnPhong_illumination_button;
+    void colorFillIlluminationButtonPressed();
+    void lambertIlluminationButtonPressed();
+    void gouraudIlluminationButtonPressed();
+    void phongIlluminationButtonPressed();
+    void blinnPhongIlluminationButtonPressed();
 
     //Materiaux 7.2 ici vv
     ofxGuiGroup groupe_materiaux;

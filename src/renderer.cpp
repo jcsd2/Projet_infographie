@@ -104,6 +104,8 @@ void Renderer::setup()
     //Section 6.1
     load_shader_illumination();
     shader__illumination_active = ShaderType::blinn_phong;
+    box_shader.set(60);
+    box_shader.setPosition(0, 0, 0);
 
     // Section filtrage 6.2
     is_bilineaire = false;
@@ -122,6 +124,7 @@ void Renderer::setup()
     diffuse_color.set(1.0f, 1.0f, 1.0f);
     specular_color.set(1.0f, 1.0f, 1.0f);
     shininess = 128.0f;
+    update_material();
 
     //Section materiaux 7.2
   
@@ -151,6 +154,10 @@ void Renderer::setup()
     //Initialisation box
     box.set(50);
     box.setPosition(0, 0, 0);
+
+    //Initialisation lumiere
+    ambiant_color_init();
+    ajout_lumiere();
 
     //cubemap.loadImages("posx.jpg", "negx.jpg", "posy.jpg", "negy.jpg", "posz.jpg", "negz.jpg");
     
@@ -263,12 +270,21 @@ void Renderer::draw()
         //mettre shader_lighting.end() apres avoir dessiner les objets
 
 
-        //Teste boite rouge avec texture ambiante rouge
-        texture_box.bind();
-        box.draw();
-        texture_box.unbind();
-
+        //Teste box_shader avec le materiau global et le shader_illumination
+        shader_lighting.begin();
         
+        shader_illumination->begin();
+        ofPushMatrix();
+        material_global.begin();
+        ofPushStyle();
+        ofSetColor(255, 0, 0);
+        ofDrawBox(0, 0, 0, 100);
+        ofPopStyle();
+        material_global.end();
+        ofPopMatrix();
+        shader_illumination->end();
+
+        shader_lighting.end();
 
         //ofPopStyle();
         draw_primitives();
@@ -1327,6 +1343,10 @@ void Renderer::update()
     if (deg > 360) {
         deg = 0;
     }
+    //mise a jour shader illumination 
+    update_shader_illumination();
+    //mise a jour des lumieres
+    mise_a_jour_lumiere();
 }
 
 /*
@@ -1846,20 +1866,20 @@ void Renderer::changeView(Camera newView) {
 void Renderer::load_shader_illumination()
 {
     shader_color_fill.load(
-    "shader/color_fill_330_vs.glsl",
-    "shader/color_fill_330_fs.glsl");
+    "illumination_shader/color_fill_330_vs.glsl",
+    "illumination_shader/color_fill_330_fs.glsl");
     shader_lambert.load(
-    "shader/lambert_330_vs.glsl",
-    "shader/lambert_330_fs.glsl");
+    "illumination_shader/lambert_330_vs.glsl",
+    "illumination_shader/lambert_330_fs.glsl");
     shader_gouraud.load(
-    "shader/gouraud_330_vs.glsl",
-    "shader/gouraud_330_fs.glsl");
+    "illumination_shader/gouraud_330_vs.glsl",
+    "illumination_shader/gouraud_330_fs.glsl");
     shader_phong.load(
-    "shader/phong_330_vs.glsl",
-    "shader/phong_330_fs.glsl");
+    "illumination_shader/phong_330_vs.glsl",
+    "illumination_shader/phong_330_fs.glsl");
     shader_blinn_phong.load(
-    "shader/blinn_phong_330_vs.glsl",
-    "shader/blinn_phong_330_fs.glsl");
+    "illumination_shader/blinn_phong_330_vs.glsl",
+    "illumination_shader/blinn_phong_330_fs.glsl");
 }
 
 //Fonction pour passer attribut au shader dillumination
@@ -2366,7 +2386,7 @@ void Renderer::ajout_lumiere()
 //mise a jour des lumieres
 void Renderer::mise_a_jour_lumiere()
 {
-    ofFloatColor ambient_color = sphere_material_ambient.getAmbientColor();
+    ofFloatColor ambient_color = material_global.getAmbientColor();
   ofLog() << "ambient_color: " << ambient_color;
   shader_lighting.setUniform3f("material_ambient", ambient_color.r, ambient_color.g, ambient_color.b);
   shader_lighting.setUniform1i("lumiere[0].type", lumieres[0].type);
