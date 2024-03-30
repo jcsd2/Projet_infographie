@@ -101,8 +101,11 @@ void Renderer::setup()
     //Section cam occlu 5.4
     occlusion = Occlusion::meshfiled;
 
-    // Section filtrage 6.2
+    //Section 6.1
+    load_shader_illumination();
+    shader__illumination_active = ShaderType::blinn_phong;
 
+    // Section filtrage 6.2
     is_bilineaire = false;
     is_trilineaire = false;
     is_anisotropique = false;
@@ -112,6 +115,13 @@ void Renderer::setup()
     tone_mapping_gamma = 2.2f;
     tone_mapping_toggle = true;
     shader_mapping.load("Tone_mapping_shader/tone_mapping_vs.glsl", "Tone_mapping_shader/tone_mapping_fs.glsl");
+
+    //Section 7.1 init des couleur
+    fill_color_illumination.set(0.0f, 0.0f, 1.0f);
+    ambient_color_illumination.set(1.0f, 1.0f, 1.0f);
+    diffuse_color.set(1.0f, 1.0f, 1.0f);
+    specular_color.set(1.0f, 1.0f, 1.0f);
+    shininess = 128.0f;
 
     //Section materiaux 7.2
   
@@ -1832,6 +1842,120 @@ void Renderer::changeView(Camera newView) {
     setup_camera();
 }
 
+//Section 6.1 loading shaders illumination
+void Renderer::load_shader_illumination()
+{
+    shader_color_fill.load(
+    "shader/color_fill_330_vs.glsl",
+    "shader/color_fill_330_fs.glsl");
+    shader_lambert.load(
+    "shader/lambert_330_vs.glsl",
+    "shader/lambert_330_fs.glsl");
+    shader_gouraud.load(
+    "shader/gouraud_330_vs.glsl",
+    "shader/gouraud_330_fs.glsl");
+    shader_phong.load(
+    "shader/phong_330_vs.glsl",
+    "shader/phong_330_fs.glsl");
+    shader_blinn_phong.load(
+    "shader/blinn_phong_330_vs.glsl",
+    "shader/blinn_phong_330_fs.glsl");
+}
+
+//Fonction pour passer attribut au shader dillumination
+void Renderer::update_shader_illumination()
+{
+    switch (shader__illumination_active)
+  {
+    case ShaderType::color_fill:
+        shader_illumination_name = "Color Fill";
+        shader_illumination = &shader_color_fill;
+        shader_illumination->begin();
+        shader_illumination->setUniform3f("color", fill_color_illumination.x, fill_color_illumination.y, fill_color_illumination.z);
+        shader_illumination->end();
+        break;
+
+    case ShaderType::lambert:
+        shader_illumination_name = "Lambert";
+        shader_illumination = &shader_lambert;
+        shader_illumination->begin();
+        shader_illumination->setUniform3f("color_ambient", ambient_color_illumination.x, ambient_color_illumination.y, ambient_color_illumination.z);
+        shader_illumination->setUniform3f("color_diffuse", diffuse_color.x, diffuse_color.y, diffuse_color.z);
+        //envoyer les positions de tous les lumiere de lumieres[1 'a 3].position
+        shader_illumination->setUniform3f("light_position", lumieres[0].position);
+        shader_illumination->setUniform3f("light_position", lumieres[1].position);
+        shader_illumination->setUniform3f("light_position", lumieres[2].position);
+        shader_illumination->setUniform3f("light_position", lumieres[3].position);
+        shader_illumination->end();
+      break;
+
+    case ShaderType::gouraud:
+        shader_illumination_name = "Gouraud";
+        shader_illumination = &shader_gouraud;
+        shader_illumination->begin();
+        shader_illumination->setUniform3f("color_ambient", ambient_color_illumination.x, ambient_color_illumination.y, ambient_color_illumination.z);
+        shader_illumination->setUniform3f("color_diffuse", diffuse_color.x, diffuse_color.y, diffuse_color.z);
+        shader_illumination->setUniform3f("color_specular", specular_color.x, specular_color.y, specular_color.z);
+        shader_illumination->setUniform1f("brightness", shininess);
+        shader_illumination->setUniform3f("light_position", lumieres[0].position);
+        shader_illumination->setUniform3f("light_position", lumieres[1].position);
+        shader_illumination->setUniform3f("light_position", lumieres[2].position);
+        shader_illumination->setUniform3f("light_position", lumieres[3].position);
+      shader_illumination->end();
+      break;
+
+    case ShaderType::phong:
+        shader_illumination_name = "Phong";
+        shader_illumination = &shader_phong;
+        shader_illumination->begin();
+        shader_illumination->setUniform3f("color_ambient", ambient_color_illumination.x, ambient_color_illumination.y, ambient_color_illumination.z);
+        shader_illumination->setUniform3f("color_diffuse", diffuse_color.x, diffuse_color.y, diffuse_color.z);
+        shader_illumination->setUniform3f("color_specular", specular_color.x, specular_color.y, specular_color.z);
+        shader_illumination->setUniform1f("brightness", shininess);
+        shader_illumination->setUniform3f("light_position", lumieres[0].position);
+        shader_illumination->setUniform3f("light_position", lumieres[1].position);
+        shader_illumination->setUniform3f("light_position", lumieres[2].position);
+        shader_illumination->setUniform3f("light_position", lumieres[3].position);
+        shader_illumination->end();
+      break;
+
+    case ShaderType::blinn_phong:
+        shader_illumination_name = "Blinn-Phong";
+        shader_illumination = &shader_blinn_phong;
+        shader_illumination->begin();
+        shader_illumination->setUniform3f("color_ambient", ambient_color_illumination.x, ambient_color_illumination.y, ambient_color_illumination.z);
+        shader_illumination->setUniform3f("color_diffuse", diffuse_color.x, diffuse_color.y, diffuse_color.z);
+        shader_illumination->setUniform3f("color_specular", specular_color.x, specular_color.y, specular_color.z);
+        shader_illumination->setUniform1f("brightness", shininess);
+        shader_illumination->setUniform3f("light_position", lumieres[0].position);
+        shader_illumination->setUniform3f("light_position", lumieres[1].position);
+        shader_illumination->setUniform3f("light_position", lumieres[2].position);
+        shader_illumination->setUniform3f("light_position", lumieres[3].position);
+      shader_illumination->end();
+      break;
+
+    default:
+      break;
+  }
+
+}
+
+
+
+//update du material global dillumination
+void Renderer::update_material()
+{   
+    //ofColor fill_couleur_illumination = ofColor(fill_color_illumination.x, fill_color_illumination.y, fill_color_illumination.z); 
+    ofColor couleur_ambiance = ofColor(ambient_color_illumination.x, ambient_color_illumination.y, ambient_color_illumination.z);
+    ofColor couleur_diffuse = ofColor(diffuse_color.x, diffuse_color.y, diffuse_color.z);
+    ofColor couleur_emissive = ofColor(emissive_color.x, emissive_color.y, emissive_color.z);
+    ofColor couleur_speculaire = ofColor(specular_color.x, specular_color.y, specular_color.z);
+    material_global.setAmbientColor(couleur_ambiance);
+    material_global.setDiffuseColor(couleur_diffuse);
+    material_global.setEmissiveColor(couleur_emissive);
+    material_global.setSpecularColor(couleur_speculaire);
+    material_global.setShininess(shininess);
+}
 
 // Section 6.2 Filtrage
 
@@ -2175,7 +2299,7 @@ void Renderer::texture_init()
     
 
     // Charger l'image
-    ofLoadImage(texture, "textures/asu_texure.jpg");
+    ofLoadImage(texture, "textures/asuka_sad.jpg");
 
     // Envoyer l'image à la carte graphique
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.getWidth(), texture.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, texture.getPixels().getData());

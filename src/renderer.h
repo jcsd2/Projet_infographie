@@ -27,6 +27,9 @@ enum class Camera {devant, derriere, gauche, droite, dessus, dessous};
 // Énumération Mode de Vue
 enum class Mode_Vue {dessin, camera_3d, double_cam};
 
+// Énumération type de shader dillumination
+enum class ShaderType {color_fill, lambert, gouraud, phong, blinn_phong};
+
 // Structure pour primitive
 struct VectorPrimitive {
     int id; 
@@ -334,9 +337,27 @@ public:
     //Section 7
 
     //section 7.1 modeles illumination
-    void applyLambert(const ofVec3f& lightPos, const ofVec3f& normal, const ofVec3f& diffuseColor);
-    void applyPhong(const ofVec3f& viewPos, const ofVec3f& lightPos, const ofVec3f& normal, const ofVec3f& diffuseColor, const ofVec3f& specularColor, float shininess);
-    void applyBlinnPhong(const ofVec3f& viewPos, const ofVec3f& lightPos, const ofVec3f& normal, const ofVec3f& diffuseColor, const ofVec3f& specularColor, float shininess);
+    ShaderType shader__illumination_active;
+    ofShader shader_color_fill;
+    ofShader shader_lambert;
+    ofShader shader_gouraud;
+    ofShader shader_phong;
+    ofShader shader_blinn_phong;
+    ofShader* shader_illumination;
+    string shader_illumination_name;
+    void load_shader_illumination();
+    //update a mettre dans update
+    void update_shader_illumination();
+    
+    //couleur ambiante, diffuse, speculaire et brillance
+    ofVec3f fill_color_illumination;
+    ofVec3f ambient_color_illumination;
+    ofVec3f diffuse_color;
+    ofVec3f emissive_color;
+    ofVec3f specular_color;
+    float shininess;
+    ofMaterial material_global;
+    void update_material();
 
 
     //Section 7.2 Matériaux
