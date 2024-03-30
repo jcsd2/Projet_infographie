@@ -259,6 +259,13 @@ public:
     void default_mapping();
 
     //Cubemap 6.4 ici vv
+        //ofxPanel groupe_cubemap;
+    //ofxButton cubemap_charger_button;
+    //ofxFloatSlider slider_reflexion;
+   // ofxToggle toggle_use_cubemap;
+    //void chargerCubemapButtonPressed();
+    //ofxCubeMap monCubemap;
+
 
     // Section 7
     ofxGuiGroup  groupe_illumination_cl;

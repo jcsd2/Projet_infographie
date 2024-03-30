@@ -319,6 +319,26 @@ void Application::setup()
 
     groupe_texture.minimize();
     gui.add(&groupe_texture);
+    /*groupe_cubemap.setup("Cubemap");
+    groupe_cubemap.setBorderColor(ofColor::purple);
+
+    cubemap_charger_button.setup("Charger Cubemap");
+    cubemap_charger_button.addListener(this, &Application::chargerCubemapButtonPressed);
+    groupe_cubemap.add(&cubemap_charger_button);
+
+    slider_reflexion.setup("Réflexion", 0.5, 0.0, 1.0);
+    groupe_cubemap.add(&slider_reflexion);
+
+    toggle_use_cubemap.setup("Utiliser Cubemap", false);
+    groupe_cubemap.add(&toggle_use_cubemap);
+
+    groupe_cubemap.minimize();
+   groupe_texture.add(&groupe_cubemap);
+
+    gui.add(&groupe_texture);*/
+
+
+
 
     //Section 7 commence ici
 
@@ -1955,6 +1975,25 @@ void Application::reset_mapping_slidder()
   slider_exposure = 1.0f;
   slider_gamma = 2.2f;
 }
+
+
+//Section 6.4
+/*void Application::chargerCubemapButtonPressed()
+{
+
+    //ofLogNotice() << "Chargement du Cubemap";
+
+    /*bool chargementReussi = monCubemap.load("chemin/vers/les/textures/cubemap");
+
+    if (chargementReussi) {
+        ofLogNotice() << "Cubemap chargé avec succès.";
+    }
+    else {
+        ofLogError() << "Erreur lors du chargement du Cubemap.";
+    }
+
+
+}*/
 
 //section 7
 
