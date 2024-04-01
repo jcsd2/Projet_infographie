@@ -419,12 +419,16 @@ public:
     void ambiant_color_init();
     void ajout_lumiere();
     void mise_a_jour_lumiere();
-    
+
+ 
 
 
     ofTexture texture_box;
     ofBoxPrimitive box;
     ofPixels pixels_rouge;
+
+    //Section 8.2
+    bool is_coon_parametrique;
 
     // Temps
     float time_current;

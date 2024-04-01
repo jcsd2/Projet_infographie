@@ -317,6 +317,9 @@ public:
 
     //Surface parametrique 8.2 ici vv
 
+    ofxButton surface_parametrique_button;
+    void surface_parametrique_button_pressed();
+
     //Shader de tesselation 8.3 ici vv
 
     //Triangulation 8.4 ici vv

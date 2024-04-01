@@ -424,6 +424,9 @@ void Application::setup()
     //Courbe parametrique 8.1
 
     //Surface parametrique 8.2
+    surface_parametrique_button.setup("Suface parametrique Coon");
+    surface_parametrique_button.addListener(this, &Application::surface_parametrique_button_pressed);
+    groupe_topologie.add(&surface_parametrique_button);
 
     //Shader de tesselation 8.3
 
@@ -2074,6 +2077,12 @@ void Application::prismeMateriauxButtonPressed() {
 
 //section 7.3
 
+// Section 8.2 Suface Parametrique Coon ou bezier
+
+void Application::surface_parametrique_button_pressed() {
+    ofLog() << "<Surface Parametrique>";
+    renderer.is_coon_parametrique = true;
+}
 
 /*
  * brief: Nettoyer, supprimer, fermeture de l'application

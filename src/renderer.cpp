@@ -160,6 +160,9 @@ void Renderer::setup()
     ajout_lumiere();
 
     //cubemap.loadImages("posx.jpg", "negx.jpg", "posy.jpg", "negy.jpg", "posz.jpg", "negz.jpg");
+
+   //Section 8.2
+    is_coon_parametrique = false;
     
 }
 
