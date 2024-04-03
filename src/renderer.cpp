@@ -101,11 +101,15 @@ void Renderer::setup()
     //Section cam occlu 5.4
     occlusion = Occlusion::meshfiled;
 
-    //Section 6.1
+    //Section 7.1
     load_shader_illumination();
-    shader__illumination_active = ShaderType::blinn_phong;
+    shader_type = ShaderType::COLOR_FILL;
     box_shader.set(60);
     box_shader.setPosition(0, 0, 0);
+    scale_teapot = 0.11f;
+    teapot.loadModel("teapot.obj");
+    teapot.disableMaterials();
+
 
     // Section filtrage 6.2
     is_bilineaire = false;
@@ -222,10 +226,17 @@ void Renderer::draw()
         
 
         camera->begin();
+        //test illumination ici juste normal fonctionne et jsp pourquoi
+        apply_uniforms_by_shader();
+        teapot.draw(OF_MESH_FILL);
+        shader.end();
+
+
         is_camera_interactive = true;
         ofScale(1.0f, is_flip_axis_y ? -1.0f : 1.0f);
-        ofFill();
         ofTranslate(camera_target);
+        ofPushStyle();
+        ofFill();
         ofSetColor(127);
         ofPushMatrix();
         ofRotateDeg(90);
@@ -234,7 +245,8 @@ void Renderer::draw()
         ofPopMatrix();
         node.setPosition(0,0,0);
         node.draw();
-        
+        ofPopStyle();
+
         if (is_visible_camera)
         {
             if (camera_active != Camera::devant)
@@ -271,28 +283,27 @@ void Renderer::draw()
         //mettre ajout_lumiere dans setup et ambiantcolor init aussi pour couleur ambiante
         //dessiner les objets
         //mettre shader_lighting.end() apres avoir dessiner les objets
-
+        
 
         //Teste box_shader avec le materiau global et le shader_illumination
-        shader_lighting.begin();
+        //shader_lighting.begin();
         
-        shader_illumination->begin();
-        ofPushMatrix();
-        material_global.begin();
-        ofPushStyle();
-        ofSetColor(255, 0, 0);
-        ofDrawBox(0, 0, 0, 100);
-        ofPopStyle();
-        material_global.end();
-        ofPopMatrix();
-        shader_illumination->end();
+        //shader_illumination->begin();
+        //ofPushMatrix();
+        //material_global.begin();
+        //ofPushStyle();
+        //ofSetColor(255, 0, 0);
+        //ofDrawBox(0, 0, 0, 100);
+        //ofPopStyle();
+        //material_global.end();
+        //ofPopMatrix();
+        //shader_illumination->end();
 
-        shader_lighting.end();
+        //shader_lighting.end();
 
         //ofPopStyle();
         draw_primitives();
         drawModels();
-
         camera->end();
 
         //Endroit pour desactiver la lumiere
@@ -365,7 +376,6 @@ void Renderer::draw()
     cubemap.bind();
     
     cubemap.unbind();
-
 }
 
 /*
@@ -1346,10 +1356,18 @@ void Renderer::update()
     if (deg > 360) {
         deg = 0;
     }
-    //mise a jour shader illumination 
-    update_shader_illumination();
+
+    update_teapot();
+    //mise a jour lumiere pour illuminination
+    light.setPointLight();
+    light.setDiffuseColor(255);
+    light.setGlobalPosition(ofGetWidth() / 2.0f, ofGetHeight() / 2.0f, 255.0f);
+
+    //mise  ajour teapot
+    
+
     //mise a jour des lumieres
-    mise_a_jour_lumiere();
+    //mise_a_jour_lumiere();
 }
 
 /*
@@ -1865,7 +1883,7 @@ void Renderer::changeView(Camera newView) {
     setup_camera();
 }
 
-//Section 6.1 loading shaders illumination
+//Section 7.1 loading shaders illumination
 void Renderer::load_shader_illumination()
 {
     shader_color_fill.load(
@@ -1885,85 +1903,11 @@ void Renderer::load_shader_illumination()
     "illumination_shader/blinn_phong_330_fs.glsl");
 }
 
-//Fonction pour passer attribut au shader dillumination
-void Renderer::update_shader_illumination()
+void Renderer::update_teapot()
 {
-    switch (shader__illumination_active)
-  {
-    case ShaderType::color_fill:
-        shader_illumination_name = "Color Fill";
-        shader_illumination = &shader_color_fill;
-        shader_illumination->begin();
-        shader_illumination->setUniform3f("color", fill_color_illumination.x, fill_color_illumination.y, fill_color_illumination.z);
-        shader_illumination->end();
-        break;
-
-    case ShaderType::lambert:
-        shader_illumination_name = "Lambert";
-        shader_illumination = &shader_lambert;
-        shader_illumination->begin();
-        shader_illumination->setUniform3f("color_ambient", ambient_color_illumination.x, ambient_color_illumination.y, ambient_color_illumination.z);
-        shader_illumination->setUniform3f("color_diffuse", diffuse_color.x, diffuse_color.y, diffuse_color.z);
-        //envoyer les positions de tous les lumiere de lumieres[1 'a 3].position
-        shader_illumination->setUniform3f("light_position", lumieres[0].position);
-        shader_illumination->setUniform3f("light_position", lumieres[1].position);
-        shader_illumination->setUniform3f("light_position", lumieres[2].position);
-        shader_illumination->setUniform3f("light_position", lumieres[3].position);
-        shader_illumination->end();
-      break;
-
-    case ShaderType::gouraud:
-        shader_illumination_name = "Gouraud";
-        shader_illumination = &shader_gouraud;
-        shader_illumination->begin();
-        shader_illumination->setUniform3f("color_ambient", ambient_color_illumination.x, ambient_color_illumination.y, ambient_color_illumination.z);
-        shader_illumination->setUniform3f("color_diffuse", diffuse_color.x, diffuse_color.y, diffuse_color.z);
-        shader_illumination->setUniform3f("color_specular", specular_color.x, specular_color.y, specular_color.z);
-        shader_illumination->setUniform1f("brightness", shininess);
-        shader_illumination->setUniform3f("light_position", lumieres[0].position);
-        shader_illumination->setUniform3f("light_position", lumieres[1].position);
-        shader_illumination->setUniform3f("light_position", lumieres[2].position);
-        shader_illumination->setUniform3f("light_position", lumieres[3].position);
-      shader_illumination->end();
-      break;
-
-    case ShaderType::phong:
-        shader_illumination_name = "Phong";
-        shader_illumination = &shader_phong;
-        shader_illumination->begin();
-        shader_illumination->setUniform3f("color_ambient", ambient_color_illumination.x, ambient_color_illumination.y, ambient_color_illumination.z);
-        shader_illumination->setUniform3f("color_diffuse", diffuse_color.x, diffuse_color.y, diffuse_color.z);
-        shader_illumination->setUniform3f("color_specular", specular_color.x, specular_color.y, specular_color.z);
-        shader_illumination->setUniform1f("brightness", shininess);
-        shader_illumination->setUniform3f("light_position", lumieres[0].position);
-        shader_illumination->setUniform3f("light_position", lumieres[1].position);
-        shader_illumination->setUniform3f("light_position", lumieres[2].position);
-        shader_illumination->setUniform3f("light_position", lumieres[3].position);
-        shader_illumination->end();
-      break;
-
-    case ShaderType::blinn_phong:
-        shader_illumination_name = "Blinn-Phong";
-        shader_illumination = &shader_blinn_phong;
-        shader_illumination->begin();
-        shader_illumination->setUniform3f("color_ambient", ambient_color_illumination.x, ambient_color_illumination.y, ambient_color_illumination.z);
-        shader_illumination->setUniform3f("color_diffuse", diffuse_color.x, diffuse_color.y, diffuse_color.z);
-        shader_illumination->setUniform3f("color_specular", specular_color.x, specular_color.y, specular_color.z);
-        shader_illumination->setUniform1f("brightness", shininess);
-        shader_illumination->setUniform3f("light_position", lumieres[0].position);
-        shader_illumination->setUniform3f("light_position", lumieres[1].position);
-        shader_illumination->setUniform3f("light_position", lumieres[2].position);
-        shader_illumination->setUniform3f("light_position", lumieres[3].position);
-      shader_illumination->end();
-      break;
-
-    default:
-      break;
-  }
-
+    teapot.setScale(scale_teapot, scale_teapot, scale_teapot);
+    teapot.setPosition(0, 0, 0);
 }
-
-
 
 //update du material global dillumination
 void Renderer::update_material()
@@ -2092,7 +2036,63 @@ void Renderer::drawPrisme_mat(float x, float y, float z) {
     material_prisme.end();
 }
 
+//Section 7.1
+void Renderer::apply_uniforms_by_shader()
+{
+    switch (shader_type)
+    {
+    case ShaderType::COLOR_FILL:
+      shader = shader_color_fill;
+      shader.begin();
+      shader.setUniform3f("color", color_fill.r / 255.0f, color_fill.g / 255.0f, color_fill.b / 255.0f);
+      break;
 
+    case ShaderType::LAMBERT:
+      shader = shader_lambert;
+      shader.begin();
+      shader.setUniform3f("color_ambient",  color_ambient.r / 255.0f, color_ambient.g / 255.0f, color_ambient.b / 255.0f);
+      shader.setUniform3f("color_diffuse",  color_diffuse.r / 255.0f, color_diffuse.g / 255.0f, color_diffuse.b / 255.0f);
+      shader.setUniform3f("light_position", light.getGlobalPosition());
+      break;
+    case ShaderType::NORMAL:
+      shader = shader_normal;
+      shader.begin();
+      shader.setUniform3f("color_ambient",  color_ambient.r / 255.0f, color_ambient.g / 255.0f, color_ambient.b / 255.0f);
+      shader.setUniform3f("color_diffuse",  color_diffuse.r / 255.0f, color_diffuse.g / 255.0f, color_diffuse.b / 255.0f);
+      shader.setUniform3f("light_position", light.getGlobalPosition());
+      break;
+    case ShaderType::PHONG:
+      shader = shader_phong;
+      shader.begin();
+      shader.setUniform3f("color_ambient",  color_ambient.r / 255.0f, color_ambient.g / 255.0f, color_ambient.b / 255.0f);
+      shader.setUniform3f("color_diffuse",  color_diffuse.r / 255.0f, color_diffuse.g / 255.0f, color_diffuse.b / 255.0f);
+      shader.setUniform3f("color_specular", color_specular.r / 255.0f, color_specular.g / 255.0f, color_specular.b / 255.0f);
+      shader.setUniform1f("brightness", shininess);
+      shader.setUniform3f("light_position", light.getGlobalPosition());
+      break;
+
+    case ShaderType::GOURAUD:
+      shader = shader_gouraud;
+      shader.begin();
+      shader.setUniform3f("color_ambient",  color_ambient.r / 255.0f, color_ambient.g / 255.0f, color_ambient.b / 255.0f);
+      shader.setUniform3f("color_diffuse",  color_diffuse.r / 255.0f, color_diffuse.g / 255.0f, color_diffuse.b / 255.0f);
+      shader.setUniform3f("color_specular", color_specular.r / 255.0f, color_specular.g / 255.0f, color_specular.b / 255.0f);
+      shader.setUniform1f("brightness", shininess);
+      shader.setUniform3f("light_position", light.getGlobalPosition());
+      break;
+
+    case ShaderType::BLINN_PHONG:
+      shader = shader_blinn_phong;
+      shader.begin();
+      shader.setUniform3f("color_ambient",  color_ambient.r / 255.0f, color_ambient.g / 255.0f, color_ambient.b / 255.0f);
+      shader.setUniform3f("color_diffuse",  color_diffuse.r / 255.0f, color_diffuse.g / 255.0f, color_diffuse.b / 255.0f);
+      shader.setUniform3f("color_specular", color_specular.r / 255.0f, color_specular.g / 255.0f, color_specular.b / 255.0f);
+      shader.setUniform1f("brightness", shininess);
+      shader.setUniform3f("light_position", light.getGlobalPosition());
+      break;
+    }
+
+}
 
 void Renderer::init_buffer_lumiere()
 {
@@ -2390,7 +2390,6 @@ void Renderer::ajout_lumiere()
 void Renderer::mise_a_jour_lumiere()
 {
     ofFloatColor ambient_color = material_global.getAmbientColor();
-  ofLog() << "ambient_color: " << ambient_color;
   shader_lighting.setUniform3f("material_ambient", ambient_color.r, ambient_color.g, ambient_color.b);
   shader_lighting.setUniform1i("lumiere[0].type", lumieres[0].type);
   shader_lighting.setUniform3f("lumiere[0].color", lumieres[0].color);

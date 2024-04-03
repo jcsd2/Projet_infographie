@@ -274,14 +274,25 @@ public:
     ofxGuiGroup groupe_modele_illumination;
     ofxButton color_fill_illumination_button;
     ofxButton lambert_illumination_button;
+    ofxButton normal_illumination_button;
     ofxButton gouraud_illumination_button;
     ofxButton phong_illumination_button;
     ofxButton blinnPhong_illumination_button;
     void colorFillIlluminationButtonPressed();
     void lambertIlluminationButtonPressed();
+    void normalIlluminationButtonPressed();
     void gouraudIlluminationButtonPressed();
     void phongIlluminationButtonPressed();
     void blinnPhongIlluminationButtonPressed();
+    //couleur illumination
+    ofxGuiGroup groupe_couleur_illumination;
+    ofParameter<ofColor> color_picker_ambient;
+    ofParameter<ofColor> color_picker_diffuse;
+    ofParameter<ofColor> color_picker_specular;
+    ofParameter<ofColor> color_picker_fill;
+    //slider pour la brillance
+    ofParameter<float> shininess;
+    void updateColorIllumination();
 
     //Materiaux 7.2 ici vv
     ofxGuiGroup groupe_materiaux;

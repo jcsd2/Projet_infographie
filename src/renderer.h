@@ -28,7 +28,14 @@ enum class Camera {devant, derriere, gauche, droite, dessus, dessous};
 enum class Mode_Vue {dessin, camera_3d, double_cam};
 
 // Énumération type de shader dillumination
-enum class ShaderType {color_fill, lambert, gouraud, phong, blinn_phong};
+enum class ShaderType {
+    COLOR_FILL,
+    LAMBERT,
+    NORMAL,
+    PHONG,
+    GOURAUD,
+    BLINN_PHONG
+};
 
 // Structure pour primitive
 struct VectorPrimitive {
@@ -337,17 +344,29 @@ public:
     //Section 7
 
     //section 7.1 modeles illumination
-    ShaderType shader__illumination_active;
+    ofShader shader;
     ofShader shader_color_fill;
     ofShader shader_lambert;
-    ofShader shader_gouraud;
+    ofShader shader_normal;
     ofShader shader_phong;
+    ofShader shader_gouraud;
     ofShader shader_blinn_phong;
-    ofShader* shader_illumination;
+
+    ShaderType shader_type;
     string shader_illumination_name;
     void load_shader_illumination();
     //update a mettre dans update
-    void update_shader_illumination();
+    ofColor color_fill;
+    ofColor color_background;
+    ofColor color_ambient;
+    ofColor color_diffuse;
+    ofColor color_specular;
+    float shininess;
+    ofLight light;
+    void apply_uniforms_by_shader();
+    ofxAssimpModelLoader teapot;
+    float scale_teapot;
+    void update_teapot();
     
     //couleur ambiante, diffuse, speculaire et brillance
     ofVec3f fill_color_illumination;
@@ -355,7 +374,6 @@ public:
     ofVec3f diffuse_color;
     ofVec3f emissive_color;
     ofVec3f specular_color;
-    float shininess;
     ofMaterial material_global;
     void update_material();
     //box pour tester sshader

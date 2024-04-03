@@ -346,6 +346,17 @@ void Application::setup()
     groupe_illumination_cl.setBorderColor(ofColor::purple);
 
     //Modele d'illumination 7,1
+    groupe_couleur_illumination.setup("Couleur d'illumination");
+    groupe_couleur_illumination.setBorderColor(ofColor::darkOrange);
+    groupe_couleur_illumination.add(color_picker_ambient.set("ambient color", ofColor(63, 63, 63), ofColor(0, 0), ofColor(255, 255)));
+    groupe_couleur_illumination.add(color_picker_diffuse.set("diffuse color", ofColor(174, 223, 134), ofColor(0, 0), ofColor(255, 255)));
+    groupe_couleur_illumination.add(color_picker_specular.set("specular color", ofColor(255, 255, 255), ofColor(0, 0), ofColor(255, 255)));
+    groupe_couleur_illumination.add(color_picker_fill.set("fill color", ofColor(255, 255, 255), ofColor(0, 0), ofColor(255, 255)));
+    groupe_couleur_illumination.add(shininess.set("shininess", 128, 0, 128));
+    groupe_couleur_illumination.minimize();
+    groupe_illumination_cl.add(&groupe_couleur_illumination);
+
+
     groupe_modele_illumination.setup("Modele d'illumination");
     groupe_modele_illumination.setBorderColor(ofColor::darkOrange);
     color_fill_illumination_button.setup("Modele de remplissage");
@@ -354,6 +365,9 @@ void Application::setup()
     lambert_illumination_button.setup("Modele de Lambert");
     lambert_illumination_button.addListener(this, &Application::lambertIlluminationButtonPressed);
     groupe_modele_illumination.add(&lambert_illumination_button);
+    normal_illumination_button.setup("Modele de normal");
+    normal_illumination_button.addListener(this, &Application::normalIlluminationButtonPressed);
+    groupe_modele_illumination.add(&normal_illumination_button);
     gouraud_illumination_button.setup("Modele de Gouraud");
     gouraud_illumination_button.addListener(this, &Application::gouraudIlluminationButtonPressed);
     groupe_modele_illumination.add(&gouraud_illumination_button);
@@ -363,6 +377,7 @@ void Application::setup()
     blinnPhong_illumination_button.setup("Modele de Blinn-Phong");
     blinnPhong_illumination_button.addListener(this, &Application::blinnPhongIlluminationButtonPressed);
     groupe_modele_illumination.add(&blinnPhong_illumination_button);
+    groupe_modele_illumination.minimize();
     groupe_illumination_cl.add(&groupe_modele_illumination);
 
     //Materiaux 7.2
@@ -502,9 +517,10 @@ void Application::setup()
         renderer.tone_mapping_toggle = toggle_tone_mapping;
         if (renderer.tone_mapping_toggle) {toggle_tone_mapping.set("aces filmic", true);} 
         else {toggle_tone_mapping.set("reinhard", false);}
-
-        //Couleur de constante 7.3
+        
+        //Couleur de constante 7.3 et 7.1
         renderer.constant_color = color_picker_constante;
+        updateColorIllumination();
         
         // Temps
         time_current = ofGetElapsedTimef();
@@ -2020,30 +2036,46 @@ void Application::reset_mapping_slidder()
 
 //Section 7.1
 
+void Application::updateColorIllumination()
+{
+    renderer.color_fill = color_picker_fill;
+    renderer.color_ambient = color_picker_ambient;
+    renderer.color_diffuse = color_picker_diffuse;
+    renderer.color_specular = color_picker_specular;
+    renderer.shininess = shininess;
+}
+
 //Bouton modele illumination
 void Application::colorFillIlluminationButtonPressed() {
     ofLog() << "<Color Fill Illumination>";
-    renderer.shader__illumination_active = ShaderType::color_fill;
+    renderer.shader_type = ShaderType::COLOR_FILL;
 }
 
 void Application::lambertIlluminationButtonPressed() {
     ofLog() << "<Lambert Illumination>";
-    renderer.shader__illumination_active = ShaderType::lambert;
+    renderer.shader_type = ShaderType::LAMBERT;
+}
+
+void Application::normalIlluminationButtonPressed()
+{
+    ofLog() << "<Normal Illumination>";
+    renderer.shader_type = ShaderType::NORMAL;
+
 }
 
 void Application::gouraudIlluminationButtonPressed() {
     ofLog() << "<Gouraud Illumination>";
-    renderer.shader__illumination_active = ShaderType::gouraud;
+    renderer.shader_type = ShaderType::GOURAUD;
 }
 
 void Application::phongIlluminationButtonPressed() {
     ofLog() << "<Phong Illumination>";
-    renderer.shader__illumination_active = ShaderType::phong;
+    renderer.shader_type = ShaderType::PHONG;
 }
 
 void Application::blinnPhongIlluminationButtonPressed() {
     ofLog() << "<Blinn Phong Illumination>";
-    renderer.shader__illumination_active = ShaderType::blinn_phong;
+    renderer.shader_type = ShaderType::BLINN_PHONG;
 }
 
 
@@ -2135,6 +2167,13 @@ void Application::exit()
     reset_slider_button.removeListener(this, &Application::reset_mapping_slidder);
     default_mapping_button.removeListener(this, &Application::default_mapping);
 
+    //Enlever boutons 7.1
+    color_fill_illumination_button.removeListener(this, &Application::colorFillIlluminationButtonPressed);
+    lambert_illumination_button.removeListener(this, &Application::lambertIlluminationButtonPressed);
+    normal_illumination_button.removeListener(this, &Application::normalIlluminationButtonPressed);
+    gouraud_illumination_button.removeListener(this, &Application::gouraudIlluminationButtonPressed);
+    phong_illumination_button.removeListener(this, &Application::phongIlluminationButtonPressed);
+    blinnPhong_illumination_button.removeListener(this, &Application::blinnPhongIlluminationButtonPressed);
 
     ofLog() << "<app::exit>";
 
