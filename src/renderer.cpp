@@ -101,16 +101,6 @@ void Renderer::setup()
     //Section cam occlu 5.4
     occlusion = Occlusion::meshfiled;
 
-    //Section 7.1
-    load_shader_illumination();
-    shader_type = ShaderType::COLOR_FILL;
-    box_shader.set(60);
-    box_shader.setPosition(0, 0, 0);
-    scale_teapot = 0.11f;
-    teapot.loadModel("teapot.obj");
-    teapot.disableMaterials();
-
-
     // Section filtrage 6.2
     is_bilineaire = false;
     is_trilineaire = false;
@@ -123,13 +113,15 @@ void Renderer::setup()
     shader_mapping.load("Tone_mapping_shader/tone_mapping_vs.glsl", "Tone_mapping_shader/tone_mapping_fs.glsl");
 
     //Section 7.1 init des couleur
-    fill_color_illumination.set(0.0f, 0.0f, 1.0f);
-    ambient_color_illumination.set(1.0f, 1.0f, 1.0f);
-    diffuse_color.set(1.0f, 1.0f, 1.0f);
-    specular_color.set(1.0f, 1.0f, 1.0f);
-    shininess = 128.0f;
-    update_material();
-
+    
+    
+    scale_teapot = 0.11f;
+    teapot.loadModel("teapot.obj");
+    teapot.disableMaterials();
+    load_shader_illumination();
+    shader = shader_color_fill;
+    shader_type = ShaderType::COLOR_FILL;
+    ofSetLogLevel(OF_LOG_VERBOSE);
     //Section materiaux 7.2
   
     is_material_cube = false;
@@ -151,7 +143,7 @@ void Renderer::setup()
     //Section 7.3
     shader_lighting.load("light_shader/light_330_vs.glsl", "light_shader/light_330_fs.glsl");
     init_buffer_lumiere();
-    add_lumiere();
+    //add_lumiere();
     pixels_rouge.allocate(2, 2, OF_PIXELS_RGB);
     pixels_rouge.setColor(ofColor(255, 0, 0)); // Rouge pur
     texture_box.loadData(pixels_rouge);
@@ -160,8 +152,8 @@ void Renderer::setup()
     box.setPosition(0, 0, 0);
 
     //Initialisation lumiere
-    ambiant_color_init();
-    ajout_lumiere();
+    //ambiant_color_init();
+    //ajout_lumiere();
 
     //cubemap.loadImages("posx.jpg", "negx.jpg", "posy.jpg", "negy.jpg", "posz.jpg", "negz.jpg");
 
@@ -306,9 +298,6 @@ void Renderer::draw()
         drawModels();
         camera->end();
 
-        //Endroit pour desactiver la lumiere
-        
-
         break;
 
     case Mode_Vue::double_cam:
@@ -371,11 +360,6 @@ void Renderer::draw()
         // Dessinez un prisme à la position du dernier clic.
         drawPrisme_mat(mouse_press_x, mouse_press_y, 0); // Ajustez Z si nécessaire.
     }
-
-
-    cubemap.bind();
-    
-    cubemap.unbind();
 }
 
 /*
@@ -1892,12 +1876,15 @@ void Renderer::load_shader_illumination()
     shader_lambert.load(
     "illumination_shader/lambert_330_vs.glsl",
     "illumination_shader/lambert_330_fs.glsl");
-    shader_gouraud.load(
-    "illumination_shader/gouraud_330_vs.glsl",
-    "illumination_shader/gouraud_330_fs.glsl");
+    shader_normal.load(
+    "illumination_shader/draw_normal_330_vs.glsl",
+    "illumination_shader/draw_normal_330_fs.glsl");
     shader_phong.load(
     "illumination_shader/phong_330_vs.glsl",
     "illumination_shader/phong_330_fs.glsl");
+    shader_gouraud.load(
+    "illumination_shader/gouraud_330_vs.glsl",
+    "illumination_shader/gouraud_330_fs.glsl");
     shader_blinn_phong.load(
     "illumination_shader/blinn_phong_330_vs.glsl",
     "illumination_shader/blinn_phong_330_fs.glsl");
@@ -1909,20 +1896,6 @@ void Renderer::update_teapot()
     teapot.setPosition(0, 0, 0);
 }
 
-//update du material global dillumination
-void Renderer::update_material()
-{   
-    //ofColor fill_couleur_illumination = ofColor(fill_color_illumination.x, fill_color_illumination.y, fill_color_illumination.z); 
-    ofColor couleur_ambiance = ofColor(ambient_color_illumination.x, ambient_color_illumination.y, ambient_color_illumination.z);
-    ofColor couleur_diffuse = ofColor(diffuse_color.x, diffuse_color.y, diffuse_color.z);
-    ofColor couleur_emissive = ofColor(emissive_color.x, emissive_color.y, emissive_color.z);
-    ofColor couleur_speculaire = ofColor(specular_color.x, specular_color.y, specular_color.z);
-    material_global.setAmbientColor(couleur_ambiance);
-    material_global.setDiffuseColor(couleur_diffuse);
-    material_global.setEmissiveColor(couleur_emissive);
-    material_global.setSpecularColor(couleur_speculaire);
-    material_global.setShininess(shininess);
-}
 
 // Section 6.2 Filtrage
 
@@ -2389,8 +2362,8 @@ void Renderer::ajout_lumiere()
 //mise a jour des lumieres
 void Renderer::mise_a_jour_lumiere()
 {
-    ofFloatColor ambient_color = material_global.getAmbientColor();
-  shader_lighting.setUniform3f("material_ambient", ambient_color.r, ambient_color.g, ambient_color.b);
+   // ofFloatColor ambient_color = material_global.getAmbientColor();
+  shader_lighting.setUniform3f("material_ambient", 1.0f, 1.0f, 1.0f);
   shader_lighting.setUniform1i("lumiere[0].type", lumieres[0].type);
   shader_lighting.setUniform3f("lumiere[0].color", lumieres[0].color);
 
@@ -2430,6 +2403,12 @@ Renderer::~Renderer()
     std::free(models);
     shader_mapping.unload();
     shader_lumiere.unload();
+    shader_color_fill.unload();
+    shader_lambert.unload();
+    shader_normal.unload();
+    shader_phong.unload();
+    shader_gouraud.unload();
+    shader_blinn_phong.unload();
     std::free(lumiere);
 
 }

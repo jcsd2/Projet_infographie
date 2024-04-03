@@ -353,7 +353,6 @@ public:
     ofShader shader_blinn_phong;
 
     ShaderType shader_type;
-    string shader_illumination_name;
     void load_shader_illumination();
     //update a mettre dans update
     ofColor color_fill;
@@ -368,16 +367,6 @@ public:
     float scale_teapot;
     void update_teapot();
     
-    //couleur ambiante, diffuse, speculaire et brillance
-    ofVec3f fill_color_illumination;
-    ofVec3f ambient_color_illumination;
-    ofVec3f diffuse_color;
-    ofVec3f emissive_color;
-    ofVec3f specular_color;
-    ofMaterial material_global;
-    void update_material();
-    //box pour tester sshader
-    ofBoxPrimitive box_shader;
 
     //Section 7.2 Matériaux
     void drawCube_mat(float x, float y, float z);
@@ -437,9 +426,6 @@ public:
     void ambiant_color_init();
     void ajout_lumiere();
     void mise_a_jour_lumiere();
-
- 
-
 
     ofTexture texture_box;
     ofBoxPrimitive box;

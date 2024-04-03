@@ -1,4 +1,4 @@
-//fichier du module 7 exemple 2 du cours IFT3100
+// IFT3100H23 ~ lambert_330_vs.glsl
 
 #version 330
 

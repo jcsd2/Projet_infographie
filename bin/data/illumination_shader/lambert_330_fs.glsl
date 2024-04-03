@@ -1,4 +1,4 @@
-//fichier du module 7 exemple 2 du cours IFT3100
+// IFT3100H23 ~ lambert_330_fs.glsl
 
 #version 330
 
@@ -18,13 +18,13 @@ uniform vec3 light_position;
 
 void main()
 {
-  // re-normaliser la normale après interpolation (n)
+  // re-normaliser la normale après interpolation (N)
   vec3 n = normalize(surface_normal);
 
-  // calculer la direction de la surface vers la lumière (l)
+  // calculer la direction de la surface vers la lumière (L)
   vec3 l = normalize(light_position - surface_position);
 
-  // calculer le niveau de réflexion diffuse (n • l)
+  // calculer le niveau de réflexion diffuse (N • L)
   float reflection_diffuse = max(dot(n, l), 0.0);
 
   // déterminer la couleur du fragment
