@@ -431,8 +431,15 @@ public:
     ofBoxPrimitive box;
     ofPixels pixels_rouge;
 
-    //Section 8.2
-    bool is_coon_parametrique;
+    //Section 8.1 Courbe
+    void initializeBezierSpline();
+    std::vector<ofPoint> bezierControlPoints;
+    bool showBezierSpline;
+
+    //Section 8.2 Surface
+    void initializeBezierSurface();
+    std::vector<std::vector<ofPoint>> bezierSurfaceControlPoints;
+    bool showBezierSurface;
 
     // Temps
     float time_current;

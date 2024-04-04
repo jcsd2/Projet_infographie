@@ -157,8 +157,6 @@ void Renderer::setup()
 
     //cubemap.loadImages("posx.jpg", "negx.jpg", "posy.jpg", "negy.jpg", "posz.jpg", "negz.jpg");
 
-   //Section 8.2
-    is_coon_parametrique = false;
     
 }
 
@@ -347,18 +345,84 @@ void Renderer::draw()
         anisotropique_application();
     }
     if (is_material_cube) {
-        // Dessinez un cube à la position du dernier clic.
-        drawCube_mat(mouse_press_x, mouse_press_y, 0); // Z est 0 si vous dessinez en 2D, ajustez si nécessaire.
+        
+        drawCube_mat(mouse_press_x, mouse_press_y, 0);
     }
 
     if (is_material_sphere) {
-        // Dessinez une sphère à la position du dernier clic.
-        drawSphere_mat(mouse_press_x, mouse_press_y, 0); // Ajustez Z si nécessaire.
+        
+        drawSphere_mat(mouse_press_x, mouse_press_y, 0);
     }
 
     if (is_material_prisme) {
-        // Dessinez un prisme à la position du dernier clic.
-        drawPrisme_mat(mouse_press_x, mouse_press_y, 0); // Ajustez Z si nécessaire.
+        
+        drawPrisme_mat(mouse_press_x, mouse_press_y, 0);
+    }
+    if (showBezierSpline) {
+        
+        ofSetColor(ofColor::green);
+        ofPolyline line;
+        for (size_t i = 0; i < bezierControlPoints.size(); i++) {
+            line.curveTo(bezierControlPoints[i]);
+        }
+        line.draw();
+
+        
+        for (size_t i = 1; i < bezierControlPoints.size() - 1; i++) {
+            ofSetColor(ofColor::purple);
+            ofDrawCircle(bezierControlPoints[i], 12);
+
+        }
+    }
+    if (showBezierSurface) {
+        ofPoint surfaceCenter(0, 0, 0);
+        int totalPoints = 0;
+        for (const auto& row : bezierSurfaceControlPoints) {
+            for (const auto& point : row) {
+                surfaceCenter += point;
+                totalPoints++;
+            }
+        }
+        surfaceCenter /= totalPoints;
+
+        float centerX = ofGetWidth() / 2.0f;
+        float centerY = ofGetHeight() / 2.0f;
+        ofPoint windowCenter(centerX, centerY, 0);
+        ofPoint translation = windowCenter - surfaceCenter;
+
+        ofPushMatrix();
+        ofTranslate(translation.x, translation.y, translation.z);
+        ofTranslate(surfaceCenter.x, surfaceCenter.y, surfaceCenter.z);
+        ofRotateYDeg(ofGetElapsedTimef() * 20);
+        ofTranslate(-surfaceCenter.x, -surfaceCenter.y, -surfaceCenter.z);
+
+        for (int i = 0; i < bezierSurfaceControlPoints.size() - 1; i++) {
+            for (int j = 0; j < bezierSurfaceControlPoints[i].size() - 1; j++) {
+                
+                ofSetColor(100 + bezierSurfaceControlPoints[i][j].z, 100, 255 - bezierSurfaceControlPoints[i][j].z);
+                ofDrawLine(bezierSurfaceControlPoints[i][j], bezierSurfaceControlPoints[i][j + 1]);
+                ofDrawLine(bezierSurfaceControlPoints[i][j], bezierSurfaceControlPoints[i + 1][j]);
+            }
+        }
+
+        
+        for (int i = 0; i < bezierSurfaceControlPoints.size() - 1; i++) {
+            ofDrawLine(bezierSurfaceControlPoints[i][bezierSurfaceControlPoints.size() - 1], bezierSurfaceControlPoints[i + 1][bezierSurfaceControlPoints.size() - 1]);
+        }
+
+        
+        for (int j = 0; j < bezierSurfaceControlPoints[0].size() - 1; j++) {
+            ofDrawLine(bezierSurfaceControlPoints[bezierSurfaceControlPoints.size() - 1][j], bezierSurfaceControlPoints[bezierSurfaceControlPoints.size() - 1][j + 1]);
+        }
+
+        ofSetColor(ofColor::orange);
+        for (const auto& row : bezierSurfaceControlPoints) {
+            for (const auto& point : row) {
+                ofDrawSphere(point, 2);
+            }
+        }
+
+        ofPopMatrix();
     }
 }
 
@@ -2391,6 +2455,56 @@ void Renderer::mise_a_jour_lumiere()
   shader_lighting.setUniform1f("lumiere[3].quadraticAttenuation", lumieres[3].quadraticAttenuation);
   shader_lighting.setUniform1f("lumiere[3].spotExponent", lumieres[3].spotExponent);
   shader_lighting.setUniform1f("lumiere[3].spotCutoffAngle", lumieres[3].spotCutoffAngle);
+}
+
+// Section 8.1 Courbe bezier
+
+void Renderer::initializeBezierSpline() {
+    showBezierSpline = true;
+    bezierControlPoints.clear();
+
+
+    float centerX = ofGetWidth() / 2.0f;
+    float centerY = ofGetHeight() / 2.0f;
+
+
+    bezierControlPoints.push_back(ofPoint(centerX - 150, centerY - 100));
+    bezierControlPoints.push_back(ofPoint(centerX - 120, centerY + 150));
+    bezierControlPoints.push_back(ofPoint(centerX - 90, centerY - 150));
+    bezierControlPoints.push_back(ofPoint(centerX - 60, centerY + 100));
+    bezierControlPoints.push_back(ofPoint(centerX + 60, centerY - 100));
+    bezierControlPoints.push_back(ofPoint(centerX + 90, centerY + 150));
+    bezierControlPoints.push_back(ofPoint(centerX + 120, centerY - 150));
+    bezierControlPoints.push_back(ofPoint(centerX + 150, centerY + 100));
+
+}
+
+// Section 8.2 Surface parametrique
+
+void Renderer::initializeBezierSurface() {
+    showBezierSurface = true;
+    bezierSurfaceControlPoints.clear();
+
+    float centerX = ofGetWidth() / 2.0f;
+    float centerY = ofGetHeight() / 2.0f;
+    float maxOffset = 200;
+    float depth = 300;
+
+    int gridSize = 15;
+    bezierSurfaceControlPoints = std::vector<std::vector<ofPoint>>(gridSize, std::vector<ofPoint>(gridSize, ofPoint()));
+    for (int i = 0; i < gridSize; i++) {
+        for (int j = 0; j < gridSize; j++) {
+            
+            float distanceToCenter = ofDist(i, j, gridSize / 2, gridSize / 2);
+            
+            float zValue = -depth * exp(-distanceToCenter / 4.0);
+
+           
+            bezierSurfaceControlPoints[i][j] = ofPoint(centerX - maxOffset + j * maxOffset / (gridSize - 1),
+                centerY - maxOffset + i * maxOffset / (gridSize - 1),
+                zValue);
+        }
+    }
 }
 
 /*

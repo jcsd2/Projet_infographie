@@ -325,11 +325,13 @@ public:
     ofxGuiGroup  groupe_topologie;
 
     //Courbe parametrique 8.1 ici vv
+    ofxButton courbe_bezier_button;
+    void courbe_bezier_button_pressed();
 
     //Surface parametrique 8.2 ici vv
-
     ofxButton surface_parametrique_button;
     void surface_parametrique_button_pressed();
+    int selectedControlPointIndex = -1;
 
     //Shader de tesselation 8.3 ici vv
 

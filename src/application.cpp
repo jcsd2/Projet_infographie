@@ -437,11 +437,14 @@ void Application::setup()
     groupe_topologie.setBorderColor(ofColor::red);
 
     //Courbe parametrique 8.1
+    courbe_bezier_button.setup("Courbe bezier");
+    gui.add(&courbe_bezier_button);
+    courbe_bezier_button.addListener(this, &Application::courbe_bezier_button_pressed);
 
     //Surface parametrique 8.2
-    surface_parametrique_button.setup("Suface parametrique Coon");
+    surface_parametrique_button.setup("Surface Parametrique");
+    gui.add(&surface_parametrique_button);
     surface_parametrique_button.addListener(this, &Application::surface_parametrique_button_pressed);
-    groupe_topologie.add(&surface_parametrique_button);
 
     //Shader de tesselation 8.3
 
@@ -769,11 +772,19 @@ void Application::mousePressed(int x, int y, int button)
                 renderer.deselectShape(selectedShapeId);
             }
             else {
-                renderer.selectShape(selectedShapeId);
+                renderer.selectShape(selectedShapeId);            
+            
+                }
             }
+        }
+    for (size_t i = 0; i < renderer.bezierControlPoints.size(); i++) {
+        if (renderer.bezierControlPoints[i].distance(ofPoint(x, y)) < 10) {
+            selectedControlPointIndex = i;
+            break;
         }
     }
 }
+ 
 
 /*
  * brief: Gère l'événement de glisser de la souris.
@@ -792,9 +803,15 @@ void Application::mouseDragged(int x, int y, int button) {
         }
     }
 
+    if (selectedControlPointIndex != -1) {
+        renderer.bezierControlPoints[selectedControlPointIndex].set(x, y);
+    }
+
+    // Mettre a jour la position actuelle de la souris
     renderer.mouse_current_x = x;
     renderer.mouse_current_y = y;
 }
+
 
 /*
  * brief: Gère l'événement de relâchement du bouton de la souris.
@@ -828,7 +845,10 @@ void Application::mouseReleased(int x, int y, int button)
     else
     {
         ofLog() << "<Fin de la selection de zone>";
+
     }
+
+    selectedControlPointIndex = -1;
 }
 
 /*
@@ -2109,11 +2129,17 @@ void Application::prismeMateriauxButtonPressed() {
 
 //section 7.3
 
+// Section 8.1 Courbe de bezier
+
+void Application::courbe_bezier_button_pressed() {
+    renderer.initializeBezierSpline();
+
+}
+
 // Section 8.2 Suface Parametrique Coon ou bezier
 
 void Application::surface_parametrique_button_pressed() {
-    ofLog() << "<Surface Parametrique>";
-    renderer.is_coon_parametrique = true;
+    renderer.initializeBezierSurface();
 }
 
 /*
